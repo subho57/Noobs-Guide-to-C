@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>CS50 Manual Pages</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> CS50 Manual Pages</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>stdarg, va_start, va_arg, va_end, va_copy - variable argument lists</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<p><strong>#include &lt;stdarg.h&gt;</strong></p>
+<p><strong>void va_start(va_list </strong><code>ap</code><strong>, </strong><code>last</code><strong>);</strong><br />
+<code>type</code><strong> va_arg(va_list </strong><code>ap</code><strong>, </strong><code>type</code><strong>);</strong><br />
+<strong>void va_end(va_list </strong><code>ap</code><strong>);</strong><br />
+<strong>void va_copy(va_list </strong><code>dest</code><strong>, va_list </strong><code>src</code><strong>);</strong></p>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>A function may be called with a varying number of arguments of varying types. The include file <code>&lt;stdarg.h&gt;</code> declares a type <code>va_list</code> and defines three macros for stepping through a list of arguments whose number and types are not known to the called function.</p>
+<p>The called function must declare an object of type <code>va_list</code> which is used by the macros <a href='va_start'>va_start</a>(), <a href='va_arg'>va_arg</a>(), and <a href='va_end'>va_end</a>().</p>
+<h2>va_start()</h2>
+<p>The <a href='va_start'>va_start</a>() macro initializes <code>ap</code> for subsequent use by <a href='va_arg'>va_arg</a>() and <a href='va_end'>va_end</a>(), and must be called first.</p>
+<p>The argument <code>last</code> is the name of the last argument before the variable argument list, that is, the last argument of which the calling function knows the type.</p>
+<p>Because the address of this argument may be used in the <a href='va_start'>va_start</a>() macro, it should not be declared as a register variable, or as a function or an array type.</p>
+<h2>va_arg()</h2>
+<p>The <a href='va_arg'>va_arg</a>() macro expands to an expression that has the type and value of the next argument in the call. The argument <code>ap</code> is the <code>va_list</code> <code>ap</code> initialized by <a href='va_start'>va_start</a>(). Each call to <a href='va_arg'>va_arg</a>() modifies <code>ap</code> so that the next call returns the next argument. The argument <code>type</code> is a type name specified so that the type of a pointer to an object that has the specified type can be obtained simply by adding a * to <code>type</code>.</p>
+<p>The first use of the <a href='va_arg'>va_arg</a>() macro after that of the <a href='va_start'>va_start</a>() macro returns the argument after <code>last</code>. Successive invocations return the values of the remaining arguments.</p>
+<p>If there is no next argument, or if <code>type</code> is not compatible with the type of the actual next argument (as promoted according to the default argument promotions), random errors will occur.</p>
+<p>If <code>ap</code> is passed to a function that uses <strong><a href='va_arg'>va_arg</a>(</strong><code>ap</code><strong>,</strong><code>type</code><strong>),</strong> then the value of <code>ap</code> is undefined after the return of that function.</p>
+<h2>va_end()</h2>
+<p>Each invocation of <a href='va_start'>va_start</a>() must be matched by a corresponding invocation of <a href='va_end'>va_end</a>() in the same function. After the call <strong><a href='va_end'>va_end</a>(</strong><code>ap</code><strong>)</strong> the variable <code>ap</code> is undefined. Multiple traversals of the list, each bracketed by <a href='va_start'>va_start</a>() and <a href='va_end'>va_end</a>() are possible. <a href='va_end'>va_end</a>() may be a macro or a function.</p>
+<h2>va_copy()</h2>
+<p>The <a href='va_copy'>va_copy</a>() macro copies the (previously initialized) variable argument list <code>src</code> to <code>dest</code>. The behavior is as if <a href='va_start'>va_start</a>() were applied to <code>dest</code> with the same <code>last</code> argument, followed by the same number of <a href='va_arg'>va_arg</a>() invocations that was used to reach the current state of <code>src</code>.</p>
+<p>An obvious implementation would have a <code>va_list</code> be a pointer to the stack frame of the variadic function. In such a setup (by far the most common) there seems nothing against an assignment</p>
+<pre><code>va_list aq = ap;</code></pre>
+<p>Unfortunately, there are also systems that make it an array of pointers (of length 1), and there one needs</p>
+<pre><code>va_list aq;
+*aq = *ap;</code></pre>
+<p>Finally, on systems where arguments are passed in registers, it may be necessary for <a href='va_start'>va_start</a>() to allocate memory, store the arguments there, and also an indication of which argument is next, so that <a href='va_arg'>va_arg</a>() can step through the list. Now <a href='va_end'>va_end</a>() can free the allocated memory again. To accommodate this situation, C99 adds a macro <a href='va_copy'>va_copy</a>(), so that the above assignment can be replaced by</p>
+<pre><code>va_list aq;
+va_copy(aq, ap);
+...
+va_end(aq);</code></pre>
+<p>Each invocation of <a href='va_copy'>va_copy</a>() must be matched by a corresponding invocation of <a href='va_end'>va_end</a>() in the same function. Some systems that do not supply <a href='va_copy'>va_copy</a>() have <strong>__va_copy</strong> instead, since that was the name used in the draft proposal.</p>
+</div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='va_start'>va_start</a>(), <a href='va_end'>va_end</a>(), <a href='va_copy'>va_copy</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='va_arg'>va_arg</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe race:ap</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>The <a href='va_start'>va_start</a>(), <a href='va_arg'>va_arg</a>(), and <a href='va_end'>va_end</a>() macros conform to C89. C99 defines the <a href='va_copy'>va_copy</a>() macro.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>These macros are <code>not</code> compatible with the historic macros they replace. A backward-compatible version can be found in the include file <code>&lt;varargs.h&gt;</code>.</p>
+<p>The historic setup is:</p>
+<pre><code>#include &lt;varargs.h&gt;
+
+void
+foo(va_alist)
+    va_dcl
+{
+    va_list ap;
+
+    va_start(ap);
+    while (...) {
+        ...
+        x = va_arg(ap, type);
+        ...
+    }
+    va_end(ap);
+}</code></pre>
+<p>On some systems, <code>va_end</code> contains a closing '}' matching a '{' in <code>va_start</code>, so that both macros must occur in the same function, and in a way that allows this.</p>
+</div></div></section><h1 id='bugs'><a href='#bugs'>BUGS</a></h1><div data-for='bugs' data-hide><section data-for='bugs'><div data-more>
+<p>Unlike the <strong>varargs</strong> macros, the <strong>stdarg</strong> macros do not permit programmers to code a function with no fixed arguments. This problem generates work mainly when converting <strong>varargs</strong> code to <strong>stdarg</strong> code, but it also creates difficulties for variadic functions that wish to pass all of their arguments on to a function that takes a <code>va_list</code> argument, such as <a href='/3/vfprintf'>vfprintf</a>(3).</p>
+</div></div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-more>
+<p>The function <code>foo</code> takes a string of format characters and prints out the argument associated with each format character based on the type.</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdarg.h&gt;
+
+void
+foo(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>fmt, ...)
+{
+    va_list ap;
+    int d;
+    char c, *s;
+
+    va_start(ap, fmt);
+    while (*fmt)
+        switch (*fmt++) {
+        case &#39;s&#39;:              /* string */
+            s = va_arg(ap, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>);
+            printf(&quot;string %s\n&quot;, s);
+            break;
+        case &#39;d&#39;:              /* int */
+            d = va_arg(ap, int);
+            printf(&quot;int %d\n&quot;, d);
+            break;
+        case &#39;c&#39;:              /* <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>/
+            /* need a cast here since va_arg only
+               takes fully promoted types */
+            c = (char) va_arg(ap, int);
+            printf(&quot;char %c\n&quot;, c);
+            break;
+        }
+    va_end(ap);
+}</code></pre>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>
