@@ -1,5 +1,5 @@
 // Subhankar Pal | @subho57
-const CACHE_NAME = 'manual-v2'; // increment this when updating the web site
+const CACHE_NAME = 'manual-v3'; // increment this when updating the web site
 const urlsToCache = [
     './index.html',
     './manifest.webmanifest',
