@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>asctime, ctime, gmtime, localtime, mktime, asctime_r, ctime_r, <a data-content='This is the man page for &lt;code&gt;gmtime_r&lt;/code&gt; and 8 related functions.' data-toggle='popover' tabindex='0'>gmtime_r</a>, localtime_r - transform date and time to broken-down time or ASCII</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;time.h&gt;</a>
+
+<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>asctime(const struct tm *tm);
+<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>asctime_r(const struct tm *tm, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf);
+
+<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>ctime(const <a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a> *timep);
+<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>ctime_r(const <a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a> *timep, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf);
+
+struct tm *gmtime(const <a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a> *timep);
+struct tm *gmtime_r(const <a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a> *timep, struct tm *result);
+
+struct tm *localtime(const <a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a> *timep);
+struct tm *localtime_r(const <a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a> *timep, struct tm *result);
+
+<a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a> mktime(struct tm *tm);</code></pre>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p><a href='asctime_r'>asctime_r</a>(), <a href='ctime_r'>ctime_r</a>(), <a href='gmtime_r'>gmtime_r</a>(), <a href='localtime_r'>localtime_r</a>():</p>
+<blockquote>
+<p>_POSIX_C_SOURCE || /* Glibc versions &lt;= 2.19: */ _BSD_SOURCE || _SVID_SOURCE</p>
+</blockquote>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='ctime'>ctime</a>(), <a href='gmtime'>gmtime</a>() and <a href='localtime'>localtime</a>() functions all take an argument of data type <code><a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a></code>, which represents calendar time. When interpreted as an absolute time value, it represents the number of seconds elapsed since the Epoch, 1970-01-01 00:00:00 +0000 (UTC).</p>
+<p>The <a href='asctime'>asctime</a>() and <a href='mktime'>mktime</a>() functions both take an argument representing broken-down time, which is a representation separated into year, month, day, and so on.</p>
+<p>Broken-down time is stored in the structure <code>tm</code>, which is defined in <code>&lt;time.h&gt;</code> as follows:</p>
+<pre><code>struct tm {
+    int tm_sec;    /* Seconds (0-60) */
+    int tm_min;    /* Minutes (0-59) */
+    int tm_hour;   /* Hours (0-23) */
+    int tm_mday;   /* Day of the month (1-31) */
+    int tm_mon;    /* Month (0-11) */
+    int tm_year;   /* Year - 1900 */
+    int tm_wday;   /* Day of the week (0-6, Sunday = 0) */
+    int tm_yday;   /* Day in the year (0-365, 1 Jan = 0) */
+    int tm_isdst;  /* Daylight saving time */
+};</code></pre>
+<p>The members of the <code>tm</code> structure are:</p>
+<dl>
+<dt><code>tm_sec</code></dt>
+<dd><p>The number of seconds after the minute, normally in the range 0 to 59, but can be up to 60 to allow for leap seconds.</p>
+</dd>
+<dt><code>tm_min</code></dt>
+<dd><p>The number of minutes after the hour, in the range 0 to 59.</p>
+</dd>
+<dt><code>tm_hour</code></dt>
+<dd><p>The number of hours past midnight, in the range 0 to 23.</p>
+</dd>
+<dt><code>tm_mday</code></dt>
+<dd><p>The day of the month, in the range 1 to 31.</p>
+</dd>
+<dt><code>tm_mon</code></dt>
+<dd><p>The number of months since January, in the range 0 to 11.</p>
+</dd>
+<dt><code>tm_year</code></dt>
+<dd><p>The number of years since 1900.</p>
+</dd>
+<dt><code>tm_wday</code></dt>
+<dd><p>The number of days since Sunday, in the range 0 to 6.</p>
+</dd>
+<dt><code>tm_yday</code></dt>
+<dd><p>The number of days since January 1, in the range 0 to 365.</p>
+</dd>
+<dt><code>tm_isdst</code></dt>
+<dd><p>A flag that indicates whether daylight saving time is in effect at the time described. The value is positive if daylight saving time is in effect, zero if it is not, and negative if the information is not available.</p>
+</dd>
+</dl>
+<p>The call <strong><a href='ctime'>ctime</a>(</strong><code>t</code><strong>)</strong> is equivalent to <strong>asctime(localtime(</strong><code>t</code><strong>))</strong><code>.</code> It converts the calendar time <code>t</code> into a null-terminated string of the form</p>
+<pre><code>&quot;Wed Jun 30 21:49:08 1993\n&quot;</code></pre>
+<p>,in</p>
+<p>The abbreviations for the days of the week are "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", and "Sat". The abbreviations for the months are "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", and "Dec". The return value points to a statically allocated string which might be overwritten by subsequent calls to any of the date and time functions. The function also sets the external variables <code>tzname</code>, <code>timezone</code>, and <code>daylight</code> (see <a href='/3/tzset'>tzset</a>(3)) with information about the current timezone. The reentrant version <a href='ctime_r'>ctime_r</a>() does the same, but stores the string in a user-supplied buffer which should have room for at least 26 bytes. It need not set <code>tzname</code>, <code>timezone</code>, and <code>daylight</code>.</p>
+<p>The <a href='gmtime'>gmtime</a>() function converts the calendar time <code>timep</code> to broken-down time representation, expressed in Coordinated Universal Time (UTC). It may return NULL when the year does not fit into an integer. The return value points to a statically allocated struct which might be overwritten by subsequent calls to any of the date and time functions. The <a href='gmtime_r'>gmtime_r</a>() function does the same, but stores the data in a user-supplied struct.</p>
+<p>The <a href='localtime'>localtime</a>() function converts the calendar time <code>timep</code> to broken-down time representation, expressed relative to the user's specified timezone. The function acts as if it called <a href='/3/tzset'>tzset</a>(3) and sets the external variables <code>tzname</code> with information about the current timezone, <code>timezone</code> with the difference between Coordinated Universal Time (UTC) and local standard time in seconds, and <code>daylight</code> to a nonzero value if daylight savings time rules apply during some part of the year. The return value points to a statically allocated struct which might be overwritten by subsequent calls to any of the date and time functions. The <a href='localtime_r'>localtime_r</a>() function does the same, but stores the data in a user-supplied struct. It need not set <code>tzname</code>, <code>timezone</code>, and <code>daylight</code>.</p>
+<p>The <a href='asctime'>asctime</a>() function converts the broken-down time value <code>tm</code> into a null-terminated string with the same format as <a href='ctime'>ctime</a>(). The return value points to a statically allocated string which might be overwritten by subsequent calls to any of the date and time functions. The <a href='asctime_r'>asctime_r</a>() function does the same, but stores the string in a user-supplied buffer which should have room for at least 26 bytes.</p>
+<p>The <a href='mktime'>mktime</a>() function converts a broken-down time structure, expressed as local time, to calendar time representation. The function ignores the values supplied by the caller in the <code>tm_wday</code> and <code>tm_yday</code> fields. The value specified in the <code>tm_isdst</code> field informs <a href='mktime'>mktime</a>() whether or not daylight saving time (DST) is in effect for the time supplied in the <code>tm</code> structure: a positive value means DST is in effect; zero means that DST is not in effect; and a negative value means that <a href='mktime'>mktime</a>() should (use timezone information and system databases to) attempt to determine whether DST is in effect at the specified time.</p>
+<p>The <a href='mktime'>mktime</a>() function modifies the fields of the <code>tm</code> structure as follows: <code>tm_wday</code> and <code>tm_yday</code> are set to values determined from the contents of the other fields; if structure members are outside their valid interval, they will be normalized (so that, for example, 40 October is changed into 9 November); <code>tm_isdst</code> is set (regardless of its initial value) to a positive value or to 0, respectively, to indicate whether DST is or is not in effect at the specified time. Calling <a href='mktime'>mktime</a>() also sets the external variable <code>tzname</code> with information about the current timezone.</p>
+<p>If the specified broken-down time cannot be represented as calendar time (seconds since the Epoch), <a href='mktime'>mktime</a>() returns <code>(<a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a>) -1</code> and does not alter the members of the broken-down time structure.</p>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>On success, <a href='gmtime'>gmtime</a>() and <a href='localtime'>localtime</a>() return a pointer to a <code>struct tm</code>.</p>
+<p>On success, <a href='gmtime_r'>gmtime_r</a>() and <a href='localtime_r'>localtime_r</a>() return the address of the structure pointed to by <code>result</code>.</p>
+<p>On success, <a href='asctime'>asctime</a>() and <a href='ctime'>ctime</a>() return a pointer to a string.</p>
+<p>On success, <a href='asctime_r'>asctime_r</a>() and <a href='ctime_r'>ctime_r</a>() return a pointer to the string pointed to by <code>buf</code>.</p>
+<p>On success, <a href='mktime'>mktime</a>() returns the calendar time (seconds since the Epoch), expressed as a value of type <code><a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a></code>.</p>
+<p>On error, <a href='mktime'>mktime</a>() returns the value <code>(<a data-content='Think of this as a &lt;code&gt;long&lt;/code&gt;.' data-toggle='popover' tabindex='0'>time_t</a>) -1</code>. The remaining functions return NULL on error. On error, <code>errno</code> is set to indicate the cause of the error.</p>
+</div></section><h1 id='errors'><a href='#errors'>ERRORS</a></h1><div data-for='errors' data-hide><section data-for='errors'><div data-more>
+<dl>
+<dt><strong>EOVERFLOW</strong></dt>
+<dd><p>The result cannot be represented.</p>
+</dd>
+</dl>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='asctime'>asctime</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:asctime locale</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='asctime_r'>asctime_r</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe locale</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='ctime'>ctime</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:tmbuf<br />
+race:asctime env locale</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='ctime_r'>ctime_r</a>(), <a href='gmtime_r'>gmtime_r</a>(), <a href='localtime_r'>localtime_r</a>(), <a href='mktime'>mktime</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe env locale</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='gmtime'>gmtime</a>(), <a href='localtime'>localtime</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:tmbuf env locale</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001. C89 and C99 specify <a href='asctime'>asctime</a>(), <a href='ctime'>ctime</a>(), <a href='gmtime'>gmtime</a>(), <a href='localtime'>localtime</a>(), and <a href='mktime'>mktime</a>(). POSIX.1-2008 marks <a href='asctime'>asctime</a>(), <a href='asctime_r'>asctime_r</a>(), <a href='ctime'>ctime</a>(), and <a href='ctime_r'>ctime_r</a>() as obsolete, recommending the use of <a href='/3/strftime'>strftime</a>(3) instead.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>The four functions <a href='asctime'>asctime</a>(), <a href='ctime'>ctime</a>(), <a href='gmtime'>gmtime</a>() and <a href='localtime'>localtime</a>() return a pointer to static data and hence are not thread-safe. The thread-safe versions, <a href='asctime_r'>asctime_r</a>(), <a href='ctime_r'>ctime_r</a>(), <a href='gmtime_r'>gmtime_r</a>() and <a href='localtime_r'>localtime_r</a>(), are specified by SUSv2.</p>
+<p>POSIX.1-2001 says: "The <a href='asctime'>asctime</a>(), <a href='ctime'>ctime</a>(), <a href='gmtime'>gmtime</a>(), and <a href='localtime'>localtime</a>() functions shall return values in one of two static objects: a broken-down time structure and an array of type <code>char</code>. Execution of any of the functions may overwrite the information returned in either of these objects by any of the other functions." This can occur in the glibc implementation.</p>
+<p>In many implementations, including glibc, a 0 in <code>tm_mday</code> is interpreted as meaning the last day of the preceding month.</p>
+<p>The glibc version of <code>struct tm</code> has additional fields</p>
+<pre><code><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>tm_zone;      /* Timezone abbreviation */</code></pre>
+<p>defined when <strong>_BSD_SOURCE</strong> was set before including <code>&lt;time.h&gt;</code>. This is a BSD extension, present in 4.3BSD-Reno.</p>
+<p>According to POSIX.1-2004, <a href='localtime'>localtime</a>() is required to behave as though <a href='/3/tzset'>tzset</a>(3) was called, while <a href='localtime_r'>localtime_r</a>() does not have this requirement. For portable code, <a href='/3/tzset'>tzset</a>(3) should be called before <a href='localtime_r'>localtime_r</a>().</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/1/date'>date</a>(1), <a href='/2/gettimeofday'>gettimeofday</a>(2), <a href='/2/time'>time</a>(2), <a href='/2/utime'>utime</a>(2), <a href='/3/clock'>clock</a>(3), <a href='/3/difftime'>difftime</a>(3), <a href='/3/strftime'>strftime</a>(3), <a href='/3/strptime'>strptime</a>(3), <a href='/3/timegm'>timegm</a>(3), <a href='/3/tzset'>tzset</a>(3), <a href='/7/time'>time</a>(7)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

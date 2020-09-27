@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>getrlimit, <a data-content='This is the man page for &lt;code&gt;setrlimit&lt;/code&gt; and 2 related functions.' data-toggle='popover' tabindex='0'>setrlimit</a>, prlimit - get/set resource limits</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<p><strong>#include &lt;sys/time.h&gt;</strong><br />
+<strong>#include &lt;sys/resource.h&gt;</strong></p>
+<p><strong>int getrlimit(int </strong><code>resource</code><strong>, struct rlimit *</strong><code>rlim</code><strong>);</strong><br />
+<strong>int setrlimit(int </strong><code>resource</code><strong>, const struct rlimit *</strong><code>rlim</code><strong>);</strong></p>
+<p><strong>int prlimit(pid_t </strong><code>pid</code><strong>, int </strong><code>resource</code><strong>, const struct rlimit *</strong><code>new_limit</code><strong>,</strong><br />
+<strong> struct rlimit *</strong><code>old_limit</code><strong>);</strong></p>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p><a href='prlimit'>prlimit</a>(): _GNU_SOURCE</p>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='getrlimit'>getrlimit</a>() and <a href='setrlimit'>setrlimit</a>() system calls get and set resource limits respectively. Each resource has an associated soft and hard limit, as defined by the <code>rlimit</code> structure:</p>
+<pre><code>struct rlimit {
+    rlim_t rlim_cur;  /* Soft limit */
+    rlim_t rlim_max;  /* Hard limit (ceiling for rlim_cur) */
+};</code></pre>
+<p>The soft limit is the value that the kernel enforces for the corresponding resource. The hard limit acts as a ceiling for the soft limit: an unprivileged process may set only its soft limit to a value in the range from 0 up to the hard limit, and (irreversibly) lower its hard limit. A privileged process (under Linux: one with the <strong>CAP_SYS_RESOURCE</strong> capability) may make arbitrary changes to either limit value.</p>
+<p>The value <strong>RLIM_INFINITY</strong> denotes no limit on a resource (both in the structure returned by <a href='getrlimit'>getrlimit</a>() and in the structure passed to <a href='setrlimit'>setrlimit</a>()).</p>
+<p>The <code>resource</code> argument must be one of:</p>
+<dl>
+<dt><strong>RLIMIT_AS</strong></dt>
+<dd><p>This is the maximum size of the process's virtual memory (address space). The limit is specified in bytes, and is rounded down to the system page size. This limit affects calls to <a href='/2/brk'>brk</a>(2), <a href='/2/mmap'>mmap</a>(2), and <a href='/2/mremap'>mremap</a>(2), which fail with the error <strong>ENOMEM</strong> upon exceeding this limit. In addition, automatic stack expansion fails (and generates a <strong>SIGSEGV</strong> that kills the process if no alternate stack has been made available via <a href='/2/sigaltstack'>sigaltstack</a>(2)). Since the value is a <code>long</code>, on machines with a 32-bit <code>long</code> either this limit is at most 2 GiB, or this resource is unlimited.</p>
+</dd>
+<dt><strong>RLIMIT_CORE</strong></dt>
+<dd><p>This is the maximum size of a <code>core</code> file (see <a href='/5/core'>core</a>(5)) in bytes that the process may dump. When 0 no core dump files are created. When nonzero, larger dumps are truncated to this size.</p>
+</dd>
+<dt><strong>RLIMIT_CPU</strong></dt>
+<dd><p>This is a limit, in seconds, on the amount of CPU time that the process can consume. When the process reaches the soft limit, it is sent a <strong>SIGXCPU</strong> signal. The default action for this signal is to terminate the process. However, the signal can be caught, and the handler can return control to the main program. If the process continues to consume CPU time, it will be sent <strong>SIGXCPU</strong> once per second until the hard limit is reached, at which time it is sent <strong>SIGKILL</strong>. (This latter point describes Linux behavior. Implementations vary in how they treat processes which continue to consume CPU time after reaching the soft limit. Portable applications that need to catch this signal should perform an orderly termination upon first receipt of <strong>SIGXCPU</strong>.)</p>
+</dd>
+<dt><strong>RLIMIT_DATA</strong></dt>
+<dd><p>This is the maximum size of the process's data segment (initialized data, uninitialized data, and heap). The limit is specified in bytes, and is rounded down to the system page size. This limit affects calls to <a href='/2/brk'>brk</a>(2), <a href='/2/sbrk'>sbrk</a>(2), and (since Linux 4.7) <a href='/2/mmap'>mmap</a>(2), which fail with the error <strong>ENOMEM</strong> upon encountering the soft limit of this resource.</p>
+</dd>
+<dt><strong>RLIMIT_FSIZE</strong></dt>
+<dd><p>This is the maximum size in bytes of files that the process may create. Attempts to extend a file beyond this limit result in delivery of a <strong>SIGXFSZ</strong> signal. By default, this signal terminates a process, but a process can catch this signal instead, in which case the relevant system call (e.g., <a href='/2/write'>write</a>(2), <a href='/2/truncate'>truncate</a>(2)) fails with the error <strong>EFBIG</strong>.</p>
+</dd>
+<dt><strong>RLIMIT_LOCKS</strong> (early Linux 2.4 only)</dt>
+<dd><p>This is a limit on the combined number of <a href='/2/flock'>flock</a>(2) locks and <a href='/2/fcntl'>fcntl</a>(2) leases that this process may establish.</p>
+</dd>
+<dt><strong>RLIMIT_MEMLOCK</strong></dt>
+<dd><p>This is the maximum number of bytes of memory that may be locked into RAM. This limit is in effect rounded down to the nearest multiple of the system page size. This limit affects <a href='/2/mlock'>mlock</a>(2), <a href='/2/mlockall'>mlockall</a>(2), and the <a href='/2/mmap'>mmap</a>(2) <strong>MAP_LOCKED</strong> operation. Since Linux 2.6.9, it also affects the <a href='/2/shmctl'>shmctl</a>(2) <strong>SHM_LOCK</strong> operation, where it sets a maximum on the total bytes in shared memory segments (see <a href='/2/shmget'>shmget</a>(2)) that may be locked by the real user ID of the calling process. The <a href='/2/shmctl'>shmctl</a>(2) <strong>SHM_LOCK</strong> locks are accounted for separately from the per-process memory locks established by <a href='/2/mlock'>mlock</a>(2), <a href='/2/mlockall'>mlockall</a>(2), and <a href='/2/mmap'>mmap</a>(2) <strong>MAP_LOCKED</strong>; a process can lock bytes up to this limit in each of these two categories.</p>
+<p>In Linux kernels before 2.6.9, this limit controlled the amount of memory that could be locked by a privileged process. Since Linux 2.6.9, no limits are placed on the amount of memory that a privileged process may lock, and this limit instead governs the amount of memory that an unprivileged process may lock.</p>
+</dd>
+<dt><strong>RLIMIT_MSGQUEUE</strong> (since Linux 2.6.8)</dt>
+<dd><p>This is a limit on the number of bytes that can be allocated for POSIX message queues for the real user ID of the calling process. This limit is enforced for <a href='/3/mq_open'>mq_open</a>(3). Each message queue that the user creates counts (until it is removed) against this limit according to the formula:</p>
+<p>Since Linux 3.5:</p>
+<pre><code>        bytes = attr.mq_maxmsg * sizeof(struct msg_msg) +
+                min(attr.mq_maxmsg, MQ_PRIO_MAX) *
+                      sizeof(struct posix_msg_tree_node)+
+                                /* For overhead */
+                attr.mq_maxmsg * attr.mq_msgsize;
+                                /* For message data */</code></pre>
+<p>Linux 3.4 and earlier:</p>
+<pre><code>        bytes = attr.mq_maxmsg * sizeof(struct msg_msg *) +
+                                /* For overhead */
+                attr.mq_maxmsg * attr.mq_msgsize;
+                                /* For message data */</code></pre>
+<p>where <code>attr</code> is the <code>mq_attr</code> structure specified as the fourth argument to <a href='/3/mq_open'>mq_open</a>(3), and the <code>msg_msg</code> and <code>posix_msg_tree_node</code> structures are kernel-internal structures.</p>
+<p>The "overhead" addend in the formula accounts for overhead bytes required by the implementation and ensures that the user cannot create an unlimited number of zero-length messages (such messages nevertheless each consume some system memory for bookkeeping overhead).</p>
+</dd>
+<dt><strong>RLIMIT_NICE</strong> (since Linux 2.6.12, but see BUGS below)</dt>
+<dd><p>This specifies a ceiling to which the process's nice value can be raised using <a href='/2/setpriority'>setpriority</a>(2) or <a href='/2/nice'>nice</a>(2). The actual ceiling for the nice value is calculated as <code>20 - rlim_cur</code>. The useful range for this limit is thus from 1 (corresponding to a nice value of 19) to 40 (corresponding to a nice value of -20). This unusual choice of range was necessary because negative numbers cannot be specified as resource limit values, since they typically have special meanings. For example, <strong>RLIM_INFINITY</strong> typically is the same as -1. For more detail on the nice value, see <a href='/7/sched'>sched</a>(7).</p>
+</dd>
+<dt><strong>RLIMIT_NOFILE</strong></dt>
+<dd><p>This specifies a value one greater than the maximum file descriptor number that can be opened by this process. Attempts (<a href='/2/open'>open</a>(2), <a href='/2/pipe'>pipe</a>(2), <a href='/2/dup'>dup</a>(2), etc.) to exceed this limit yield the error <strong>EMFILE</strong>. (Historically, this limit was named <strong>RLIMIT_OFILE</strong> on BSD.)</p>
+<p>Since Linux 4.5, this limit also defines the maximum number of file descriptors that an unprivileged process (one without the <strong>CAP_SYS_RESOURCE</strong> capability) may have "in flight" to other processes, by being passed across UNIX domain sockets. This limit applies to the <a href='/2/sendmsg'>sendmsg</a>(2) system call. For further details, see <a href='/7/unix'>unix</a>(7).</p>
+</dd>
+<dt><strong>RLIMIT_NPROC</strong></dt>
+<dd><p>This is a limit on the number of extant process (or, more precisely on Linux, threads) for the real user ID of the calling process. So long as the current number of processes belonging to this process's real user ID is greater than or equal to this limit, <a href='/2/fork'>fork</a>(2) fails with the error <strong>EAGAIN</strong>.</p>
+<p>The <strong>RLIMIT_NPROC</strong> limit is not enforced for processes that have either the <strong>CAP_SYS_ADMIN</strong> or the <strong>CAP_SYS_RESOURCE</strong> capability.</p>
+</dd>
+<dt><strong>RLIMIT_RSS</strong></dt>
+<dd><p>This is a limit (in bytes) on the process's resident set (the number of virtual pages resident in RAM). This limit has effect only in Linux 2.4.x, x &lt; 30, and there affects only calls to <a href='/2/madvise'>madvise</a>(2) specifying <strong>MADV_WILLNEED</strong>.</p>
+</dd>
+<dt><strong>RLIMIT_RTPRIO</strong> (since Linux 2.6.12, but see BUGS)</dt>
+<dd><p>This specifies a ceiling on the real-time priority that may be set for this process using <a href='/2/sched_setscheduler'>sched_setscheduler</a>(2) and <a href='/2/sched_setparam'>sched_setparam</a>(2).</p>
+<p>For further details on real-time scheduling policies, see <a href='/7/sched'>sched</a>(7)</p>
+</dd>
+<dt><strong>RLIMIT_RTTIME</strong> (since Linux 2.6.25)</dt>
+<dd><p>This is a limit (in microseconds) on the amount of CPU time that a process scheduled under a real-time scheduling policy may consume without making a blocking system call. For the purpose of this limit, each time a process makes a blocking system call, the count of its consumed CPU time is reset to zero. The CPU time count is not reset if the process continues trying to use the CPU but is preempted, its time slice expires, or it calls <a href='/2/sched_yield'>sched_yield</a>(2).</p>
+<p>Upon reaching the soft limit, the process is sent a <strong>SIGXCPU</strong> signal. If the process catches or ignores this signal and continues consuming CPU time, then <strong>SIGXCPU</strong> will be generated once each second until the hard limit is reached, at which point the process is sent a <strong>SIGKILL</strong> signal.</p>
+<p>The intended use of this limit is to stop a runaway real-time process from locking up the system.</p>
+<p>For further details on real-time scheduling policies, see <a href='/7/sched'>sched</a>(7)</p>
+</dd>
+<dt><strong>RLIMIT_SIGPENDING</strong> (since Linux 2.6.8)</dt>
+<dd><p>This is a limit on the number of signals that may be queued for the real user ID of the calling process. Both standard and real-time signals are counted for the purpose of checking this limit. However, the limit is enforced only for <a href='/3/sigqueue'>sigqueue</a>(3); it is always possible to use <a href='/2/kill'>kill</a>(2) to queue one instance of any of the signals that are not already queued to the process.</p>
+</dd>
+<dt><strong>RLIMIT_STACK</strong></dt>
+<dd><p>This is the maximum size of the process stack, in bytes. Upon reaching this limit, a <strong>SIGSEGV</strong> signal is generated. To handle this signal, a process must employ an alternate signal stack (<a href='/2/sigaltstack'>sigaltstack</a>(2)).</p>
+<p>Since Linux 2.6.23, this limit also determines the amount of space used for the process's command-line arguments and environment variables; for details, see <a href='/2/execve'>execve</a>(2).</p>
+</dd>
+</dl>
+<h2>prlimit()</h2>
+<p><a href='prlimit'>prlimit</a>() system call combines and extends the functionality of <a href='setrlimit'>setrlimit</a>() and <a href='getrlimit'>getrlimit</a>(). It can be used to both set and get the resource limits of an arbitrary process.</p>
+<p>The <code>resource</code> argument has the same meaning as for <a href='setrlimit'>setrlimit</a>() and <a href='getrlimit'>getrlimit</a>().</p>
+<p>If the <code>new_limit</code> argument is a not NULL, then the <code>rlimit</code> structure to which it points is used to set new values for the soft and hard limits for <code>resource</code>. If the <code>old_limit</code> argument is a not NULL, then a successful call to <a href='prlimit'>prlimit</a>() places the previous soft and hard limits for <code>resource</code> in the <code>rlimit</code> structure pointed to by <code>old_limit</code>.</p>
+<p>The <code>pid</code> argument specifies the ID of the process on which the call is to operate. If <code>pid</code> is 0, then the call applies to the calling process. To set or get the resources of a process other than itself, the caller must have the <strong>CAP_SYS_RESOURCE</strong> capability in the user namespace of the process whose resource limits are being changed, or the real, effective, and saved set user IDs of the target process must match the real user ID of the caller <code>and</code> the real, effective, and saved set group IDs of the target process must match the real group ID of the caller.</p>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>On success, these system calls return 0. On error, -1 is returned, and <code>errno</code> is set appropriately.</p>
+</div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-more>
+<p>The program below demonstrates the use of <a href='prlimit'>prlimit</a>().</p>
+<pre><code>#define _GNU_SOURCE
+#define _FILE_OFFSET_BITS 64
+#include &lt;stdio.h&gt;
+#include &lt;time.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/resource.h&gt;
+
+#define errExit(msg) do { perror(msg); exit(EXIT_FAILURE);                         } while (0)
+
+int
+main(int argc, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>argv[])
+{
+    struct rlimit old, new;
+    struct rlimit *newp;
+    pid_t pid;
+
+    if (!(argc == 2 || argc == 4)) {
+        fprintf(stderr, &quot;Usage: %s &lt;pid&gt; [&lt;new-soft-limit&gt; &quot;
+                &quot;&lt;new-hard-limit&gt;]\n&quot;, argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    pid = atoi(argv[1]);        /* PID of target process */
+
+    newp = NULL;
+    if (argc == 4) {
+        new.rlim_cur = atoi(argv[2]);
+        new.rlim_max = atoi(argv[3]);
+        newp = &amp;new;
+    }
+
+    /* Set CPU time limit of target process; retrieve and display
+       previous limit */
+
+    if (prlimit(pid, RLIMIT_CPU, newp, &amp;old) == -1)
+        errExit(&quot;prlimit-1&quot;);
+    printf(&quot;Previous limits: soft=%lld; hard=%lld\n&quot;,
+            (long long) old.rlim_cur, (long long) old.rlim_max);
+
+    /* Retrieve and display new CPU time limit */
+
+    if (prlimit(pid, RLIMIT_CPU, NULL, &amp;old) == -1)
+        errExit(&quot;prlimit-2&quot;);
+    printf(&quot;New limits: soft=%lld; hard=%lld\n&quot;,
+            (long long) old.rlim_cur, (long long) old.rlim_max);
+
+    exit(EXIT_SUCCESS);
+}</code></pre>
+</div></section><h1 id='errors'><a href='#errors'>ERRORS</a></h1><div data-for='errors' data-hide><section data-for='errors'><div data-more>
+<dl>
+<dt><strong>EFAULT</strong></dt>
+<dd><p>A pointer argument points to a location outside the accessible address space.</p>
+</dd>
+<dt><strong>EINVAL</strong></dt>
+<dd><p>The value specified in <code>resource</code> is not valid; or, for <a href='setrlimit'>setrlimit</a>() or <a href='prlimit'>prlimit</a>(): <code>rlim-&gt;rlim_cur</code> was greater than <code>rlim-&gt;rlim_max</code>.</p>
+</dd>
+<dt><strong>EPERM</strong></dt>
+<dd><p>An unprivileged process tried to raise the hard limit; the <strong>CAP_SYS_RESOURCE</strong> capability is required to do this.</p>
+</dd>
+<dt><strong>EPERM</strong></dt>
+<dd><p>The caller tried to increase the hard <strong>RLIMIT_NOFILE</strong> limit above the maximum defined by <code>/proc/sys/fs/nr_open</code> (see <a href='/5/proc'>proc</a>(5))</p>
+</dd>
+<dt><strong>EPERM</strong></dt>
+<dd><p>(<a href='prlimit'>prlimit</a>()) The calling process did not have permission to set limits for the process specified by <code>pid</code>.</p>
+</dd>
+<dt><strong>ESRCH</strong></dt>
+<dd><p>Could not find a process with the ID specified in <code>pid</code>.</p>
+</dd>
+</dl>
+</div></div></section><h1 id='versions'><a href='#versions'>VERSIONS</a></h1><div data-for='versions' data-hide><section data-for='versions'><div data-more>
+<p>The <a href='prlimit'>prlimit</a>() system call is available since Linux 2.6.36. Library support is available since glibc 2.13.</p>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='getrlimit'>getrlimit</a>(), <a href='setrlimit'>setrlimit</a>(), <a href='prlimit'>prlimit</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p><a href='getrlimit'>getrlimit</a>(), <a href='setrlimit'>setrlimit</a>(): POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.</p>
+<p><a href='prlimit'>prlimit</a>(): Linux-specific.</p>
+<p><strong>RLIMIT_MEMLOCK</strong> and <strong>RLIMIT_NPROC</strong> derive from BSD and are not specified in POSIX.1; they are present on the BSDs and Linux, but on few other implementations. <strong>RLIMIT_RSS</strong> derives from BSD and is not specified in POSIX.1; it is nevertheless present on most implementations. <strong>RLIMIT_MSGQUEUE</strong>, <strong>RLIMIT_NICE</strong>, <strong>RLIMIT_RTPRIO</strong>, <strong>RLIMIT_RTTIME</strong>, and <strong>RLIMIT_SIGPENDING</strong> are Linux-specific.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>A child process created via <a href='/2/fork'>fork</a>(2) inherits its parent's resource limits. Resource limits are preserved across <a href='/2/execve'>execve</a>(2).</p>
+<p>Lowering the soft limit for a resource below the process's current consumption of that resource will succeed (but will prevent the process from further increasing its consumption of the resource).</p>
+<p>One can set the resource limits of the shell using the built-in <code>ulimit</code> command (<code>limit</code> in <a href='/1/csh'>csh</a>(1)). The shell's resource limits are inherited by the processes that it creates to execute commands.</p>
+<p>Since Linux 2.6.24, the resource limits of any process can be inspected via <code>/proc/[pid]/limits</code>; see <a href='/5/proc'>proc</a>(5).</p>
+<p>Ancient systems provided a <a href='vlimit'>vlimit</a>() function with a similar purpose to <a href='setrlimit'>setrlimit</a>(). For backward compatibility, glibc also provides <a href='vlimit'>vlimit</a>(). All new applications should be written using <a href='setrlimit'>setrlimit</a>().</p>
+<h2>C library/kernel ABI differences</h2>
+<p>Since version 2.13, the glibc <a href='getrlimit'>getrlimit</a>() and <a href='setrlimit'>setrlimit</a>() wrapper functions no longer invoke the corresponding system calls, but instead employ <a href='prlimit'>prlimit</a>(), for the reasons described in BUGS.</p>
+<p>The name of the glibc wrapper function is <a href='prlimit'>prlimit</a>(); the underlying system call is <a href='prlimit64'>prlimit64</a>().</p>
+</div></div></section><h1 id='bugs'><a href='#bugs'>BUGS</a></h1><div data-for='bugs' data-hide><section data-for='bugs'><div data-more>
+<p>In older Linux kernels, the <strong>SIGXCPU</strong> and <strong>SIGKILL</strong> signals delivered when a process encountered the soft and hard <strong>RLIMIT_CPU</strong> limits were delivered one (CPU) second later than they should have been. This was fixed in kernel 2.6.8.</p>
+<p>In 2.6.x kernels before 2.6.17, a <strong>RLIMIT_CPU</strong> limit of 0 is wrongly treated as "no limit" (like <strong>RLIM_INFINITY</strong>). Since Linux 2.6.17, setting a limit of 0 does have an effect, but is actually treated as a limit of 1 second.</p>
+<p>A kernel bug means that <strong>RLIMIT_RTPRIO</strong> does not work in kernel 2.6.12; the problem is fixed in kernel 2.6.13.</p>
+<p>In kernel 2.6.12, there was an off-by-one mismatch between the priority ranges returned by <a href='/2/getpriority'>getpriority</a>(2) and <strong>RLIMIT_NICE</strong>. This had the effect that the actual ceiling for the nice value was calculated as <code>19 - rlim_cur</code>. This was fixed in kernel 2.6.13.</p>
+<p>Since Linux 2.6.12, if a process reaches its soft <strong>RLIMIT_CPU</strong> limit and has a handler installed for <strong>SIGXCPU</strong>, then, in addition to invoking the signal handler, the kernel increases the soft limit by one second. This behavior repeats if the process continues to consume CPU time, until the hard limit is reached, at which point the process is killed. Other implementations do not change the <strong>RLIMIT_CPU</strong> soft limit in this manner, and the Linux behavior is probably not standards conformant; portable applications should avoid relying on this Linux-specific behavior. The Linux-specific <strong>RLIMIT_RTTIME</strong> limit exhibits the same behavior when the soft limit is encountered.</p>
+<p>Kernels before 2.4.22 did not diagnose the error <strong>EINVAL</strong> for <a href='setrlimit'>setrlimit</a>() when <code>rlim-&gt;rlim_cur</code> was greater than <code>rlim-&gt;rlim_max</code>. The glibc <a href='getrlimit'>getrlimit</a>() and <a href='setrlimit'>setrlimit</a>() wrapper functions use a 64-bit <code>rlim_t</code> data type, even on 32-bit platforms. However, the <code>rlim_t</code> data type used in the <a href='getrlimit'>getrlimit</a>() and <a href='setrlimit'>setrlimit</a>() system calls is a (32-bit) <code>unsigned long</code>. Furthermore, in Linux versions before 2.6.36, the kernel represents resource limits on 32-bit platforms as <code>unsigned long</code>. However, a 32-bit data type is not wide enough. The most pertinent limit here is <strong>RLIMIT_FSIZE</strong>, which specifies the maximum size to which a file can grow: to be useful, this limit must be represented using a type that is as wide as the type used to represent file offsets—that is, as wide as a 64-bit <strong>off_t</strong> (assuming a program compiled with <code>_FILE_OFFSET_BITS=64</code>).</p>
+<p>To work around this kernel limitation, if a program tried to set a resource limit to a value larger than can be represented in a 32-bit <code>unsigned long</code>, then the glibc <a href='setrlimit'>setrlimit</a>() wrapper function silently converted the limit value to <strong>RLIM_INFINITY</strong>. In other words, the requested resource limit setting was silently ignored.</p>
+<p>This problem was addressed in Linux 2.6.36 with two principal changes:</p>
+<ul>
+<li><p>the addition of a new kernel representation of resource limits that uses 64 bits, even on 32-bit platforms;</p></li>
+<li><p>the addition of the <a href='prlimit'>prlimit</a>() system call, which employs 64-bit values for its resource limit arguments.</p></li>
+</ul>
+<p>Since version 2.13, glibc works around the limitations of the <a href='getrlimit'>getrlimit</a>() and <a href='setrlimit'>setrlimit</a>() system calls by implementing <a href='setrlimit'>setrlimit</a>() and <a href='getrlimit'>getrlimit</a>() as wrapper functions that call <a href='prlimit'>prlimit</a>().</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/1/prlimit'>prlimit</a>(1), <a href='/2/dup'>dup</a>(2), <a href='/2/fcntl'>fcntl</a>(2), <a href='/2/fork'>fork</a>(2), <a href='/2/getrusage'>getrusage</a>(2), <a href='/2/mlock'>mlock</a>(2), <a href='/2/mmap'>mmap</a>(2), <a href='/2/open'>open</a>(2), <a href='/2/quotactl'>quotactl</a>(2), <a href='/2/sbrk'>sbrk</a>(2), <a href='/2/shmctl'>shmctl</a>(2), <a href='/3/malloc'>malloc</a>(3), <a href='/3/sigqueue'>sigqueue</a>(3), <a href='/3/ulimit'>ulimit</a>(3), <a href='/5/core'>core</a>(5), <a href='/7/capabilities'>capabilities</a>(7), <a href='/7/cgroups'>cgroups</a>(7), <a href='/7/credentials'>credentials</a>(7), <a href='/7/signal'>signal</a>(7)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

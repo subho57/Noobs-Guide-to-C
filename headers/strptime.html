@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>strptime - convert a string representation of time to a time tm structure</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<p><strong>#define _XOPEN_SOURCE</strong> /* See feature_test_macros(7) */<br />
+<strong>#include &lt;time.h&gt;</strong></p>
+<p><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strptime(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>format</code><strong>,</strong> <strong>struct tm *</strong><code>tm</code><strong>);</strong></p>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='strptime'>strptime</a>() function is the converse of <a href='/3/strftime'>strftime</a>(3); it converts the character string pointed to by <code>s</code> to values which are stored in the "broken-down time" structure pointed to by <code>tm</code>, using the format specified by <code>format</code>.</p>
+<p>The broken-down time structure <code>tm</code> is defined in <code>&lt;time.h&gt;</code> as follows:</p>
+<pre><code>struct tm {
+    int tm_sec;    /* Seconds (0-60) */
+    int tm_min;    /* Minutes (0-59) */
+    int tm_hour;   /* Hours (0-23) */
+    int tm_mday;   /* Day of the month (1-31) */
+    int tm_mon;    /* Month (0-11) */
+    int tm_year;   /* Year - 1900 */
+    int tm_wday;   /* Day of the week (0-6, Sunday = 0) */
+    int tm_yday;   /* Day in the year (0-365, 1 Jan = 0) */
+    int tm_isdst;  /* Daylight saving time */
+};</code></pre>
+<p>For more details on the <code>tm</code> structure, see <a href='/3/ctime'>ctime</a>(3).</p>
+<p>The <code>format</code> argument is a character string that consists of field descriptors and text characters, reminiscent of <a href='/3/scanf'>scanf</a>(3). Each field descriptor consists of a <strong>%</strong> character followed by another character that specifies the replacement for the field descriptor. All other characters in the <code>format</code> string must have a matching character in the input string, except for whitespace, which matches zero or more whitespace characters in the input string. There should be whitespace or other alphanumeric characters between any two field descriptors.</p>
+<p>The <a href='strptime'>strptime</a>() function processes the input string from left to right. Each of the three possible input elements (whitespace, literal, or format) are handled one after the other. If the input cannot be matched to the format string, the function stops. The remainder of the format and input strings are not processed.</p>
+<p>The supported input field descriptors are listed below. In case a text string (such as the name of a day of the week or a month name) is to be matched, the comparison is case insensitive. In case a number is to be matched, leading zeros are permitted but not required.</p>
+<dl>
+<dt><strong>%%</strong></dt>
+<dd><p>The <strong>%</strong> character.</p>
+</dd>
+<dt><strong>%a</strong> or <strong>%A</strong></dt>
+<dd><p>The name of the day of the week according to the current locale, in abbreviated form or the full name.</p>
+</dd>
+<dt><strong>%b</strong> or <strong>%B</strong> or <strong>%h</strong></dt>
+<dd><p>The month name according to the current locale, in abbreviated form or the full name.</p>
+</dd>
+<dt><strong>%c</strong></dt>
+<dd><p>The date and time representation for the current locale.</p>
+</dd>
+<dt><strong>%C</strong></dt>
+<dd><p>The century number (0–99).</p>
+</dd>
+<dt><strong>%d</strong> or <strong>%e</strong></dt>
+<dd><p>The day of month (1–31).</p>
+</dd>
+<dt><strong>%D</strong></dt>
+<dd><p>Equivalent to <strong>%m/%d/%y</strong>. (This is the American style date, very confusing to non-Americans, especially since <strong>%d/%m/%y</strong> is widely used in Europe. The ISO 8601 standard format is <strong>%Y-%m-%d</strong>.)</p>
+</dd>
+<dt><strong>%H</strong></dt>
+<dd><p>The hour (0–23).</p>
+</dd>
+<dt><strong>%I</strong></dt>
+<dd><p>The hour on a 12-hour clock (1–12).</p>
+</dd>
+<dt><strong>%j</strong></dt>
+<dd><p>The day number in the year (1–366).</p>
+</dd>
+<dt><strong>%m</strong></dt>
+<dd><p>The month number (1–12).</p>
+</dd>
+<dt><strong>%M</strong></dt>
+<dd><p>The minute (0–59).</p>
+</dd>
+<dt><strong>%n</strong></dt>
+<dd><p>Arbitrary whitespace.</p>
+</dd>
+<dt><strong>%p</strong></dt>
+<dd><p>The locale's equivalent of AM or PM. (Note: there may be none.)</p>
+</dd>
+<dt><strong>%r</strong></dt>
+<dd><p>The 12-hour clock time (using the locale's AM or PM). In the POSIX locale equivalent to <strong>%I:%M:%S %p</strong>. If <code>t_fmt_ampm</code> is empty in the <strong>LC_TIME</strong> part of the current locale, then the behavior is undefined.</p>
+</dd>
+<dt><strong>%R</strong></dt>
+<dd><p>Equivalent to <strong>%H:%M</strong>.</p>
+</dd>
+<dt><strong>%S</strong></dt>
+<dd><p>The second (0–60; 60 may occur for leap seconds; earlier also 61 was allowed).</p>
+</dd>
+<dt><strong>%t</strong></dt>
+<dd><p>Arbitrary whitespace.</p>
+</dd>
+<dt><strong>%T</strong></dt>
+<dd><p>Equivalent to <strong>%H:%M:%S</strong>.</p>
+</dd>
+<dt><strong>%U</strong></dt>
+<dd><p>The week number with Sunday the first day of the week (0–53). The first Sunday of January is the first day of week 1.</p>
+</dd>
+<dt><strong>%w</strong></dt>
+<dd><p>The ordinal number of the day of the week (0–6), with Sunday = 0.</p>
+</dd>
+<dt><strong>%W</strong></dt>
+<dd><p>The week number with Monday the first day of the week (0–53). The first Monday of January is the first day of week 1.</p>
+</dd>
+<dt><strong>%x</strong></dt>
+<dd><p>The date, using the locale's date format.</p>
+</dd>
+<dt><strong>%X</strong></dt>
+<dd><p>The time, using the locale's time format.</p>
+</dd>
+<dt><strong>%y</strong></dt>
+<dd><p>The year within century (0–99). When a century is not otherwise specified, values in the range 69–99 refer to years in the twentieth century (1969–1999); values in the range 00–68 refer to years in the twenty-first century (2000–2068).</p>
+</dd>
+<dt><strong>%Y</strong></dt>
+<dd><p>The year, including century (for example, 1991).</p>
+</dd>
+</dl>
+<p>Some field descriptors can be modified by the E or O modifier characters to indicate that an alternative format or specification should be used. If the alternative format or specification does not exist in the current locale, the unmodified field descriptor is used.</p>
+<p>The E modifier specifies that the input string may contain alternative locale-dependent versions of the date and time representation:</p>
+<dl>
+<dt><strong>%Ec</strong></dt>
+<dd><p>The locale's alternative date and time representation.</p>
+</dd>
+<dt><strong>%EC</strong></dt>
+<dd><p>The name of the base year (period) in the locale's alternative representation.</p>
+</dd>
+<dt><strong>%Ex</strong></dt>
+<dd><p>The locale's alternative date representation.</p>
+</dd>
+<dt><strong>%EX</strong></dt>
+<dd><p>The locale's alternative time representation.</p>
+</dd>
+<dt><strong>%Ey</strong></dt>
+<dd><p>The offset from <strong>%EC</strong> (year only) in the locale's alternative representation.</p>
+</dd>
+<dt><strong>%EY</strong></dt>
+<dd><p>The full alternative year representation.</p>
+</dd>
+</dl>
+<p>The O modifier specifies that the numerical input may be in an alternative locale-dependent format:</p>
+<dl>
+<dt><strong>%Od</strong> or <strong>%Oe</strong></dt>
+<dd><p>The day of the month using the locale's alternative numeric symbols; leading zeros are permitted but not required.</p>
+</dd>
+<dt><strong>%OH</strong></dt>
+<dd><p>The hour (24-hour clock) using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%OI</strong></dt>
+<dd><p>The hour (12-hour clock) using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%Om</strong></dt>
+<dd><p>The month using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%OM</strong></dt>
+<dd><p>The minutes using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%OS</strong></dt>
+<dd><p>The seconds using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%OU</strong></dt>
+<dd><p>The week number of the year (Sunday as the first day of the week) using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%Ow</strong></dt>
+<dd><p>The ordinal number of the day of the week (Sunday=0), using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%OW</strong></dt>
+<dd><p>The week number of the year (Monday as the first day of the week) using the locale's alternative numeric symbols.</p>
+</dd>
+<dt><strong>%Oy</strong></dt>
+<dd><p>The year (offset from <strong>%C</strong>) using the locale's alternative numeric symbols.</p>
+</dd>
+</dl>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>The return value of the function is a pointer to the first character not processed in this function call. In case the input string contains more characters than required by the format string, the return value points right after the last consumed input character. In case the whole input string is consumed, the return value points to the null byte at the end of the string. If <a href='strptime'>strptime</a>() fails to match all of the format string and therefore an error occurred, the function returns NULL.</p>
+</div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-more>
+<p>The following example demonstrates the use of <a href='strptime'>strptime</a>() and <a href='/3/strftime'>strftime</a>(3).</p>
+<pre><code>#define _XOPEN_SOURCE
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+
+int
+main(void)
+{
+    struct tm tm;
+    char buf[255];
+
+    memset(&amp;tm, 0, sizeof(struct tm));
+    strptime(&quot;2001-11-12 18:31:01&quot;, &quot;%Y-%m-%d %H:%M:%S&quot;, &amp;tm);
+    strftime(buf, sizeof(buf), &quot;%d %b %Y %H:%M&quot;, &amp;tm);
+    puts(buf);
+    exit(EXIT_SUCCESS);
+}</code></pre>
+</div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='strptime'>strptime</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe env locale</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001, POSIX.1-2008, SUSv2.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>In principle, this function does not initialize <code>tm</code> but stores only the values specified. This means that <code>tm</code> should be initialized before the call. Details differ a bit between different UNIX systems. The glibc implementation does not touch those fields which are not explicitly specified, except that it recomputes the <code>tm_wday</code> and <code>tm_yday</code> field if any of the year, month, or day elements changed.</p>
+<p>The 'y' (year in century) specification is taken to specify a year in the range 1950–2049 by glibc 2.0. It is taken to be a year in 1969–2068 since glibc 2.1.</p>
+<h2>Glibc notes</h2>
+<p>For reasons of symmetry, glibc tries to support for <a href='strptime'>strptime</a>() the same format characters as for <a href='/3/strftime'>strftime</a>(3). (In most cases, the corresponding fields are parsed, but no field in <code>tm</code> is changed.) This leads to</p>
+<dl>
+<dt><strong>%F</strong></dt>
+<dd><p>Equivalent to <strong>%Y-%m-%d</strong>, the ISO 8601 date format.</p>
+</dd>
+<dt><strong>%g</strong></dt>
+<dd><p>The year corresponding to the ISO week number, but without the century (0–99).</p>
+</dd>
+<dt><strong>%G</strong></dt>
+<dd><p>The year corresponding to the ISO week number. (For example, 1991.)</p>
+</dd>
+<dt><strong>%u</strong></dt>
+<dd><p>The day of the week as a decimal number (1–7, where Monday = 1).</p>
+</dd>
+<dt><strong>%V</strong></dt>
+<dd><p>The ISO 8601:1988 week number as a decimal number (1–53). If the week (starting on Monday) containing 1 January has four or more days in the new year, then it is considered week 1. Otherwise, it is the last week of the previous year, and the next week is week 1.</p>
+</dd>
+<dt><strong>%z</strong></dt>
+<dd><p>An RFC-822/ISO 8601 standard timezone specification.</p>
+</dd>
+<dt><strong>%Z</strong></dt>
+<dd><p>The timezone name.</p>
+</dd>
+</dl>
+<p>Similarly, because of GNU extensions to <a href='/3/strftime'>strftime</a>(3), <strong>%k</strong> is accepted as a synonym for <strong>%H</strong>, and <strong>%l</strong> should be accepted as a synonym for <strong>%I</strong>, and <strong>%P</strong> is accepted as a synonym for <strong>%p</strong>. Finally</p>
+<dl>
+<dt><strong>%s</strong></dt>
+<dd><p>The number of seconds since the Epoch, 1970-01-01 00:00:00 +0000 (UTC). Leap seconds are not counted unless leap second support is available.</p>
+</dd>
+</dl>
+<p>The glibc implementation does not require whitespace between two field descriptors.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/2/time'>time</a>(2), <a href='/3/getdate'>getdate</a>(3), <a href='/3/scanf'>scanf</a>(3), <a href='/3/setlocale'>setlocale</a>(3), <a href='/3/strftime'>strftime</a>(3)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

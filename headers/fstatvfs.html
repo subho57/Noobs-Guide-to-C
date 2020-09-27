@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>statvfs, fstatvfs - get filesystem statistics</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<p><strong>#include &lt;sys/statvfs.h&gt;</strong></p>
+<p><strong>int statvfs(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>path</code><strong>, struct statvfs *</strong><code>buf</code><strong>);</strong><br />
+<strong>int fstatvfs(int </strong><code>fd</code><strong>, struct statvfs *</strong><code>buf</code><strong>);</strong></p>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The function <a href='statvfs'>statvfs</a>() returns information about a mounted filesystem. <code>path</code> is the pathname of any file within the mounted filesystem. <code>buf</code> is a pointer to a <code>statvfs</code> structure defined approximately as follows:</p>
+<pre><code>struct statvfs {
+    unsigned long  f_bsize;    /* Filesystem block size */
+    unsigned long  f_frsize;   /* Fragment size */
+    fsblkcnt_t     f_blocks;   /* Size of fs in f_frsize units */
+    fsblkcnt_t     f_bfree;    /* Number of free blocks */
+    fsblkcnt_t     f_bavail;   /* Number of free blocks for
+                                  unprivileged users */
+    fsfilcnt_t     f_files;    /* Number of inodes */
+    fsfilcnt_t     f_ffree;    /* Number of free inodes */
+    fsfilcnt_t     f_favail;   /* Number of free inodes for
+                                  unprivileged users */
+    unsigned long  f_fsid;     /* Filesystem ID */
+    unsigned long  f_flag;     /* Mount flags */
+    unsigned long  f_namemax;  /* Maximum filename length */
+};</code></pre>
+<p>Here the types <code>fsblkcnt_t</code> and <code>fsfilcnt_t</code> are defined in <code>&lt;sys/types.h&gt;</code>. Both used to be <code>unsigned long</code>.</p>
+<p>The field <code>f_flag</code> is a bit mask indicating various options that were employed when mounting this filesystem. It contains zero or more of the following flags:</p>
+<dl>
+<dt><strong>ST_MANDLOCK</strong></dt>
+<dd><p>Mandatory locking is permitted on the filesystem (see <a href='/2/fcntl'>fcntl</a>(2)).</p>
+</dd>
+<dt><strong>ST_NOATIME</strong></dt>
+<dd><p>Do not update access times; see <a href='/2/mount'>mount</a>(2).</p>
+</dd>
+<dt><strong>ST_NODEV</strong></dt>
+<dd><p>Disallow access to device special files on this filesystem.</p>
+</dd>
+<dt><strong>ST_NODIRATIME</strong></dt>
+<dd><p>Do not update directory access times; see <a href='/2/mount'>mount</a>(2).</p>
+</dd>
+<dt><strong>ST_NOEXEC</strong></dt>
+<dd><p>Execution of programs is disallowed on this filesystem.</p>
+</dd>
+<dt><strong>ST_NOSUID</strong></dt>
+<dd><p>The set-user-ID and set-group-ID bits are ignored by <a href='/3/exec'>exec</a>(3) for executable files on this filesystem</p>
+</dd>
+<dt><strong>ST_RDONLY</strong></dt>
+<dd><p>This filesystem is mounted read-only.</p>
+</dd>
+<dt><strong>ST_RELATIME</strong></dt>
+<dd><p>Update atime relative to mtime/ctime; see <a href='/2/mount'>mount</a>(2).</p>
+</dd>
+<dt><strong>ST_SYNCHRONOUS</strong></dt>
+<dd><p>Writes are synched to the filesystem immediately (see the description of <strong>O_SYNC</strong> in <a href='/2/open'>open</a>(2)).</p>
+</dd>
+</dl>
+<p>It is unspecified whether all members of the returned struct have meaningful values on all filesystems.</p>
+<p><a href='fstatvfs'>fstatvfs</a>() returns the same information about an open file referenced by descriptor <code>fd</code>.</p>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>On success, zero is returned. On error, -1 is returned, and <code>errno</code> is set appropriately.</p>
+</div></section><h1 id='errors'><a href='#errors'>ERRORS</a></h1><div data-for='errors' data-hide><section data-for='errors'><div data-more>
+<dl>
+<dt><strong>EACCES</strong></dt>
+<dd><p>(<a href='statvfs'>statvfs</a>()) Search permission is denied for a component of the path prefix of <code>path</code>. (See also <a href='/7/path_resolution'>path_resolution</a>(7).)</p>
+</dd>
+<dt><strong>EBADF</strong></dt>
+<dd><p>(<a href='fstatvfs'>fstatvfs</a>()) <code>fd</code> is not a valid open file descriptor.</p>
+</dd>
+<dt><strong>EFAULT</strong></dt>
+<dd><p><code>Buf</code> or <code>path</code> points to an invalid address.</p>
+</dd>
+<dt><strong>EINTR</strong></dt>
+<dd><p>This call was interrupted by a signal; see <a href='/7/signal'>signal</a>(7).</p>
+</dd>
+<dt><strong>EIO</strong></dt>
+<dd><p>An I/O error occurred while reading from the filesystem.</p>
+</dd>
+<dt><strong>ELOOP</strong></dt>
+<dd><p>(<a href='statvfs'>statvfs</a>()) Too many symbolic links were encountered in translating <code>path</code>.</p>
+</dd>
+<dt><strong>ENAMETOOLONG</strong></dt>
+<dd><p>(<a href='statvfs'>statvfs</a>()) <code>path</code> is too long.</p>
+</dd>
+<dt><strong>ENOENT</strong></dt>
+<dd><p>(<a href='statvfs'>statvfs</a>()) The file referred to by <code>path</code> does not exist.</p>
+</dd>
+<dt><strong>ENOMEM</strong></dt>
+<dd><p>Insufficient kernel memory was available.</p>
+</dd>
+<dt><strong>ENOSYS</strong></dt>
+<dd><p>The filesystem does not support this call.</p>
+</dd>
+<dt><strong>ENOTDIR</strong></dt>
+<dd><p>(<a href='statvfs'>statvfs</a>()) A component of the path prefix of <code>path</code> is not a directory.</p>
+</dd>
+<dt><strong>EOVERFLOW</strong></dt>
+<dd><p>Some values were too large to be represented in the returned struct.</p>
+</dd>
+</dl>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='statvfs'>statvfs</a>(), <a href='fstatvfs'>fstatvfs</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001, POSIX.1-2008.</p>
+<p>Only the <strong>ST_NOSUID</strong> and <strong>ST_RDONLY</strong> flags of the <code>f_flag</code> field are specified in POSIX.1. To obtain definitions of the remaining flags, one must define <strong>_GNU_SOURCE</strong>.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>The Linux kernel has system calls <a href='/2/statfs'>statfs</a>(2) and <a href='/2/fstatfs'>fstatfs</a>(2) to support this library call.</p>
+<p>In glibc versions before 2.13, <a href='statvfs'>statvfs</a>() populated the bits of the <code>f_flag</code> field by scanning the mount options shown in <code>/proc/mounts</code>. However, starting with Linux 2.6.36, the underlying <a href='/2/statfs'>statfs</a>(2) system call provides the necessary information via the <code>f_flags</code> field, and since glibc version 2.13, the <a href='statvfs'>statvfs</a>() function will use information from that field rather than scanning <code>/proc/mounts</code>.</p>
+<p>The glibc implementations of</p>
+<pre><code>pathconf(path, _PC_REC_XFER_ALIGN);
+pathconf(path, _PC_ALLOC_SIZE_MIN);
+pathconf(path, _PC_REC_MIN_XFER_SIZE);</code></pre>
+<p>respectively use the <code>f_frsize</code>, <code>f_frsize</code>, and <code>f_bsize</code> fields returned by a call to <a href='statvfs'>statvfs</a>() with the argument <code>path</code>.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/2/statfs'>statfs</a>(2)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

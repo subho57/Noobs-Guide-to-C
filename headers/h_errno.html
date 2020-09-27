@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>gethostbyname, gethostbyaddr, sethostent, gethostent, endhostent, <a data-content='This is the man page for &lt;code&gt;h_errno&lt;/code&gt; and 12 related functions.' data-toggle='popover' tabindex='0'>h_errno</a>, herror, hstrerror, gethostbyaddr_r, gethostbyname2, gethostbyname2_r, gethostbyname_r, gethostent_r - get network host entry</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;netdb.h&gt;</a>
+extern int h_errno;
+
+struct hostent *gethostbyname(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>name);
+
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;sys/socket.h&gt;</a> /* for AF_INET */
+struct hostent *gethostbyaddr(const void *addr,
+ socklen_t len, int type);
+
+void sethostent(int stayopen);
+
+void endhostent(void);
+
+void herror(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>s);
+
+<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>hstrerror(int err);
+
+/* System V/POSIX extension */
+struct hostent *gethostent(void);
+
+/* GNU extensions */
+struct hostent *gethostbyname2(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>name, int af);
+
+int gethostent_r(
+ struct hostent *ret, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> buflen,
+ struct hostent **result, int *h_errnop);
+
+int gethostbyaddr_r(const void *addr, socklen_t len, int type,
+ struct hostent *ret, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> buflen,
+ struct hostent **result, int *h_errnop);
+
+int gethostbyname_r(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>name,
+ struct hostent *ret, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> buflen,
+ struct hostent **result, int *h_errnop);
+
+int gethostbyname2_r(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>name, int af,
+ struct hostent *ret, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> buflen,
+ struct hostent **result, int *h_errnop);</code></pre>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p><a href='gethostbyname2'>gethostbyname2</a>(), <a href='gethostent_r'>gethostent_r</a>(), <a href='gethostbyaddr_r'>gethostbyaddr_r</a>(), <a href='gethostbyname_r'>gethostbyname_r</a>(), <a href='gethostbyname2_r'>gethostbyname2_r</a>():</p>
+<blockquote>
+<dl>
+<dt>Since glibc 2.19:</dt>
+<dd><p>_DEFAULT_SOURCE</p>
+</dd>
+<dt>Glibc versions up to and including 2.19:</dt>
+<dd><p>_BSD_SOURCE || _SVID_SOURCE</p>
+</dd>
+</dl>
+</blockquote>
+<p><a href='herror'>herror</a>(), <a href='hstrerror'>hstrerror</a>():</p>
+<blockquote>
+<dl>
+<dt>Since glibc 2.19:</dt>
+<dd><p>_DEFAULT_SOURCE</p>
+</dd>
+<dt>Glibc 2.8 to 2.19:</dt>
+<dd><p>_BSD_SOURCE || _SVID_SOURCE</p>
+</dd>
+<dt>Before glibc 2.8:</dt>
+<dd><p>none</p>
+</dd>
+</dl>
+</blockquote>
+<p><strong>h_errno</strong>:</p>
+<blockquote>
+<dl>
+<dt>Since glibc 2.19</dt>
+<dd><p>_DEFAULT_SOURCE || _POSIX_C_SOURCE &lt; 200809L</p>
+</dd>
+<dt>Glibc 2.12 to 2.19:</dt>
+<dd><p>_BSD_SOURCE || _SVID_SOURCE || _POSIX_C_SOURCE &lt; 200809L</p>
+</dd>
+<dt>Before glibc 2.12:</dt>
+<dd><p>none</p>
+</dd>
+</dl>
+</blockquote>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='gethostbyname*'>gethostbyname*</a>(), <a href='gethostbyaddr*'>gethostbyaddr*</a>(), <a href='herror'>herror</a>(), and <a href='hstrerror'>hstrerror</a>() functions are obsolete. Applications should use <a href='/3/getaddrinfo'>getaddrinfo</a>(3), <a href='/3/getnameinfo'>getnameinfo</a>(3), and <a href='/3/gai_strerror'>gai_strerror</a>(3) instead.</p>
+<p>The <a href='gethostbyname'>gethostbyname</a>() function returns a structure of type <code>hostent</code> for the given host <code>name</code>. Here <code>name</code> is either a hostname or an IPv4 address in standard dot notation (as for <a href='/3/inet_addr'>inet_addr</a>(3)). If <code>name</code> is an IPv4 address, no lookup is performed and <a href='gethostbyname'>gethostbyname</a>() simply copies <code>name</code> into the <code>h_name</code> field and its <code>struct in_addr</code> equivalent into the <code>h_addr_list[0]</code> field of the returned <code>hostent</code> structure. If <code>name</code> doesn't end in a dot and the environment variable <strong>HOSTALIASES</strong> is set, the alias file pointed to by <strong>HOSTALIASES</strong> will first be searched for <code>name</code> (see <a href='/7/hostname'>hostname</a>(7) for the file format). The current domain and its parents are searched unless <code>name</code> ends in a dot.</p>
+<p>The <a href='gethostbyaddr'>gethostbyaddr</a>() function returns a structure of type <code>hostent</code> for the given host address <code>addr</code> of length <code>len</code> and address type <code>type</code>. Valid address types are <strong>AF_INET</strong> and <strong>AF_INET6</strong>. The host address argument is a pointer to a struct of a type depending on the address type, for example a <code>struct in_addr *</code> (probably obtained via a call to <a href='/3/inet_addr'>inet_addr</a>(3)) for address type <strong>AF_INET</strong>.</p>
+<p>The <a href='sethostent'>sethostent</a>() function specifies, if <code>stayopen</code> is true (1), that a connected TCP socket should be used for the name server queries and that the connection should remain open during successive queries. Otherwise, name server queries will use UDP datagrams.</p>
+<p>The <a href='endhostent'>endhostent</a>() function ends the use of a TCP connection for name server queries.</p>
+<p>The (obsolete) <a href='herror'>herror</a>() function prints the error message associated with the current value of <code>h_errno</code> on <code>stderr</code>.</p>
+<p>The (obsolete) <a href='hstrerror'>hstrerror</a>() function takes an error number (typically <code>h_errno</code>) and returns the corresponding message string.</p>
+<p>The domain name queries carried out by <a href='gethostbyname'>gethostbyname</a>() and <a href='gethostbyaddr'>gethostbyaddr</a>() rely on the Name Service Switch (<a href='/5/nsswitch.conf'>nsswitch.conf</a>(5)) configured sources or a local name server (<a href='/8/named'>named</a>(8)). The default action is to query the Name Service Switch (<strong>nsswitch.conf(5))</strong> configured sources, failing that, a local name server (<a href='/8/named'>named</a>(8)). The <a href='/5/nsswitch.conf'>nsswitch.conf</a>(5) file is the modern way of controlling the order of host lookups.</p>
+<p>In glibc 2.4 and earlier, the <code>order</code> keyword was used to control the order of host lookups as defined in <code>/etc/host.conf</code> (<a href='/5/host.conf'>host.conf</a>(5)).</p>
+<p>The <code>hostent</code> structure is defined in <code>&lt;netdb.h&gt;</code> as follows:</p>
+<pre><code>struct hostent {
+    char  *h_name;            /* official name of host */
+    <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>*h_aliases;         /* alias list */
+    int    h_addrtype;        /* host address type */
+    int    h_length;          /* length of address */
+    <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>*h_addr_list;       /* list of addresses */
+}
+#define h_addr h_addr_list[0] /* for backward compatibility */</code></pre>
+<p>The members of the <code>hostent</code> structure are:</p>
+<dl>
+<dt><code>h_name</code></dt>
+<dd><p>The official name of the host.</p>
+</dd>
+<dt><code>h_aliases</code></dt>
+<dd><p>An array of alternative names for the host, terminated by a null pointer.</p>
+</dd>
+<dt><code>h_addrtype</code></dt>
+<dd><p>The type of address; always <strong>AF_INET</strong> or <strong>AF_INET6</strong> at present.</p>
+</dd>
+<dt><code>h_length</code></dt>
+<dd><p>The length of the address in bytes.</p>
+</dd>
+<dt><code>h_addr_list</code></dt>
+<dd><p>An array of pointers to network addresses for the host (in network byte order), terminated by a null pointer.</p>
+</dd>
+<dt><code>h_addr</code></dt>
+<dd><p>The first address in <code>h_addr_list</code> for backward compatibility.</p>
+</dd>
+</dl>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>The <a href='gethostbyname'>gethostbyname</a>() and <a href='gethostbyaddr'>gethostbyaddr</a>() functions return the <code>hostent</code> structure or a null pointer if an error occurs. On error, the <code>h_errno</code> variable holds an error number. When non-NULL, the return value may point at static data, see the notes below.</p>
+</div></section><h1 id='errors'><a href='#errors'>ERRORS</a></h1><div data-for='errors' data-hide><section data-for='errors'><div data-more>
+<p>The variable <code>h_errno</code> can have the following values:</p>
+<dl>
+<dt><strong>HOST_NOT_FOUND</strong></dt>
+<dd><p>The specified host is unknown.</p>
+</dd>
+<dt><strong>NO_DATA</strong></dt>
+<dd><p>The requested name is valid but does not have an IP address. Another type of request to the name server for this domain may return an answer. The constant <strong>NO_ADDRESS</strong> is a synonym for <strong>NO_DATA</strong>.</p>
+</dd>
+<dt><strong>NO_RECOVERY</strong></dt>
+<dd><p>A nonrecoverable name server error occurred.</p>
+</dd>
+<dt><strong>TRY_AGAIN</strong></dt>
+<dd><p>A temporary error occurred on an authoritative name server. Try again later.</p>
+</dd>
+</dl>
+</div></div></section><h1 id='files'><a href='#files'>FILES</a></h1><div data-for='files' data-hide><section data-for='files'><div data-more>
+<dl>
+<dt><code>/etc/host.conf</code></dt>
+<dd><p>resolver configuration file</p>
+</dd>
+<dt><code>/etc/hosts</code></dt>
+<dd><p>host database file</p>
+</dd>
+<dt><code>/etc/nsswitch.conf</code></dt>
+<dd><p>name service switch configuration</p>
+</dd>
+</dl>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='gethostbyname'>gethostbyname</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:hostbyname env<br />
+locale</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='gethostbyaddr'>gethostbyaddr</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:hostbyaddr env<br />
+locale</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='sethostent'>sethostent</a>(),<br />
+<a href='endhostent'>endhostent</a>(),<br />
+<a href='gethostent_r'>gethostent_r</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:hostent env<br />
+locale</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='herror'>herror</a>(),<br />
+<a href='hstrerror'>hstrerror</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='gethostent'>gethostent</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:hostent<br />
+race:hostentbuf env locale</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='gethostbyname2'>gethostbyname2</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:hostbyname2<br />
+env locale</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='gethostbyaddr_r'>gethostbyaddr_r</a>(), <a href='gethostbyname_r'>gethostbyname_r</a>(), <a href='gethostbyname2_r'>gethostbyname2_r</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe env locale</td>
+</tr>
+</tbody>
+</table>
+<p>In the above table, <code>hostent</code> in <code>race:hostent</code> signifies that if any of the functions <a href='sethostent'>sethostent</a>(), <a href='gethostent'>gethostent</a>(), <a href='gethostent_r'>gethostent_r</a>(), or <a href='endhostent'>endhostent</a>() are used in parallel in different threads of a program, then data races could occur.</p>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001 specifies <a href='gethostbyname'>gethostbyname</a>(), <a href='gethostbyaddr'>gethostbyaddr</a>(), <a href='sethostent'>sethostent</a>(), <a href='endhostent'>endhostent</a>(), <a href='gethostent'>gethostent</a>(), and <code>h_errno</code>; <a href='gethostbyname'>gethostbyname</a>(), <a href='gethostbyaddr'>gethostbyaddr</a>(), and <code>h_errno</code> are marked obsolescent in that standard. POSIX.1-2008 removes the specifications of <a href='gethostbyname'>gethostbyname</a>(), <a href='gethostbyaddr'>gethostbyaddr</a>(), and <code>h_errno</code>, recommending the use of <a href='/3/getaddrinfo'>getaddrinfo</a>(3) and <a href='/3/getnameinfo'>getnameinfo</a>(3) instead.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>The functions <a href='gethostbyname'>gethostbyname</a>() and <a href='gethostbyaddr'>gethostbyaddr</a>() may return pointers to static data, which may be overwritten by later calls. Copying the <code>struct hostent</code> does not suffice, since it contains pointers; a deep copy is required.</p>
+<p>In the original BSD implementation the <code>len</code> argument of <a href='gethostbyname'>gethostbyname</a>() was an <code>int</code>. The SUSv2 standard is buggy and declares the <code>len</code> argument of <a href='gethostbyaddr'>gethostbyaddr</a>() to be of type <code><a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a></code>. (That is wrong, because it has to be <code>int</code>, and <code><a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a></code> is not. POSIX.1-2001 makes it <code>socklen_t</code>, which is OK.) See also <a href='/2/accept'>accept</a>(2).</p>
+<p>The BSD prototype for <a href='gethostbyaddr'>gethostbyaddr</a>() uses <code><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></code> for the first argument.</p>
+<h2>System V/POSIX extension</h2>
+<p>POSIX requires the <a href='gethostent'>gethostent</a>() call, which should return the next entry in the host data base. When using DNS/BIND this does not make much sense, but it may be reasonable if the host data base is a file that can be read line by line. On many systems, a routine of this name reads from the file <code>/etc/hosts</code>. It may be available only when the library was built without DNS support. The glibc version will ignore ipv6 entries. This function is not reentrant, and glibc adds a reentrant version <a href='gethostent_r'>gethostent_r</a>().</p>
+<h2>GNU extensions</h2>
+<p>Glibc2 also has a <a href='gethostbyname2'>gethostbyname2</a>() that works like <a href='gethostbyname'>gethostbyname</a>(), but permits to specify the address family to which the address must belong.</p>
+<p>Glibc2 also has reentrant versions <a href='gethostent_r'>gethostent_r</a>(), <a href='gethostbyaddr_r'>gethostbyaddr_r</a>(), <a href='gethostbyname_r'>gethostbyname_r</a>() and <a href='gethostbyname2_r'>gethostbyname2_r</a>(). The caller supplies a <code>hostent</code> structure <code>ret</code> which will be filled in on success, and a temporary work buffer <code>buf</code> of size <code>buflen</code>. After the call, <code>result</code> will point to the result on success. In case of an error or if no entry is found <code>result</code> will be NULL. The functions return 0 on success and a nonzero error number on failure. In addition to the errors returned by the nonreentrant versions of these functions, if <code>buf</code> is too small, the functions will return <strong>ERANGE</strong>, and the call should be retried with a larger buffer. The global variable <code>h_errno</code> is not modified, but the address of a variable in which to store error numbers is passed in <code>h_errnop</code>.</p>
+</div></div></section><h1 id='bugs'><a href='#bugs'>BUGS</a></h1><div data-for='bugs' data-hide><section data-for='bugs'><div data-more>
+<p><a href='gethostbyname'>gethostbyname</a>() does not recognize components of a dotted IPv4 address string that are expressed in hexadecimal.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/3/getaddrinfo'>getaddrinfo</a>(3), <a href='/3/getnameinfo'>getnameinfo</a>(3), <a href='/3/inet'>inet</a>(3), <a href='/3/inet_ntop'>inet_ntop</a>(3), <a href='/3/inet_pton'>inet_pton</a>(3), <a href='/3/resolver'>resolver</a>(3), <a href='/5/hosts'>hosts</a>(5), <a href='/5/nsswitch.conf'>nsswitch.conf</a>(5), <a href='/7/hostname'>hostname</a>(7), <a href='/8/named'>named</a>(8)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

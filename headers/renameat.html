@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>rename, <a data-content='This is the man page for &lt;code&gt;renameat&lt;/code&gt; and 2 related functions.' data-toggle='popover' tabindex='0'>renameat</a>, renameat2 - change the name or location of a file</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;stdio.h&gt;</a>
+
+int rename(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>oldpath, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>newpath);
+
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;fcntl.h&gt;</a> /* Definition of AT_* constants */
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;stdio.h&gt;</a>
+
+int renameat(int olddirfd, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>oldpath,
+ int newdirfd, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>newpath);
+
+int renameat2(int olddirfd, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>oldpath,
+ int newdirfd, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>newpath, unsigned int flags);</code></pre>
+<p><code>Note</code>: There is no glibc wrapper for <a href='renameat2'>renameat2</a>(); see NOTES.</p>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p><a href='renameat'>renameat</a>():</p>
+<blockquote>
+<dl>
+<dt>Since glibc 2.10:</dt>
+<dd><p>_POSIX_C_SOURCE &gt;= 200809L</p>
+</dd>
+<dt>Before glibc 2.10:</dt>
+<dd><p>_ATFILE_SOURCE</p>
+</dd>
+</dl>
+</blockquote>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p><a href='rename'>rename</a>() renames a file, moving it between directories if required. Any other hard links to the file (as created using <a href='/2/link'>link</a>(2)) are unaffected. Open file descriptors for <code>oldpath</code> are also unaffected.</p>
+<p>Various restrictions determine whether or not the rename operation succeeds: see ERRORS below.</p>
+<p>If <code>newpath</code> already exists, it will be atomically replaced, so that there is no point at which another process attempting to access <code>newpath</code> will find it missing. However, there will probably be a window in which both <code>oldpath</code> and <code>newpath</code> refer to the file being renamed.</p>
+<p>If <code>oldpath</code> and <code>newpath</code> are existing hard links referring to the same file, then <a href='rename'>rename</a>() does nothing, and returns a success status.</p>
+<p>If <code>newpath</code> exists but the operation fails for some reason, <a href='rename'>rename</a>() guarantees to leave an instance of <code>newpath</code> in place.</p>
+<p><code>oldpath</code> can specify a directory. In this case, <code>newpath</code> must either not exist, or it must specify an empty directory.</p>
+<p>If <code>oldpath</code> refers to a symbolic link, the link is renamed; if <code>newpath</code> refers to a symbolic link, the link will be overwritten.</p>
+<h2>renameat()</h2>
+<p>The <a href='renameat'>renameat</a>() system call operates in exactly the same way as <a href='rename'>rename</a>(), except for the differences described here.</p>
+<p>If the pathname given in <code>oldpath</code> is relative, then it is interpreted relative to the directory referred to by the file descriptor <code>olddirfd</code> (rather than relative to the current working directory of the calling process, as is done by <a href='rename'>rename</a>() for a relative pathname).</p>
+<p>If <code>oldpath</code> is relative and <code>olddirfd</code> is the special value <strong>AT_FDCWD</strong>, then <code>oldpath</code> is interpreted relative to the current working directory of the calling process (like <a href='rename'>rename</a>()).</p>
+<p>If <code>oldpath</code> is absolute, then <code>olddirfd</code> is ignored.</p>
+<p>The interpretation of <code>newpath</code> is as for <code>oldpath</code>, except that a relative pathname is interpreted relative to the directory referred to by the file descriptor <code>newdirfd</code>.</p>
+<p>See <a href='/2/openat'>openat</a>(2) for an explanation of the need for <a href='renameat'>renameat</a>().</p>
+<h2>renameat2()</h2>
+<p><a href='renameat2'>renameat2</a>() has an additional <code>flags</code> argument. A <a href='renameat2'>renameat2</a>() call with a zero <code>flags</code> argument is equivalent to <a href='renameat'>renameat</a>().</p>
+<p>The <code>flags</code> argument is a bit mask consisting of zero or more of the following flags:</p>
+<dl>
+<dt><strong>RENAME_EXCHANGE</strong></dt>
+<dd><p>Atomically exchange <code>oldpath</code> and <code>newpath</code>. Both pathnames must exist but may be of different types (e.g., one could be a non-empty directory and the other a symbolic link).</p>
+</dd>
+<dt><strong>RENAME_NOREPLACE</strong></dt>
+<dd><p>Don't overwrite <code>newpath</code> of the rename. Return an error if <code>newpath</code> already exists.</p>
+<p><strong>RENAME_NOREPLACE</strong> can't be employed together with <strong>RENAME_EXCHANGE</strong>.</p>
+</dd>
+<dt><strong>RENAME_WHITEOUT</strong> (since Linux 3.18)</dt>
+<dd><p>This operation makes sense only for overlay/union filesystem implementations.</p>
+<p>Specifying <strong>RENAME_WHITEOUT</strong> creates a "whiteout" object at the source of the rename at the same time as performing the rename. The whole operation is atomic, so that if the rename succeeds then the whiteout will also have been created.</p>
+<p>A "whiteout" is an object that has special meaning in union/overlay filesystem constructs. In these constructs, multiple layers exist and only the top one is ever modified. A whiteout on an upper layer will effectively hide a matching file in the lower layer, making it appear as if the file didn't exist.</p>
+<p>When a file that exists on the lower layer is renamed, the file is first copied up (if not already on the upper layer) and then renamed on the upper, read-write layer. At the same time, the source file needs to be "whiteouted" (so that the version of the source file in the lower layer is rendered invisible). The whole operation needs to be done atomically.</p>
+<p>When not part of a union/overlay, the whiteout appears as a character device with a {0,0} device number.</p>
+<p><strong>RENAME_WHITEOUT</strong> requires the same privileges as creating a device node (i.e., the <strong>CAP_MKNOD</strong> capability).</p>
+<p><strong>RENAME_WHITEOUT</strong> can't be employed together with <strong>RENAME_EXCHANGE</strong>.</p>
+<p><strong>RENAME_WHITEOUT</strong> requires support from the underlying filesystem. Among the filesystems that provide that support are shmem (since Linux 3.18), ext4 (since Linux 3.18), and XFS (since Linux 4.1).</p>
+</dd>
+</dl>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>On success, zero is returned. On error, -1 is returned, and <code>errno</code> is set appropriately.</p>
+</div></section><h1 id='errors'><a href='#errors'>ERRORS</a></h1><div data-for='errors' data-hide><section data-for='errors'><div data-more>
+<dl>
+<dt><strong>EACCES</strong></dt>
+<dd><p>Write permission is denied for the directory containing <code>oldpath</code> or <code>newpath</code>, or, search permission is denied for one of the directories in the path prefix of <code>oldpath</code> or <code>newpath</code>, or <code>oldpath</code> is a directory and does not allow write permission (needed to update the <code>..</code> entry). (See also <a href='/7/path_resolution'>path_resolution</a>(7).)</p>
+</dd>
+<dt><strong>EBUSY</strong></dt>
+<dd><p>The rename fails because <code>oldpath</code> or <code>newpath</code> is a directory that is in use by some process (perhaps as current working directory, or as root directory, or because it was open for reading) or is in use by the system (for example as mount point), while the system considers this an error. (Note that there is no requirement to return <strong>EBUSY</strong> in such cases—there is nothing wrong with doing the rename anyway—but it is allowed to return <strong>EBUSY</strong> if the system cannot otherwise handle such situations.)</p>
+</dd>
+<dt><strong>EDQUOT</strong></dt>
+<dd><p>The user's quota of disk blocks on the filesystem has been exhausted.</p>
+</dd>
+<dt><strong>EFAULT</strong></dt>
+<dd><p><code>oldpath</code> or <code>newpath</code> points outside your accessible address space.</p>
+</dd>
+<dt><strong>EINVAL</strong></dt>
+<dd><p>The new pathname contained a path prefix of the old, or, more generally, an attempt was made to make a directory a subdirectory of itself.</p>
+</dd>
+<dt><strong>EISDIR</strong></dt>
+<dd><p><code>newpath</code> is an existing directory, but <code>oldpath</code> is not a directory.</p>
+</dd>
+<dt><strong>ELOOP</strong></dt>
+<dd><p>Too many symbolic links were encountered in resolving <code>oldpath</code> or <code>newpath</code>.</p>
+</dd>
+<dt><strong>EMLINK</strong></dt>
+<dd><p><code>oldpath</code> already has the maximum number of links to it, or it was a directory and the directory containing <code>newpath</code> has the maximum number of links.</p>
+</dd>
+<dt><strong>ENAMETOOLONG</strong></dt>
+<dd><p><code>oldpath</code> or <code>newpath</code> was too long.</p>
+</dd>
+<dt><strong>ENOENT</strong></dt>
+<dd><p>The link named by <code>oldpath</code> does not exist; or, a directory component in <code>newpath</code> does not exist; or, <code>oldpath</code> or <code>newpath</code> is an empty string.</p>
+</dd>
+<dt><strong>ENOMEM</strong></dt>
+<dd><p>Insufficient kernel memory was available.</p>
+</dd>
+<dt><strong>ENOSPC</strong></dt>
+<dd><p>The device containing the file has no room for the new directory entry.</p>
+</dd>
+<dt><strong>ENOTDIR</strong></dt>
+<dd><p>A component used as a directory in <code>oldpath</code> or <code>newpath</code> is not, in fact, a directory. Or, <code>oldpath</code> is a directory, and <code>newpath</code> exists but is not a directory.</p>
+</dd>
+<dt><strong>ENOTEMPTY</strong> or <strong>EEXIST</strong></dt>
+<dd><p><code>newpath</code> is a nonempty directory, that is, contains entries other than "." and "..".</p>
+</dd>
+<dt><strong>EPERM</strong> or <strong>EACCES</strong></dt>
+<dd><p>The directory containing <code>oldpath</code> has the sticky bit (<strong>S_ISVTX</strong>) set and the process's effective user ID is neither the user ID of the file to be deleted nor that of the directory containing it, and the process is not privileged (Linux: does not have the <strong>CAP_FOWNER</strong> capability); or <code>newpath</code> is an existing file and the directory containing it has the sticky bit set and the process's effective user ID is neither the user ID of the file to be replaced nor that of the directory containing it, and the process is not privileged (Linux: does not have the <strong>CAP_FOWNER</strong> capability); or the filesystem containing <code>pathname</code> does not support renaming of the type requested.</p>
+</dd>
+<dt><strong>EROFS</strong></dt>
+<dd><p>The file is on a read-only filesystem.</p>
+</dd>
+<dt><strong>EXDEV</strong></dt>
+<dd><p><code>oldpath</code> and <code>newpath</code> are not on the same mounted filesystem. (Linux permits a filesystem to be mounted at multiple points, but <a href='rename'>rename</a>() does not work across different mount points, even if the same filesystem is mounted on both.)</p>
+</dd>
+</dl>
+<p>The following additional errors can occur for <a href='renameat'>renameat</a>() and <a href='renameat2'>renameat2</a>():</p>
+<dl>
+<dt><strong>EBADF</strong></dt>
+<dd><p><code>olddirfd</code> or <code>newdirfd</code> is not a valid file descriptor.</p>
+</dd>
+<dt><strong>ENOTDIR</strong></dt>
+<dd><p><code>oldpath</code> is relative and <code>olddirfd</code> is a file descriptor referring to a file other than a directory; or similar for <code>newpath</code> and <code>newdirfd</code></p>
+</dd>
+</dl>
+<p>The following additional errors can occur for <a href='renameat2'>renameat2</a>():</p>
+<dl>
+<dt><strong>EEXIST</strong></dt>
+<dd><p><code>flags</code> contains <strong>RENAME_NOREPLACE</strong> and <code>newpath</code> already exists.</p>
+</dd>
+<dt><strong>EINVAL</strong></dt>
+<dd><p>An invalid flag was specified in <code>flags</code>.</p>
+</dd>
+<dt><strong>EINVAL</strong></dt>
+<dd><p>Both <strong>RENAME_NOREPLACE</strong> and <strong>RENAME_EXCHANGE</strong> were specified in <code>flags</code>.</p>
+</dd>
+<dt><strong>EINVAL</strong></dt>
+<dd><p>Both <strong>RENAME_WHITEOUT</strong> and <strong>RENAME_EXCHANGE</strong> were specified in <code>flags</code>.</p>
+</dd>
+<dt><strong>EINVAL</strong></dt>
+<dd><p>The filesystem does not support one of the flags in <code>flags</code>.</p>
+</dd>
+<dt><strong>ENOENT</strong></dt>
+<dd><p><code>flags</code> contains <strong>RENAME_EXCHANGE</strong> and <code>newpath</code> does not exist.</p>
+</dd>
+<dt><strong>EPERM</strong></dt>
+<dd><p><strong>RENAME_WHITEOUT</strong> was specified in <code>flags</code>, but the caller does not have the <strong>CAP_MKNOD</strong> capability.</p>
+</dd>
+</dl>
+</div></div></section><h1 id='versions'><a href='#versions'>VERSIONS</a></h1><div data-for='versions' data-hide><section data-for='versions'><div data-more>
+<p><a href='renameat'>renameat</a>() was added to Linux in kernel 2.6.16; library support was added to glibc in version 2.4.</p>
+<p><a href='renameat2'>renameat2</a>() was added to Linux in kernel 3.15.</p>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p><a href='rename'>rename</a>(): 4.3BSD, C89, C99, POSIX.1-2001, POSIX.1-2008.</p>
+<p><a href='renameat'>renameat</a>(): POSIX.1-2008.</p>
+<p><a href='renameat2'>renameat2</a>() is Linux-specific.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>Glibc does not provide a wrapper for the <a href='renameat2'>renameat2</a>() system call; call it using <a href='/2/syscall'>syscall</a>(2). On older kernels where <a href='renameat'>renameat</a>() is unavailable, the glibc wrapper function falls back to the use of <a href='rename'>rename</a>(). When <code>oldpath</code> and <code>newpath</code> are relative pathnames, glibc constructs pathnames based on the symbolic links in <code>/proc/self/fd</code> that correspond to the <code>olddirfd</code> and <code>newdirfd</code> arguments.</p>
+</div></div></section><h1 id='bugs'><a href='#bugs'>BUGS</a></h1><div data-for='bugs' data-hide><section data-for='bugs'><div data-more>
+<p>On NFS filesystems, you can not assume that if the operation failed, the file was not renamed. If the server does the rename operation and then crashes, the retransmitted RPC which will be processed when the server is up again causes a failure. The application is expected to deal with this. See <a href='/2/link'>link</a>(2) for a similar problem.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/1/mv'>mv</a>(1), <a href='/2/chmod'>chmod</a>(2), <a href='/2/link'>link</a>(2), <a href='/2/symlink'>symlink</a>(2), <a href='/2/unlink'>unlink</a>(2), <a href='/7/path_resolution'>path_resolution</a>(7), <a href='/7/symlink'>symlink</a>(7)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

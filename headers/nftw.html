@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>ftw, nftw - file tree walk</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;ftw.h&gt;</a>
+
+int nftw(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dirpath,
+ int (*fn) (<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>fpath, const struct stat *sb,
+ int typeflag, struct FTW *ftwbuf),
+ int nopenfd, int flags);
+
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;ftw.h&gt;</a>
+
+int ftw(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dirpath,
+ int (*fn) (<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>fpath, const struct stat *sb,
+ int typeflag),
+ int nopenfd);</code></pre>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p><a href='nftw'>nftw</a>(): _XOPEN_SOURCE &gt;= 500</p>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p><a href='nftw'>nftw</a>() walks through the directory tree that is located under the directory <code>dirpath</code>, and calls <code>fn</code>() once for each entry in the tree. By default, directories are handled before the files and subdirectories they contain (preorder traversal).</p>
+<p>To avoid using up all of the calling process's file descriptors, <code>nopenfd</code> specifies the maximum number of directories that <a href='nftw'>nftw</a>() will hold open simultaneously. When the search depth exceeds this, <a href='nftw'>nftw</a>() will become slower because directories have to be closed and reopened. <a href='nftw'>nftw</a>() uses at most one file descriptor for each level in the directory tree.</p>
+<p>For each entry found in the tree, <a href='nftw'>nftw</a>() calls <code>fn</code>() with four arguments: <code>fpath</code>, <code>sb</code>, <code>typeflag</code>, and <code>ftwbuf</code>. <code>fpath</code> is the pathname of the entry, and is expressed either as a pathname relative to the calling process's current working directory at the time of the call to <a href='nftw'>nftw</a>(), if <code>dirpath</code> was expressed as a relative pathname, or as an absolute pathname, if <code>dirpath</code> was expressed as an absolute pathname. <code>sb</code> is a pointer to the <code>stat</code> structure returned by a call to <a href='/2/stat'>stat</a>(2) for <code>fpath</code>.</p>
+<p>The <code>typeflag</code> argument passed to <code>fn</code>() is an integer that has one of the following values:</p>
+<dl>
+<dt><strong>FTW_F</strong></dt>
+<dd><p><code>fpath</code> is a regular file.</p>
+</dd>
+<dt><strong>FTW_D</strong></dt>
+<dd><p><code>fpath</code> is a directory.</p>
+</dd>
+<dt><strong>FTW_DNR</strong></dt>
+<dd><p><code>fpath</code> is a directory which can't be read.</p>
+</dd>
+<dt><strong>FTW_DP</strong></dt>
+<dd><p><code>fpath</code> is a directory, and <strong>FTW_DEPTH</strong> was specified in <code>flags</code>. (If <strong>FTW_DEPTH</strong> was not specified in <code>flags</code>, then directories will always be visited with <code>typeflag</code> set to <strong>FTW_D</strong>.) All of the files and subdirectories within <code>fpath</code> have been processed.</p>
+</dd>
+<dt><strong>FTW_NS</strong></dt>
+<dd><p>The <a href='/2/stat'>stat</a>(2) call failed on <code>fpath</code>, which is not a symbolic link. The probable cause for this is that the caller had read permission on the parent directory, so that the filename <code>fpath</code> could be seen, but did not have execute permission, so that the file could not be reached for <a href='/2/stat'>stat</a>(2). The contents of the buffer pointed to by <code>sb</code> are undefined.</p>
+</dd>
+<dt><strong>FTW_SL</strong></dt>
+<dd><p><code>fpath</code> is a symbolic link, and <strong>FTW_PHYS</strong> was set in <code>flags</code>.</p>
+</dd>
+<dt><strong>FTW_SLN</strong></dt>
+<dd><p><code>fpath</code> is a symbolic link pointing to a nonexistent file. (This occurs only if <strong>FTW_PHYS</strong> is not set.) On most implementations, in this case the <code>sb</code> argument passed to <code>fn</code>() contains information returned by performing <a href='/2/lstat'>lstat</a>(2) on the symbolic link. For the details on Linux, see BUGS.</p>
+</dd>
+</dl>
+<p>The fourth argument (<code>ftwbuf</code>) that <a href='nftw'>nftw</a>() supplies when calling <code>fn</code>() is a pointer to a structure of type <code>FTW</code>:</p>
+<pre><code>struct FTW {
+    int base;
+    int level;
+};</code></pre>
+<p><code>base</code> is the offset of the filename (i.e., basename component) in the pathname given in <code>fpath</code>. <code>level</code> is the depth of <code>fpath</code> in the directory tree, relative to the root of the tree (<code>dirpath</code>, which has depth 0).</p>
+<p>To stop the tree walk, <code>fn</code>() returns a nonzero value; this value will become the return value of <a href='nftw'>nftw</a>(). As long as <code>fn</code>() returns 0, <a href='nftw'>nftw</a>() will continue either until it has traversed the entire tree, in which case it will return zero, or until it encounters an error (such as a <a href='/3/malloc'>malloc</a>(3) failure), in which case it will return -1.</p>
+<p>Because <a href='nftw'>nftw</a>() uses dynamic data structures, the only safe way to exit out of a tree walk is to return a nonzero value from <code>fn</code>(). To allow a signal to terminate the walk without causing a memory leak, have the handler set a global flag that is checked by <code>fn</code>(). <code>Don't</code> use <a href='/3/longjmp'>longjmp</a>(3) unless the program is going to terminate.</p>
+<p>The <code>flags</code> argument of <a href='nftw'>nftw</a>() is formed by ORing zero or more of the following flags:</p>
+<dl>
+<dt><strong>FTW_ACTIONRETVAL</strong> (since glibc 2.3.3)</dt>
+<dd><p>If this glibc-specific flag is set, then <a href='nftw'>nftw</a>() handles the return value from <code>fn</code>() differently. <code>fn</code>() should return one of the following values:</p>
+<dl>
+<dt><strong>FTW_CONTINUE</strong></dt>
+<dd><p>Instructs <a href='nftw'>nftw</a>() to continue normally.</p>
+</dd>
+<dt><strong>FTW_SKIP_SIBLINGS</strong></dt>
+<dd><p>If <code>fn</code>() returns this value, then siblings of the current entry will be skipped, and processing continues in the parent.</p>
+</dd>
+<dt><strong>FTW_SKIP_SUBTREE</strong></dt>
+<dd><p>If <code>fn</code>() is called with an entry that is a directory (<code>typeflag</code> is <strong>FTW_D</strong>), this return value will prevent objects within that directory from being passed as arguments to <code>fn</code>(). <a href='nftw'>nftw</a>() continues processing with the next sibling of the directory.</p>
+</dd>
+<dt><strong>FTW_STOP</strong></dt>
+<dd><p>Causes <a href='nftw'>nftw</a>() to return immediately with the return value <strong>FTW_STOP</strong>.</p>
+</dd>
+</dl>
+<p>Other return values could be associated with new actions in the future; <code>fn</code>() should not return values other than those listed above.</p>
+<p>The feature test macro <strong>_GNU_SOURCE</strong> must be defined (before including <code>any</code> header files) in order to obtain the definition of <strong>FTW_ACTIONRETVAL</strong> from <code>&lt;ftw.h&gt;</code>.</p>
+</dd>
+<dt><strong>FTW_CHDIR</strong></dt>
+<dd><p>If set, do a <a href='/2/chdir'>chdir</a>(2) to each directory before handling its contents. This is useful if the program needs to perform some action in the directory in which <code>fpath</code> resides. (Specifying this flag has no effect on the pathname that is passed in the <code>fpath</code> argument of <code>fn</code>.)</p>
+</dd>
+<dt><strong>FTW_DEPTH</strong></dt>
+<dd><p>If set, do a post-order traversal, that is, call <code>fn</code>() for the directory itself <code>after</code> handling the contents of the directory and its subdirectories. (By default, each directory is handled <code>before</code> its contents.)</p>
+</dd>
+<dt><strong>FTW_MOUNT</strong></dt>
+<dd><p>If set, stay within the same filesystem (i.e., do not cross mount points).</p>
+</dd>
+<dt><strong>FTW_PHYS</strong></dt>
+<dd><p>If set, do not follow symbolic links. (This is what you want.) If not set, symbolic links are followed, but no file is reported twice.</p>
+<p>If <strong>FTW_PHYS</strong> is not set, but <strong>FTW_DEPTH</strong> is set, then the function <code>fn</code>() is never called for a directory that would be a descendant of itself.</p>
+</dd>
+</dl>
+<h2>ftw()</h2>
+<p><a href='ftw'>ftw</a>() is an older function that offers a subset of the functionality of <a href='nftw'>nftw</a>(). The notable differences are as follows:</p>
+<ul>
+<li><p><a href='ftw'>ftw</a>() has no <code>flags</code> argument. It behaves the same as when <a href='nftw'>nftw</a>() is called with <code>flags</code> specified as zero.</p></li>
+<li><p>The callback function, <code>fn</code>(), is not supplied with a fourth argument.</p></li>
+<li><p>The range of values that is passed via the <code>typeflag</code> argument supplied to <code>fn</code>() is smaller: just <strong>FTW_F</strong>, <strong>FTW_D</strong>, <strong>FTW_DNR</strong>, <strong>FTW_NS</strong>, and (possibly) <strong>FTW_SL</strong>.</p></li>
+</ul>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>These functions return 0 on success, and -1 if an error occurs.</p>
+<p>If <code>fn</code>() returns nonzero, then the tree walk is terminated and the value returned by <code>fn</code>() is returned as the result of <a href='ftw'>ftw</a>() or <a href='nftw'>nftw</a>().</p>
+<p>If <a href='nftw'>nftw</a>() is called with the <strong>FTW_ACTIONRETVAL</strong> flag, then the only nonzero value that should be used by <code>fn</code>() to terminate the tree walk is <strong>FTW_STOP</strong>, and that value is returned as the result of <a href='nftw'>nftw</a>().</p>
+</div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-more>
+<p>The following program traverses the directory tree under the path named in its first command-line argument, or under the current directory if no argument is supplied. It displays various information about each file. The second command-line argument can be used to specify characters that control the value assigned to the <code>flags</code> argument when calling <a href='nftw'>nftw</a>().</p>
+<h2>Program source</h2>
+<pre><code>#define _XOPEN_SOURCE 500
+#include &lt;ftw.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdint.h&gt;
+
+static int
+display_info(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>fpath, const struct stat *sb,
+             int tflag, struct FTW *ftwbuf)
+{
+    printf(&quot;%-3s %2d &quot;,
+            (tflag == FTW_D) ?   &quot;d&quot;   : (tflag == FTW_DNR) ? &quot;dnr&quot; :
+            (tflag == FTW_DP) ?  &quot;dp&quot;  : (tflag == FTW_F) ?   &quot;f&quot; :
+            (tflag == FTW_NS) ?  &quot;ns&quot;  : (tflag == FTW_SL) ?  &quot;sl&quot; :
+            (tflag == FTW_SLN) ? &quot;sln&quot; : &quot;???&quot;,
+            ftwbuf-&gt;level);
+
+    if (tflag == FTW_NS)
+        printf(&quot;-------&quot;);
+    else
+        printf(&quot;%7jd&quot;, (intmax_t) sb-&gt;st_size);
+
+    printf(&quot;   %-40s %d %s\n&quot;,
+            fpath, ftwbuf-&gt;base, fpath + ftwbuf-&gt;base);
+
+    return 0;           /* To tell nftw() to continue */
+}
+
+int
+main(int argc, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>argv[])
+{
+    int flags = 0;
+
+    if (argc &gt; 2 &amp;&amp; strchr(argv[2], &#39;d&#39;) != NULL)
+        flags |= FTW_DEPTH;
+    if (argc &gt; 2 &amp;&amp; strchr(argv[2], &#39;p&#39;) != NULL)
+        flags |= FTW_PHYS;
+
+    if (nftw((argc &lt; 2) ? &quot;.&quot; : argv[1], display_info, 20, flags)
+            == -1) {
+        perror(&quot;nftw&quot;);
+        exit(EXIT_FAILURE);
+    }
+
+    exit(EXIT_SUCCESS);
+}</code></pre>
+</div></section><h1 id='versions'><a href='#versions'>VERSIONS</a></h1><div data-for='versions' data-hide><section data-for='versions'><div data-more>
+<p><a href='nftw'>nftw</a>() is available under glibc since version 2.1.</p>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='nftw'>nftw</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe cwd</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='ftw'>ftw</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001, POSIX.1-2008, SVr4, SUSv1. POSIX.1-2008 marks <a href='ftw'>ftw</a>() as obsolete.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>POSIX.1-2008 notes that the results are unspecified if <code>fn</code> does not preserve the current working directory.</p>
+<p>The function <a href='nftw'>nftw</a>() and the use of <strong>FTW_SL</strong> with <a href='ftw'>ftw</a>() were introduced in SUSv1.</p>
+<p>In some implementations (e.g., glibc), <a href='ftw'>ftw</a>() will never use <strong>FTW_SL</strong>, on other systems <strong>FTW_SL</strong> occurs only for symbolic links that do not point to an existing file, and again on other systems <a href='ftw'>ftw</a>() will use <strong>FTW_SL</strong> for each symbolic link. If <code>fpath</code> is a symbolic link and <a href='/2/stat'>stat</a>(2) failed, POSIX.1-2008 states that it is undefined whether <strong>FTW_NS</strong> or <strong>FTW_SL</strong> is passed in <code>typeflag</code>. For predictable results, use <a href='nftw'>nftw</a>().</p>
+</div></div></section><h1 id='bugs'><a href='#bugs'>BUGS</a></h1><div data-for='bugs' data-hide><section data-for='bugs'><div data-more>
+<p>In the specification of <a href='nftw'>nftw</a>(), POSIX.1 notes that when <strong>FTW_NS</strong> is passed as the <code>typeflag</code> argument of <code>fn</code>(), then the contents of the buffer pointed to by the <code>sb</code> argument are undefined. The standard makes no such statement for the case where <strong>FTW_SLN</strong> is passed in <code>typeflag</code>, with the implication that the contents of the buffer pointed to by <code>sb</code> are defined. And indeed this is the case on most implementations: the buffer pointed to by <code>sb</code> contains the results produced by applying <a href='/2/lstat'>lstat</a>(2) to the symbolic link. In early glibc, the behavior was the same. However, since glibc 2.4, the contents of the buffer pointed to by <code>sb</code> are undefined when <strong>FTW_SLN</strong> is passed in <code>typeflag</code>. This change <code>appears</code> to be an unintended regression, but it is not (yet) clear if the behavior will be restored to that provided in the original glibc implementation (and on other implementations).</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/2/stat'>stat</a>(2), <a href='/3/fts'>fts</a>(3), <a href='/3/readdir'>readdir</a>(3)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

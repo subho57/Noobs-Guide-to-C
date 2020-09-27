@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>tzset, tzname, <a data-content='This is the man page for &lt;code&gt;timezone&lt;/code&gt; and 3 related functions.' data-toggle='popover' tabindex='0'>timezone</a>, daylight - initialize time conversion information</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;time.h&gt;</a>
+
+void tzset (void);
+
+extern <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>tzname[2];
+extern long timezone;
+extern int daylight;</code></pre>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p><a href='tzset'>tzset</a>(): _POSIX_C_SOURCE<br />
+<code>tzname</code>: _POSIX_C_SOURCE<br />
+<code>timezone</code>, <code>daylight</code>: _XOPEN_SOURCE || /* Glibc since 2.19: */ _DEFAULT_SOURCE || /* Glibc versions &lt;= 2.19: */ _SVID_SOURCE</p>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='tzset'>tzset</a>() function initializes the <code>tzname</code> variable from the <strong>TZ</strong> environment variable. This function is automatically called by the other time conversion functions that depend on the timezone. In a System-V-like environment, it will also set the variables <code>timezone</code> (seconds West of UTC) and <code>daylight</code> (to 0 if this timezone does not have any daylight saving time rules, or to nonzero if there is a time, past, present or future when daylight saving time applies).</p>
+<p>If the <strong>TZ</strong> variable does not appear in the environment, the system timezone is used. The system timezone is configured by copying, or linking, a file in the <a href='/5/tzfile'>tzfile</a>(5) format to <code>/etc/localtime</code>. A timezone database of these files may be located in the system timezone directory (see the <strong>FILES</strong> section below).</p>
+<p>If the <strong>TZ</strong> variable does appear in the environment, but its value is empty, or its value cannot be interpreted using any of the formats specified below, then Coordinated Universal Time (UTC) is used.</p>
+<p>The value of <strong>TZ</strong> can be one of two formats. The first format is a string of characters that directly represent the timezone to be used:</p>
+<pre><code>std offset[dst[offset][,start[/time],end[/time]]]</code></pre>
+<p>There are no spaces in the specification. The <code>std</code> string specifies an abbreviation for the timezone and must be three or more alphabetic characters. When enclosed between the less-than (&lt;) and greater-than (&gt;) signs, the characters set is expanded to include the plus (+) sign, the minus (-) sign, and digits. The <code>offset</code> string immediately follows <code>std</code> and specifies the time value to be added to the local time to get Coordinated Universal Time (UTC). The <code>offset</code> is positive if the local timezone is west of the Prime Meridian and negative if it is east. The hour must be between 0 and 24, and the minutes and seconds 00 and 59:</p>
+<pre><code>[+|-]hh[:mm[:ss]]</code></pre>
+<p>The <code>dst</code> string and <code>offset</code> specify the name and offset for the corresponding daylight saving timezone. If the offset is omitted, it defaults to one hour ahead of standard time.</p>
+<p>The <code>start</code> field specifies when daylight saving time goes into effect and the <code>end</code> field specifies when the change is made back to standard time. These fields may have the following formats:</p>
+<dl>
+<dt>J<code>n</code></dt>
+<dd><p>This specifies the Julian day with <code>n</code> between 1 and 365. Leap days are not counted. In this format, February 29 can't be represented; February 28 is day 59, and March 1 is always day 60.</p>
+</dd>
+<dt><code>n</code></dt>
+<dd><p>This specifies the zero-based Julian day with <code>n</code> between 0 and 365. February 29 is counted in leap years.</p>
+</dd>
+<dt>M<code>m</code>.<code>w</code>.<code>d</code></dt>
+<dd><p>This specifies day <code>d</code> (0 &lt;= <code>d</code> &lt;= 6) of week <code>w</code> (1 &lt;= <code>w</code> &lt;= 5) of month <code>m</code> (1 &lt;= <code>m</code> &lt;= 12). Week 1 is the first week in which day <code>d</code> occurs and week 5 is the last week in which day <code>d</code> occurs. Day 0 is a Sunday.</p>
+</dd>
+</dl>
+<p>The <code>time</code> fields specify when, in the local time currently in effect, the change to the other time occurs. If omitted, the default is 02:00:00.</p>
+<p>Here is an example for New Zealand, where the standard time (NZST) is 12 hours ahead of UTC, and daylight saving time (NZDT), 13 hours ahead of UTC, runs from the first Sunday in October to the third Sunday in March, and the changeovers happen at the default time of 02:00:00:</p>
+<pre><code>TZ=&quot;NZST-12:00:00NZDT-13:00:00,M10.1.0,M3.3.0&quot;</code></pre>
+<p>The second format specifies that the timezone information should be read from a file:</p>
+<pre><code>:[filespec]</code></pre>
+<p>If the file specification <code>filespec</code> is omitted, or its value cannot be interpreted, then Coordinated Universal Time (UTC) is used. If <code>filespec</code> is given, it specifies another <a href='/5/tzfile'>tzfile</a>(5)-format file to read the timezone information from. If <code>filespec</code> does not begin with a '/', the file specification is relative to the system timezone directory. If the colon is omitted each of the above <strong>TZ</strong> formats will be tried.</p>
+<p>Here's an example, once more for New Zealand:</p>
+<pre><code>TZ=&quot;:Pacific/Auckland&quot;</code></pre>
+</div></section><h1 id='environment'><a href='#environment'>ENVIRONMENT</a></h1><div data-for='environment' data-hide><section data-for='environment'><div data-more>
+<dl>
+<dt><strong>TZ</strong></dt>
+<dd><p>If this variable is set its value takes precedence over the system configured timezone.</p>
+</dd>
+<dt><strong>TZDIR</strong></dt>
+<dd><p>If this variable is set its value takes precedence over the system configured timezone database directory path.</p>
+</dd>
+</dl>
+</div></div></section><h1 id='files'><a href='#files'>FILES</a></h1><div data-for='files' data-hide><section data-for='files'><div data-more>
+<dl>
+<dt><code>/etc/localtime</code></dt>
+<dd><p>The system timezone file.</p>
+</dd>
+<dt><code>/usr/share/zoneinfo/</code></dt>
+<dd><p>The system timezone database directory.</p>
+</dd>
+<dt><code>/usr/share/zoneinfo/posixrules</code></dt>
+<dd><p>When a TZ string includes a dst timezone without anything following it, then this file is used for the start/end rules. It is in the <a href='/5/tzfile'>tzfile</a>(5) format. By default, the zoneinfo Makefile hard links it to the <code>America/New_York</code> tzfile.</p>
+</dd>
+</dl>
+<p>Above are the current standard file locations, but they are configurable when glibc is compiled.</p>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='tzset'>tzset</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe env locale</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>4.3BSD had a function <strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>timezone(</strong><code>zone</code><strong>, </strong><code>dst</code><strong>)</strong> that returned the name of the timezone corresponding to its first argument (minutes West of UTC). If the second argument was 0, the standard name was used, otherwise the daylight saving time version.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/1/date'>date</a>(1), <a href='/2/gettimeofday'>gettimeofday</a>(2), <a href='/2/time'>time</a>(2), <a href='/3/ctime'>ctime</a>(3), <a href='/3/getenv'>getenv</a>(3), <a href='/5/tzfile'>tzfile</a>(5)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

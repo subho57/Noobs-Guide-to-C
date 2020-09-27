@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p><a data-content='This is the man page for &lt;code&gt;glob&lt;/code&gt; and 1 related function.' data-toggle='popover' tabindex='0'>glob</a>, globfree - find pathnames matching a pattern, free memory from glob()</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;glob.h&gt;</a>
+
+int glob(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>pattern, int flags,
+ int (*errfunc) (<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>epath, int eerrno),
+ glob_t *pglob);
+void globfree(glob_t *pglob);</code></pre>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='glob'>glob</a>() function searches for all the pathnames matching <code>pattern</code> according to the rules used by the shell (see <a href='/7/glob'>glob</a>(7)). No tilde expansion or parameter substitution is done; if you want these, use <a href='/3/wordexp'>wordexp</a>(3).</p>
+<p>The <a href='globfree'>globfree</a>() function frees the dynamically allocated storage from an earlier call to <a href='glob'>glob</a>().</p>
+<p>The results of a <a href='glob'>glob</a>() call are stored in the structure pointed to by <code>pglob</code>. This structure is of type <code>glob_t</code> (declared in <code>&lt;glob.h&gt;</code>) and includes the following elements defined by POSIX.2 (more may be present as an extension):</p>
+<pre><code>typedef struct {
+    <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a>   gl_pathc;    /* Count of paths matched so far  */
+    char   **gl_pathv;    /* List of matched pathnames.  */
+    <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a>   gl_offs;     /* Slots to reserve in gl_pathv.  */
+} glob_t;</code></pre>
+<p>Results are stored in dynamically allocated storage.</p>
+<p>The argument <code>flags</code> is made up of the bitwise OR of zero or more the following symbolic constants, which modify the behavior of <a href='glob'>glob</a>():</p>
+<dl>
+<dt><strong>GLOB_ERR</strong></dt>
+<dd><p>Return upon a read error (because a directory does not have read permission, for example). By default, <a href='glob'>glob</a>() attempts carry on despite errors, reading all of the directories that it can.</p>
+</dd>
+<dt><strong>GLOB_MARK</strong></dt>
+<dd><p>Append a slash to each path which corresponds to a directory.</p>
+</dd>
+<dt><strong>GLOB_NOSORT</strong></dt>
+<dd><p>Don't sort the returned pathnames. The only reason to do this is to save processing time. By default, the returned pathnames are sorted.</p>
+</dd>
+<dt><strong>GLOB_DOOFFS</strong></dt>
+<dd><p>Reserve <code>pglob-&gt;gl_offs</code> slots at the beginning of the list of strings in <code>pglob-&gt;pathv</code>. The reserved slots contain null pointers.</p>
+</dd>
+<dt><strong>GLOB_NOCHECK</strong></dt>
+<dd><p>If no pattern matches, return the original pattern. By default, <a href='glob'>glob</a>() returns <strong>GLOB_NOMATCH</strong> if there are no matches.</p>
+</dd>
+<dt><strong>GLOB_APPEND</strong></dt>
+<dd><p>Append the results of this call to the vector of results returned by a previous call to <a href='glob'>glob</a>(). Do not set this flag on the first invocation of <a href='glob'>glob</a>().</p>
+</dd>
+<dt><strong>GLOB_NOESCAPE</strong></dt>
+<dd><p>Don't allow backslash ('\') to be used as an escape character. Normally, a backslash can be used to quote the following character, providing a mechanism to turn off the special meaning metacharacters.</p>
+</dd>
+</dl>
+<p><code>flags</code> may also include any of the following, which are GNU extensions and not defined by POSIX.2:</p>
+<dl>
+<dt><strong>GLOB_PERIOD</strong></dt>
+<dd><p>Allow a leading period to be matched by metacharacters. By default, metacharacters can't match a leading period.</p>
+</dd>
+<dt><strong>GLOB_ALTDIRFUNC</strong></dt>
+<dd><p>Use alternative functions <code>pglob-&gt;gl_closedir</code>, <code>pglob-&gt;gl_readdir</code>, <code>pglob-&gt;gl_opendir</code>, <code>pglob-&gt;gl_lstat</code>, and <code>pglob-&gt;gl_stat</code> for filesystem access instead of the normal library functions.</p>
+</dd>
+<dt><strong>GLOB_BRACE</strong></dt>
+<dd><p>Expand <a href='/1/csh'>csh</a>(1) style brace expressions of the form <strong>{a,b}</strong>. Brace expressions can be nested. Thus, for example, specifying the pattern "{foo/{,cat,dog},bar}" would return the same results as four separate <a href='glob'>glob</a>() calls using the strings: "foo/", "foo/cat", "foo/dog", and "bar".</p>
+</dd>
+<dt><strong>GLOB_NOMAGIC</strong></dt>
+<dd><p>If the pattern contains no metacharacters, then it should be returned as the sole matching word, even if there is no file with that name.</p>
+</dd>
+<dt><strong>GLOB_TILDE</strong></dt>
+<dd><p>Carry out tilde expansion. If a tilde ('~') is the only character in the pattern, or an initial tilde is followed immediately by a slash ('/'), then the home directory of the caller is substituted for the tilde. If an initial tilde is followed by a username (e.g., "~andrea/bin"), then the tilde and username are substituted by the home directory of that user. If the username is invalid, or the home directory cannot be determined, then no substitution is performed.</p>
+</dd>
+<dt><strong>GLOB_TILDE_CHECK</strong></dt>
+<dd><p>This provides behavior similar to that of <strong>GLOB_TILDE</strong>. The difference is that if the username is invalid, or the home directory cannot be determined, then instead of using the pattern itself as the name, <a href='glob'>glob</a>() returns <strong>GLOB_NOMATCH</strong> to indicate an error.</p>
+</dd>
+<dt><strong>GLOB_ONLYDIR</strong></dt>
+<dd><p>This is a <code>hint</code> to <a href='glob'>glob</a>() that the caller is interested only in directories that match the pattern. If the implementation can easily determine file-type information, then nondirectory files are not returned to the caller. However, the caller must still check that returned files are directories. (The purpose of this flag is merely to optimize performance when the caller is interested only in directories.)</p>
+</dd>
+</dl>
+<p>If <code>errfunc</code> is not NULL, it will be called in case of an error with the arguments <code>epath</code>, a pointer to the path which failed, and <code>eerrno</code>, the value of <code>errno</code> as returned from one of the calls to <a href='/3/opendir'>opendir</a>(3), <a href='/3/readdir'>readdir</a>(3), or <a href='/2/stat'>stat</a>(2). If <code>errfunc</code> returns nonzero, or if <strong>GLOB_ERR</strong> is set, <a href='glob'>glob</a>() will terminate after the call to <code>errfunc</code>.</p>
+<p>Upon successful return, <code>pglob-&gt;gl_pathc</code> contains the number of matched pathnames and <code>pglob-&gt;gl_pathv</code> contains a pointer to the list of pointers to matched pathnames. The list of pointers is terminated by a null pointer.</p>
+<p>It is possible to call <a href='glob'>glob</a>() several times. In that case, the <strong>GLOB_APPEND</strong> flag has to be set in <code>flags</code> on the second and later invocations.</p>
+<p>As a GNU extension, <code>pglob-&gt;gl_flags</code> is set to the flags specified, <strong>or</strong>ed with <strong>GLOB_MAGCHAR</strong> if any metacharacters were found.</p>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>On successful completion, <a href='glob'>glob</a>() returns zero. Other possible returns are:</p>
+<dl>
+<dt><strong>GLOB_NOSPACE</strong></dt>
+<dd><p>for running out of memory,</p>
+</dd>
+<dt><strong>GLOB_ABORTED</strong></dt>
+<dd><p>for a read error, and</p>
+</dd>
+<dt><strong>GLOB_NOMATCH</strong></dt>
+<dd><p>for no found matches.</p>
+</dd>
+</dl>
+</div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-more>
+<p>One example of use is the following code, which simulates typing</p>
+<pre><code>ls -l *.c ../*.c</code></pre>
+<p>in the shell:</p>
+<pre><code>glob_t globbuf;
+
+globbuf.gl_offs = 2;
+glob(&quot;*.c&quot;, GLOB_DOOFFS, NULL, &amp;globbuf);
+glob(&quot;../*.c&quot;, GLOB_DOOFFS | GLOB_APPEND, NULL, &amp;globbuf);
+globbuf.gl_pathv[0] = &quot;ls&quot;;
+globbuf.gl_pathv[1] = &quot;-l&quot;;
+execvp(&quot;ls&quot;, &amp;globbuf.gl_pathv[0]);</code></pre>
+</div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='glob'>glob</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:utent env<br />
+sig:ALRM timer locale</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='globfree'>globfree</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+</tbody>
+</table>
+<p>In the above table, <code>utent</code> in <code>race:utent</code> signifies that if any of the functions <a href='/3/setutent'>setutent</a>(3), <a href='/3/getutent'>getutent</a>(3), or <a href='/3/endutent'>endutent</a>(3) are used in parallel in different threads of a program, then data races could occur. <a href='glob'>glob</a>() calls those functions, so we use race:utent to remind users.</p>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001, POSIX.1-2008, POSIX.2.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>The structure elements <code>gl_pathc</code> and <code>gl_offs</code> are declared as <code><a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a></code> in glibc 2.1, as they should be according to POSIX.2, but are declared as <code>int</code> in glibc 2.0.</p>
+</div></div></section><h1 id='bugs'><a href='#bugs'>BUGS</a></h1><div data-for='bugs' data-hide><section data-for='bugs'><div data-more>
+<p>The <a href='glob'>glob</a>() function may fail due to failure of underlying function calls, such as <a href='/3/malloc'>malloc</a>(3) or <a href='/3/opendir'>opendir</a>(3). These will store their error code in <code>errno</code>.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/1/ls'>ls</a>(1), <a href='/1/sh'>sh</a>(1), <a href='/2/stat'>stat</a>(2), <a href='/3/exec'>exec</a>(3), <a href='/3/fnmatch'>fnmatch</a>(3), <a href='/3/malloc'>malloc</a>(3), <a href='/3/opendir'>opendir</a>(3), <a href='/3/readdir'>readdir</a>(3), <a href='/3/wordexp'>wordexp</a>(3), <a href='/7/glob'>glob</a>(7)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

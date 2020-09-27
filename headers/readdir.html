@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>readdir - read a directory</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;dirent.h&gt;</a>
+
+struct dirent *readdir(DIR *dirp);</code></pre>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='readdir'>readdir</a>() function returns a pointer to a <code>dirent</code> structure representing the next directory entry in the directory stream pointed to by <code>dirp</code>. It returns NULL on reaching the end of the directory stream or if an error occurred.</p>
+<p>In the glibc implementation, the <code>dirent</code> structure is defined as follows:</p>
+<pre><code>struct dirent {
+    ino_t          d_ino;       /* Inode number */
+    off_t          d_off;       /* Not an offset; see below */
+    unsigned short d_reclen;    /* Length of this record */
+    unsigned char  d_type;      /* Type of file; not supported
+                                   by all filesystem types */
+    char           d_name[256]; /* Null-terminated filename */
+};</code></pre>
+<p>The only fields in the <code>dirent</code> structure that are mandated by POSIX.1 are <code>d_name</code> and <code>d_ino</code>. The other fields are unstandardized, and not present on all systems; see NOTES below for some further details.</p>
+<p>The fields of the <code>dirent</code> structure are as follows:</p>
+<dl>
+<dt><code>d_ino</code></dt>
+<dd><p>This is the inode number of the file.</p>
+</dd>
+<dt><code>d_off</code></dt>
+<dd><p>The value returned in <code>d_off</code> is the same as would be returned by calling <a href='/3/telldir'>telldir</a>(3) at the current position in the directory stream. Be aware that despite its type and name, the <code>d_off</code> field is seldom any kind of directory offset on modern filesystems. Applications should treat this field as an opaque value, making no assumptions about its contents; see also <a href='/3/telldir'>telldir</a>(3).</p>
+</dd>
+<dt><code>d_reclen</code></dt>
+<dd><p>This is the size (in bytes) of the returned record. This may not match the size of the structure definition shown above; see NOTES.</p>
+</dd>
+<dt><code>d_type</code></dt>
+<dd><p>This field contains a value indicating the file type, making it possible to avoid the expense of calling <a href='/2/lstat'>lstat</a>(2) if further actions depend on the type of the file.</p>
+<p>When a suitable feature test macro is defined (<strong>_DEFAULT_SOURCE</strong> on glibc versions since 2.19, or <strong>_BSD_SOURCE</strong> on glibc versions 2.19 and earlier), glibc defines the following macro constants for the value returned in <code>d_type</code>:</p>
+<dl>
+<dt><strong>DT_BLK</strong></dt>
+<dd><p>This is a block device.</p>
+</dd>
+<dt><strong>DT_CHR</strong></dt>
+<dd><p>This is a character device.</p>
+</dd>
+<dt><strong>DT_DIR</strong></dt>
+<dd><p>This is a directory.</p>
+</dd>
+<dt><strong>DT_FIFO</strong></dt>
+<dd><p>This is a named pipe (FIFO).</p>
+</dd>
+<dt><strong>DT_LNK</strong></dt>
+<dd><p>This is a symbolic link.</p>
+</dd>
+<dt><strong>DT_REG</strong></dt>
+<dd><p>This is a regular file.</p>
+</dd>
+<dt><strong>DT_SOCK</strong></dt>
+<dd><p>This is a UNIX domain socket.</p>
+</dd>
+<dt><strong>DT_UNKNOWN</strong></dt>
+<dd><p>The file type could not be determined.</p>
+</dd>
+</dl>
+<p>Currently, only some filesystems (among them: Btrfs, ext2, ext3, and ext4) have full support for returning the file type in <code>d_type</code>. All applications must properly handle a return of <strong>DT_UNKNOWN</strong>.</p>
+</dd>
+<dt><code>d_name</code></dt>
+<dd><p>This field contains the null terminated filename. <code>See <a href='#notes'>NOTES</a></code>.</p>
+</dd>
+</dl>
+<p>The data returned by <a href='readdir'>readdir</a>() may be overwritten by subsequent calls to <a href='readdir'>readdir</a>() for the same directory stream.</p>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>On success, <a href='readdir'>readdir</a>() returns a pointer to a <code>dirent</code> structure. (This structure may be statically allocated; do not attempt to <a href='/3/free'>free</a>(3) it.)</p>
+<p>If the end of the directory stream is reached, NULL is returned and <code>errno</code> is not changed. If an error occurs, NULL is returned and <code>errno</code> is set appropriately. To distinguish end of stream and from an error, set <code>errno</code> to zero before calling <a href='readdir'>readdir</a>() and then check the value of <code>errno</code> if NULL is returned.</p>
+</div></section><h1 id='errors'><a href='#errors'>ERRORS</a></h1><div data-for='errors' data-hide><section data-for='errors'><div data-more>
+<dl>
+<dt><strong>EBADF</strong></dt>
+<dd><p>Invalid directory stream descriptor <code>dirp</code>.</p>
+</dd>
+</dl>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='readdir'>readdir</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:dirstream</td>
+</tr>
+</tbody>
+</table>
+<p>In the current POSIX.1 specification (POSIX.1-2008), <a href='readdir'>readdir</a>() is not required to be thread-safe. However, in modern implementations (including the glibc implementation), concurrent calls to <a href='readdir'>readdir</a>() that specify different directory streams are thread-safe. In cases where multiple threads must read from the same directory stream, using <a href='readdir'>readdir</a>() with external synchronization is still preferable to the use of the deprecated <a href='/3/readdir_r'>readdir_r</a>(3) function. It is expected that a future version of POSIX.1 will require that <a href='readdir'>readdir</a>() be thread-safe when concurrently employed on different directory streams.</p>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>A directory stream is opened using <a href='/3/opendir'>opendir</a>(3).</p>
+<p>The order in which filenames are read by successive calls to <a href='readdir'>readdir</a>() depends on the filesystem implementation; it is unlikely that the names will be sorted in any fashion.</p>
+<p>Only the fields <code>d_name</code> and (as an XSI extension) <code>d_ino</code> are specified in POSIX.1. Other than Linux, the <code>d_type</code> field is available mainly only on BSD systems. The remaining fields are available on many, but not all systems. Under glibc, programs can check for the availability of the fields not defined in POSIX.1 by testing whether the macros <strong>_DIRENT_HAVE_D_NAMLEN</strong>, <strong>_DIRENT_HAVE_D_RECLEN</strong>, <strong>_DIRENT_HAVE_D_OFF</strong>, or <strong>_DIRENT_HAVE_D_TYPE</strong> are defined. The <code>dirent</code> structure definition shown above is taken from the glibc headers, and shows the <code>d_name</code> field with a fixed size.</p>
+<p><code>Warning</code>: applications should avoid any dependence on the size of the <code>d_name</code> field. POSIX defines it as <code>char d_name[]</code>, a character array of unspecified size, with at most <strong>NAME_MAX</strong> characters preceding the terminating null byte ('\0').</p>
+<p>POSIX.1 explicitly notes that this field should not be used as an lvalue. The standard also notes that the use of <code>sizeof(d_name)</code> is incorrect; use <code>strlen(d_name)</code> instead. (On some systems, this field is defined as <code>char d_name[1]</code>!) By implication, the use <code>sizeof(struct dirent)</code> to capture the size of the record including the size of <code>d_name</code> is also incorrect.</p>
+<p>Note that while the call</p>
+<p>fpathconf(fd, _PC_NAME_MAX)</p>
+<p>returns the value 255 for most filesystems, on some filesystems (e.g., CIFS, Windows SMB servers), the null-terminated filename that is (correctly) returned in <code>d_name</code> can actually exceed this size. In such cases, the <code>d_reclen</code> field will contain a value that exceeds the size of the glibc <code>dirent</code> structure shown above.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/2/getdents'>getdents</a>(2), <a href='/2/read'>read</a>(2), <a href='/3/closedir'>closedir</a>(3), <a href='/3/dirfd'>dirfd</a>(3), <a href='/3/ftw'>ftw</a>(3), <a href='/3/offsetof'>offsetof</a>(3), <a href='/3/opendir'>opendir</a>(3), <a href='/3/readdir_r'>readdir_r</a>(3), <a href='/3/rewinddir'>rewinddir</a>(3), <a href='/3/scandir'>scandir</a>(3), <a href='/3/seekdir'>seekdir</a>(3), <a href='/3/telldir'>telldir</a>(3)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

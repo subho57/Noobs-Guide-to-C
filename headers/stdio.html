@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>stdio - standard input/output library functions</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<p><strong>#include &lt;stdio.h&gt;</strong></p>
+<p><strong>FILE *</strong><code>stdin</code><strong>;</strong><br />
+<strong>FILE *</strong><code>stdout</code><strong>;</strong><br />
+<strong>FILE *</strong><code>stderr</code><strong>;</strong></p>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The standard I/O library provides a simple and efficient buffered stream I/O interface. Input and output is mapped into logical data streams and the physical I/O characteristics are concealed. The functions and macros are listed below; more information is available from the individual man pages.</p>
+<p>A stream is associated with an external file (which may be a physical device) by <code>opening</code> a file, which may involve creating a new file. Creating an existing file causes its former contents to be discarded. If a file can support positioning requests (such as a disk file, as opposed to a terminal), then a <code>file position indicator</code> associated with the stream is positioned at the start of the file (byte zero), unless the file is opened with append mode. If append mode is used, it is unspecified whether the position indicator will be placed at the start or the end of the file. The position indicator is maintained by subsequent reads, writes and positioning requests. All input occurs as if the characters were read by successive calls to the <a href='/3/fgetc'>fgetc</a>(3) function; all output takes place as if all characters were written by successive calls to the <a href='/3/fputc'>fputc</a>(3) function.</p>
+<p>A file is disassociated from a stream by <code>closing</code> the file. Output streams are flushed (any unwritten buffer contents are transferred to the host environment) before the stream is disassociated from the file. The value of a pointer to a <code>FILE</code> object is indeterminate after a file is closed (garbage).</p>
+<p>A file may be subsequently reopened, by the same or another program execution, and its contents reclaimed or modified (if it can be repositioned at the start). If the main function returns to its original caller, or the <a href='/3/exit'>exit</a>(3) function is called, all open files are closed (hence all output streams are flushed) before program termination. Other methods of program termination, such as <a href='/3/abort'>abort</a>(3) do not bother about closing files properly.</p>
+<p>At program startup, three text streams are predefined and need not be opened explicitly: <code>standard input</code> (for reading conventional input), <code>standard output</code> (for writing conventional output), and <code>standard error</code> (for writing diagnostic output). These streams are abbreviated <code>stdin</code>, <code>stdout</code>, and <code>stderr</code>. When opened, the standard error stream is not fully buffered; the standard input and output streams are fully buffered if and only if the streams do not refer to an interactive device.</p>
+<p>Output streams that refer to terminal devices are always line buffered by default; pending output to such streams is written automatically whenever an input stream that refers to a terminal device is read. In cases where a large amount of computation is done after printing part of a line on an output terminal, it is necessary to <a href='/3/fflush'>fflush</a>(3) the standard output before going off and computing so that the output will appear.</p>
+<p>The <code>stdio</code> library is a part of the library <strong>libc</strong> and routines are automatically loaded as needed by <a href='/1/cc'>cc</a>(1). The SYNOPSIS sections of the following manual pages indicate which include files are to be used, what the compiler declaration for the function looks like and which external variables are of interest.</p>
+<p>The following are defined as macros; these names may not be reused without first removing their current definitions with <strong>#undef</strong>: <strong>BUFSIZ</strong>, <strong>EOF</strong>, <strong>FILENAME_MAX</strong>, <strong>FOPEN_MAX</strong>, <strong>L_cuserid</strong>, <strong>L_ctermid</strong>, <strong>L_tmpnam</strong>, <strong>NULL</strong>, <strong>SEEK_END</strong>, <strong>SEEK_SET</strong>, <strong>SEEK_CUR</strong>, <strong>TMP_MAX</strong>, <strong>clearerr</strong>, <strong>feof</strong>, <strong>ferror</strong>, <strong>fileno</strong>, <strong>getc</strong>, <strong>getchar</strong>, <strong>putc</strong>, <strong>putchar</strong>, <strong>stderr</strong>, <strong>stdin</strong>, <strong>stdout</strong>. Function versions of the macro functions <strong>feof</strong>, <strong>ferror</strong>, <strong>clearerr</strong>, <strong>fileno</strong>, <strong>getc</strong>, <strong>getchar</strong>, <strong>putc</strong>, and <strong>putchar</strong> exist and will be used if the macros definitions are explicitly removed.</p>
+<h2>List of functions</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Function</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/clearerr'>clearerr</a>(3)</td>
+<td style="text-align: left;">check and reset stream status</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fclose'>fclose</a>(3)</td>
+<td style="text-align: left;">close a stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/fdopen'>fdopen</a>(3)</td>
+<td style="text-align: left;">stream open functions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/feof'>feof</a>(3)</td>
+<td style="text-align: left;">check and reset stream status</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/ferror'>ferror</a>(3)</td>
+<td style="text-align: left;">check and reset stream status</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fflush'>fflush</a>(3)</td>
+<td style="text-align: left;">flush a stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/fgetc'>fgetc</a>(3)</td>
+<td style="text-align: left;">get next character or word from input stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fgetpos'>fgetpos</a>(3)</td>
+<td style="text-align: left;">reposition a stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/fgets'>fgets</a>(3)</td>
+<td style="text-align: left;">get a line from a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fileno'>fileno</a>(3)</td>
+<td style="text-align: left;">return the integer descriptor of the argument stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/fopen'>fopen</a>(3)</td>
+<td style="text-align: left;">stream open functions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fprintf'>fprintf</a>(3)</td>
+<td style="text-align: left;">formatted output conversion</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/fpurge'>fpurge</a>(3)</td>
+<td style="text-align: left;">flush a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fputc'>fputc</a>(3)</td>
+<td style="text-align: left;">output a character or word to a stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/fputs'>fputs</a>(3)</td>
+<td style="text-align: left;">output a line to a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fread'>fread</a>(3)</td>
+<td style="text-align: left;">binary stream input/output</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/freopen'>freopen</a>(3)</td>
+<td style="text-align: left;">stream open functions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fscanf'>fscanf</a>(3)</td>
+<td style="text-align: left;">input format conversion</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/fseek'>fseek</a>(3)</td>
+<td style="text-align: left;">reposition a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fsetpos'>fsetpos</a>(3)</td>
+<td style="text-align: left;">reposition a stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/ftell'>ftell</a>(3)</td>
+<td style="text-align: left;">reposition a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/fwrite'>fwrite</a>(3)</td>
+<td style="text-align: left;">binary stream input/output</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/getc'>getc</a>(3)</td>
+<td style="text-align: left;">get next character or word from input stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/getchar'>getchar</a>(3)</td>
+<td style="text-align: left;">get next character or word from input stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/gets'>gets</a>(3)</td>
+<td style="text-align: left;">get a line from a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/getw'>getw</a>(3)</td>
+<td style="text-align: left;">get next character or word from input stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/mktemp'>mktemp</a>(3)</td>
+<td style="text-align: left;">make temporary filename (unique)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/perror'>perror</a>(3)</td>
+<td style="text-align: left;">system error messages</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/printf'>printf</a>(3)</td>
+<td style="text-align: left;">formatted output conversion</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/putc'>putc</a>(3)</td>
+<td style="text-align: left;">output a character or word to a stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/putchar'>putchar</a>(3)</td>
+<td style="text-align: left;">output a character or word to a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/puts'>puts</a>(3)</td>
+<td style="text-align: left;">output a line to a stream</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/putw'>putw</a>(3)</td>
+<td style="text-align: left;">output a character or word to a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/remove'>remove</a>(3)</td>
+<td style="text-align: left;">remove directory entry</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/rewind'>rewind</a>(3)</td>
+<td style="text-align: left;">reposition a stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/scanf'>scanf</a>(3)</td>
+<td style="text-align: left;">input format conversion</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/setbuf'>setbuf</a>(3)</td>
+<td style="text-align: left;">stream buffering operations</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/setbuffer'>setbuffer</a>(3)</td>
+<td style="text-align: left;">stream buffering operations</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/setlinebuf'>setlinebuf</a>(3)</td>
+<td style="text-align: left;">stream buffering operations</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/setvbuf'>setvbuf</a>(3)</td>
+<td style="text-align: left;">stream buffering operations</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/sprintf'>sprintf</a>(3)</td>
+<td style="text-align: left;">formatted output conversion</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/sscanf'>sscanf</a>(3)</td>
+<td style="text-align: left;">input format conversion</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/strerror'>strerror</a>(3)</td>
+<td style="text-align: left;">system error messages</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/sys_errlist'>sys_errlist</a>(3)</td>
+<td style="text-align: left;">system error messages</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/sys_nerr'>sys_nerr</a>(3)</td>
+<td style="text-align: left;">system error messages</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/tempnam'>tempnam</a>(3)</td>
+<td style="text-align: left;">temporary file routines</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/tmpfile'>tmpfile</a>(3)</td>
+<td style="text-align: left;">temporary file routines</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/tmpnam'>tmpnam</a>(3)</td>
+<td style="text-align: left;">temporary file routines</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/ungetc'>ungetc</a>(3)</td>
+<td style="text-align: left;">un-get character from input stream</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/vfprintf'>vfprintf</a>(3)</td>
+<td style="text-align: left;">formatted output conversion</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/vfscanf'>vfscanf</a>(3)</td>
+<td style="text-align: left;">input format conversion</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/vprintf'>vprintf</a>(3)</td>
+<td style="text-align: left;">formatted output conversion</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/vscanf'>vscanf</a>(3)</td>
+<td style="text-align: left;">input format conversion</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='/3/vsprintf'>vsprintf</a>(3)</td>
+<td style="text-align: left;">formatted output conversion</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='/3/vsscanf'>vsscanf</a>(3)</td>
+<td style="text-align: left;">input format conversion</td>
+</tr>
+</tbody>
+</table>
+</div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>The <code>stdio</code> library conforms to C89.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/2/close'>close</a>(2), <a href='/2/open'>open</a>(2), <a href='/2/read'>read</a>(2), <a href='/2/write'>write</a>(2), <a href='/3/stdout'>stdout</a>(3), <a href='/3/unlocked_stdio'>unlocked_stdio</a>(3)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

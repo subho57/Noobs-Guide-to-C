@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>wprintf, fwprintf, swprintf, vwprintf, vfwprintf, vswprintf - formatted wide-character output conversion</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;stdio.h&gt;</a>
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;wchar.h&gt;</a>
+
+int wprintf(const wchar_t *format, ...);
+int fwprintf(FILE *stream, const wchar_t *format, ...);
+int swprintf(wchar_t *wcs, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> maxlen,
+ const wchar_t *format, ...);
+
+int vwprintf(const wchar_t *format, va_list args);
+int vfwprintf(FILE *stream, const wchar_t *format, va_list args);
+int vswprintf(wchar_t *wcs, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> maxlen,
+ const wchar_t *format, va_list args);</code></pre>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p>All functions shown above:</p>
+<blockquote>
+<p>_XOPEN_SOURCE &gt;= 500 || _ISOC99_SOURCE ||<br />
+_POSIX_C_SOURCE &gt;= 200112L</p>
+</blockquote>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The <a href='wprintf'>wprintf</a>() family of functions is the wide-character equivalent of the <a href='/3/printf'>printf</a>(3) family of functions. It performs formatted output of wide characters.</p>
+<p>The <a href='wprintf'>wprintf</a>() and <a href='vwprintf'>vwprintf</a>() functions perform wide-character output to <code>stdout</code>. <code>stdout</code> must not be byte oriented; see <a href='/3/fwide'>fwide</a>(3) for more information.</p>
+<p>The <a href='fwprintf'>fwprintf</a>() and <a href='vfwprintf'>vfwprintf</a>() functions perform wide-character output to <code>stream</code>. <code>stream</code> must not be byte oriented; see <a href='/3/fwide'>fwide</a>(3) for more information.</p>
+<p>The <a href='swprintf'>swprintf</a>() and <a href='vswprintf'>vswprintf</a>() functions perform wide-character output to an array of wide characters. The programmer must ensure that there is room for at least <code>maxlen</code> wide characters at <code>wcs</code>.</p>
+<p>These functions are like the <a href='/3/printf'>printf</a>(3), <a href='/3/vprintf'>vprintf</a>(3), <a href='/3/fprintf'>fprintf</a>(3), <a href='/3/vfprintf'>vfprintf</a>(3), <a href='/3/sprintf'>sprintf</a>(3), <a href='/3/vsprintf'>vsprintf</a>(3) functions except for the following differences:</p>
+<dl>
+<dt><strong>·</strong></dt>
+<dd><p>The <code>format</code> string is a wide-character string.</p>
+</dd>
+<dt><strong>·</strong></dt>
+<dd><p>The output consists of wide characters, not bytes.</p>
+</dd>
+<dt><strong>·</strong></dt>
+<dd><p><a href='swprintf'>swprintf</a>() and <a href='vswprintf'>vswprintf</a>() take a <code>maxlen</code> argument, <a href='/3/sprintf'>sprintf</a>(3) and <a href='/3/vsprintf'>vsprintf</a>(3) do not. (<a href='/3/snprintf'>snprintf</a>(3) and <a href='/3/vsnprintf'>vsnprintf</a>(3) take a <code>maxlen</code> argument, but these functions do not return -1 upon buffer overflow on Linux.)</p>
+</dd>
+</dl>
+<p>The treatment of the conversion characters <strong>c</strong> and <strong>s</strong> is different:</p>
+<dl>
+<dt><strong>c</strong></dt>
+<dd><p>If no <strong>l</strong> modifier is present, the <code>int</code> argument is converted to a wide character by a call to the <a href='/3/btowc'>btowc</a>(3) function, and the resulting wide character is written. If an <strong>l</strong> modifier is present, the <code>wint_t</code> (wide character) argument is written.</p>
+</dd>
+<dt><strong>s</strong></dt>
+<dd><p>If no <strong>l</strong> modifier is present: the <code><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></code> argument is expected to be a pointer to an array of character type (pointer to a string) containing a multibyte character sequence beginning in the initial shift state. Characters from the array are converted to wide characters (each by a call to the <a href='/3/mbrtowc'>mbrtowc</a>(3) function with a conversion state starting in the initial state before the first byte). The resulting wide characters are written up to (but not including) the terminating null wide character (L'\0'). If a precision is specified, no more wide characters than the number specified are written. Note that the precision determines the number of <code>wide characters</code> written, not the number of <code>bytes</code> or <code>screen positions</code>. The array must contain a terminating null byte ('\0'), unless a precision is given and it is so small that the number of converted wide characters reaches it before the end of the array is reached. If an <strong>l</strong> modifier is present: the <code>const wchar_t *</code> argument is expected to be a pointer to an array of wide characters. Wide characters from the array are written up to (but not including) a terminating null wide character. If a precision is specified, no more than the number specified are written. The array must contain a terminating null wide character, unless a precision is given and it is smaller than or equal to the number of wide characters in the array.</p>
+</dd>
+</dl>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p>The functions return the number of wide characters written, excluding the terminating null wide character in case of the functions <a href='swprintf'>swprintf</a>() and <a href='vswprintf'>vswprintf</a>(). They return -1 when an error occurs.</p>
+</div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='wprintf'>wprintf</a>(), <a href='fwprintf'>fwprintf</a>(),<br />
+<a href='swprintf'>swprintf</a>(), <a href='vwprintf'>vwprintf</a>(),<br />
+<a href='vfwprintf'>vfwprintf</a>(), <a href='vswprintf'>vswprintf</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe locale</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>POSIX.1-2001, POSIX.1-2008, C99.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>The behavior of <a href='wprintf'>wprintf</a>() et al. depends on the <strong>LC_CTYPE</strong> category of the current locale.</p>
+<p>If the <code>format</code> string contains non-ASCII wide characters, the program will work correctly only if the <strong>LC_CTYPE</strong> category of the current locale at run time is the same as the <strong>LC_CTYPE</strong> category of the current locale at compile time. This is because the <code>wchar_t</code> representation is platform- and locale-dependent. (The glibc represents wide characters using their Unicode (ISO-10646) code point, but other platforms don't do this. Also, the use of C99 universal character names of the form \unnnn does not solve this problem.) Therefore, in internationalized programs, the <code>format</code> string should consist of ASCII wide characters only, or should be constructed at run time in an internationalized way (e.g., using <a href='/3/gettext'>gettext</a>(3) or <a href='/3/iconv'>iconv</a>(3), followed by <a href='/3/mbstowcs'>mbstowcs</a>(3)).</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/3/fprintf'>fprintf</a>(3), <a href='/3/fputwc'>fputwc</a>(3), <a href='/3/fwide'>fwide</a>(3), <a href='/3/printf'>printf</a>(3), <a href='/3/snprintf'>snprintf</a>(3)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

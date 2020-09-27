@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-less>
+
+<p>isdigit - checks whether a character is a digit</p>
+
+</div><div data-more>
+<p>isalnum, isalpha, isascii, isblank, iscntrl, <a data-content='This is the man page for &lt;code&gt;isdigit&lt;/code&gt; and 25 related functions.' data-toggle='popover' tabindex='0'>isdigit</a>, isgraph, islower, isprint, ispunct, isspace, isupper, isxdigit, isalnum_l, isalpha_l, isascii_l, isblank_l, iscntrl_l, isdigit_l, isgraph_l, islower_l, isprint_l, ispunct_l, isspace_l, isupper_l, isxdigit_l - character classification functions</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-less>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;ctype.h&gt;<br></span>
+<span class="kt">int</span> <span class="nf">isdigit</span><span class="p">(</span><span class="kt">char</span> <span class="n">c</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Think of this function as taking a <code class="language-plaintext highlighter-rouge">char</code> as input.</p>
+
+</div><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;ctype.h&gt;</a>
+
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isalnum(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isalpha(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> iscntrl(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isdigit(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isgraph(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> islower(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isprint(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> ispunct(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isspace(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isupper(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isxdigit(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isascii(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isblank(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>);
+
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isalnum_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isalpha_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isblank_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> iscntrl_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isdigit_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isgraph_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> islower_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isprint_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> ispunct_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isspace_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isupper_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isxdigit_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);
+
+<a data-content='Think of this as a &lt;code&gt;bool&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int</a> isascii_l(<a data-content='Think of this as a &lt;code&gt;char&lt;/code&gt;.' data-toggle='popover' tabindex='0'>int c</a>, locale_t locale);</code></pre>
+<p>Feature Test Macro Requirements for glibc (see <a href='/7/feature_test_macros'>feature_test_macros</a>(7)):</p><div data-hide>
+<p><a href='isascii'>isascii</a>():</p>
+<blockquote>
+<p>_XOPEN_SOURCE || /* Glibc since 2.19: */ _DEFAULT_SOURCE || /* Glibc versions &lt;= 2.19: */ _SVID_SOURCE</p>
+</blockquote>
+<p><a href='isblank'>isblank</a>():</p>
+<blockquote>
+<p>_ISOC99_SOURCE || _POSIX_C_SOURCE &gt;= 200112L</p>
+</blockquote>
+<p><a href='isalnum_l'>isalnum_l</a>(), <a href='isalpha_l'>isalpha_l</a>(), <a href='isblank_l'>isblank_l</a>(), <a href='iscntrl_l'>iscntrl_l</a>(), <a href='isdigit_l'>isdigit_l</a>(), <a href='isgraph_l'>isgraph_l</a>(), <a href='islower_l'>islower_l</a>(), <a href='isprint_l'>isprint_l</a>(), <a href='ispunct_l'>ispunct_l</a>(), <a href='isspace_l'>isspace_l</a>(), <a href='isupper_l'>isupper_l</a>(), <a href='isxdigit_l'>isxdigit_l</a>():</p>
+<blockquote>
+<dl>
+<dt>Since glibc 2.10:</dt>
+<dd><p>_XOPEN_SOURCE &gt;= 700</p>
+</dd>
+<dt>Before glibc 2.10:</dt>
+<dd><p>_GNU_SOURCE</p>
+</dd>
+</dl>
+</blockquote>
+<p><a href='isascii_l'>isascii_l</a>():</p>
+<blockquote>
+<dl>
+<dt>Since glibc 2.10:</dt>
+<dd><p>_XOPEN_SOURCE &gt;= 700 &amp;&amp; (_SVID_SOURCE || _BSD_SOURCE)</p>
+</dd>
+<dt>Before glibc 2.10:</dt>
+<dd><p>_GNU_SOURCE</p>
+</dd>
+</dl>
+</blockquote>
+</div></div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-less>
+
+<p>This function checks whether <code class="language-plaintext highlighter-rouge">c</code> is a decimal digit (<code class="language-plaintext highlighter-rouge">'0'</code> through <code class="language-plaintext highlighter-rouge">'9'</code>) or not. In other words, it checks whether the <a href="https://asciichart.com/">ASCII</a> value of <code class="language-plaintext highlighter-rouge">c</code> is between 48 and 57, inclusive.</p>
+
+</div><div data-more>
+<p>These functions check whether <code>c</code>, which must have the value of an <code>unsigned char</code> or <strong>EOF</strong>, falls into a certain character class according to the specified locale. The functions without the "_l" suffix perform the check based on the current locale.</p>
+<p>The functions with the "_l" suffix perform the check based on the locale specified by the locale object <code>locale</code>. The behavior of these functions is undefined if <code>locale</code> is the special locale object <strong>LC_GLOBAL_LOCALE</strong> (see <a href='/3/duplocale'>duplocale</a>(3)) or is not a valid locale object handle.</p>
+<p>The list below explains the operation of the functions without the "_l" suffix; the functions with the "_l" suffix differ only in using the locale object <code>locale</code> instead of the current locale.</p>
+<dl>
+<dt><a href='isalnum'>isalnum</a>()</dt>
+<dd><p>checks for an alphanumeric character; it is equivalent to <strong>(<a href='isalpha'>isalpha</a>(</strong><code>c</code><strong>) || <a href='isdigit'>isdigit</a>(</strong><code>c</code><strong>))</strong><code>.</code></p>
+</dd>
+<dt><a href='isalpha'>isalpha</a>()</dt>
+<dd><p>checks for an alphabetic character; in the standard <strong>"C"</strong> locale, it is equivalent to <strong>(<a href='isupper'>isupper</a>(</strong><code>c</code><strong>) || <a href='islower'>islower</a>(</strong><code>c</code><strong>))</strong><code>.</code> In some locales, there may be additional characters for which <a href='isalpha'>isalpha</a>() is true—letters which are neither uppercase nor lowercase.</p>
+</dd>
+<dt><a href='isascii'>isascii</a>()</dt>
+<dd><p>checks whether <code>c</code> is a 7-bit <code>unsigned char</code> value that fits into the ASCII character set.</p>
+</dd>
+<dt><a href='isblank'>isblank</a>()</dt>
+<dd><p>checks for a blank character; that is, a space or a tab.</p>
+</dd>
+<dt><a href='iscntrl'>iscntrl</a>()</dt>
+<dd><p>checks for a control character.</p>
+</dd>
+<dt><a href='isdigit'>isdigit</a>()</dt>
+<dd><p>checks for a digit (0 through 9).</p>
+</dd>
+<dt><a href='isgraph'>isgraph</a>()</dt>
+<dd><p>checks for any printable character except space.</p>
+</dd>
+<dt><a href='islower'>islower</a>()</dt>
+<dd><p>checks for a lowercase character.</p>
+</dd>
+<dt><a href='isprint'>isprint</a>()</dt>
+<dd><p>checks for any printable character including space.</p>
+</dd>
+<dt><a href='ispunct'>ispunct</a>()</dt>
+<dd><p>checks for any printable character which is not a space or an alphanumeric character.</p>
+</dd>
+<dt><a href='isspace'>isspace</a>()</dt>
+<dd><p>checks for white-space characters. In the <strong>"C"</strong> and <strong>"POSIX"</strong> locales, these are: space, form-feed (<strong>'\f'</strong>), newline (<strong>'\n'</strong>), carriage return (<strong>'\r'</strong>), horizontal tab (<strong>'\t'</strong>), and vertical tab (<strong>'\v'</strong>).</p>
+</dd>
+<dt><a href='isupper'>isupper</a>()</dt>
+<dd><p>checks for an uppercase letter.</p>
+</dd>
+<dt><a href='isxdigit'>isxdigit</a>()</dt>
+<dd><p>checks for hexadecimal digits, that is, one of<br />
+<strong>0 1 2 3 4 5 6 7 8 9 a b c d e f A B C D E F</strong>.</p>
+</dd>
+</dl>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-less>
+
+<p>This function returns a non-zero <code class="language-plaintext highlighter-rouge">int</code> if <code class="language-plaintext highlighter-rouge">c</code> is a decimal digit and <code class="language-plaintext highlighter-rouge">0</code> if <code class="language-plaintext highlighter-rouge">c</code> is not a decimal digit.</p>
+
+</div><div data-more>
+<p>The values returned are nonzero if the character <code>c</code> falls into the tested class, and zero if not.</p>
+</div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-less>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"><br>#include &lt;ctype.h&gt;<br>#include &lt;stdio.h&gt;<br></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">get_char</span><span class="p">(</span><span class="s">"Input: "</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">isdigit</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Your input is a digit.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Your input is not a digit.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div></div></section><h1 id='versions'><a href='#versions'>VERSIONS</a></h1><div data-for='versions' data-hide><section data-for='versions'><div data-more>
+<p><a href='isalnum_l'>isalnum_l</a>(), <a href='isalpha_l'>isalpha_l</a>(), <a href='isblank_l'>isblank_l</a>(), <a href='iscntrl_l'>iscntrl_l</a>(), <a href='isdigit_l'>isdigit_l</a>(), <a href='isgraph_l'>isgraph_l</a>(), <a href='islower_l'>islower_l</a>(), <a href='isprint_l'>isprint_l</a>(), <a href='ispunct_l'>ispunct_l</a>(), <a href='isspace_l'>isspace_l</a>(), <a href='isupper_l'>isupper_l</a>(), <a href='isxdigit_l'>isxdigit_l</a>(), and <a href='isascii_l'>isascii_l</a>() are available since glibc 2.3.</p>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='isalnum'>isalnum</a>(), <a href='isalpha'>isalpha</a>(), <a href='isascii'>isascii</a>(), <a href='isblank'>isblank</a>(), <a href='iscntrl'>iscntrl</a>(), <a href='isdigit'>isdigit</a>(), <a href='isgraph'>isgraph</a>(), <a href='islower'>islower</a>(), <a href='isprint'>isprint</a>(), <a href='ispunct'>ispunct</a>(), <a href='isspace'>isspace</a>(), <a href='isupper'>isupper</a>(), <a href='isxdigit'>isxdigit</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>C89 specifies <a href='isalnum'>isalnum</a>(), <a href='isalpha'>isalpha</a>(), <a href='iscntrl'>iscntrl</a>(), <a href='isdigit'>isdigit</a>(), <a href='isgraph'>isgraph</a>(), <a href='islower'>islower</a>(), <a href='isprint'>isprint</a>(), <a href='ispunct'>ispunct</a>(), <a href='isspace'>isspace</a>(), <a href='isupper'>isupper</a>(), and <a href='isxdigit'>isxdigit</a>(), but not <a href='isascii'>isascii</a>() and <a href='isblank'>isblank</a>(). POSIX.1-2001 also specifies those functions, and also <a href='isascii'>isascii</a>() (as an XSI extension) and <a href='isblank'>isblank</a>(). C99 specifies all of the preceding functions, except <a href='isascii'>isascii</a>().</p>
+<p>POSIX.1-2008 marks <a href='isascii'>isascii</a>() as obsolete, noting that it cannot be used portably in a localized application.</p>
+<p>POSIX.1-2008 specifies <a href='isalnum_l'>isalnum_l</a>(), <a href='isalpha_l'>isalpha_l</a>(), <a href='isblank_l'>isblank_l</a>(), <a href='iscntrl_l'>iscntrl_l</a>(), <a href='isdigit_l'>isdigit_l</a>(), <a href='isgraph_l'>isgraph_l</a>(), <a href='islower_l'>islower_l</a>(), <a href='isprint_l'>isprint_l</a>(), <a href='ispunct_l'>ispunct_l</a>(), <a href='isspace_l'>isspace_l</a>(), <a href='isupper_l'>isupper_l</a>(), and <a href='isxdigit_l'>isxdigit_l</a>().</p>
+<p><a href='isascii_l'>isascii_l</a>() is a GNU extension.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>The standards require that the argument <code>c</code> for these functions is either <strong>EOF</strong> or a value that is representable in the type <code>unsigned char</code>. If the argument <code>c</code> is of type <code>char</code>, it must be cast to <code>unsigned char</code>, as in the following example:</p>
+<pre><code>char c;
+...
+res = toupper((unsigned char) c);</code></pre>
+<p>This is necessary because <code>char</code> may be the equivalent of <code>signed char</code>, in which case a byte where the top bit is set would be sign extended when converting to <code>int</code>, yielding a value that is outside the range of <code>unsigned char</code>.</p>
+<p>The details of what characters belong to which class depend on the locale. For example, <a href='isupper'>isupper</a>() will not recognize an A-umlaut (Ä) as an uppercase letter in the default <strong>C</strong> locale.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/3/iswalnum'>iswalnum</a>(3), <a href='/3/iswalpha'>iswalpha</a>(3), <a href='/3/iswblank'>iswblank</a>(3), <a href='/3/iswcntrl'>iswcntrl</a>(3), <a href='/3/iswdigit'>iswdigit</a>(3), <a href='/3/iswgraph'>iswgraph</a>(3), <a href='/3/iswlower'>iswlower</a>(3), <a href='/3/iswprint'>iswprint</a>(3), <a href='/3/iswpunct'>iswpunct</a>(3), <a href='/3/iswspace'>iswspace</a>(3), <a href='/3/iswupper'>iswupper</a>(3), <a href='/3/iswxdigit'>iswxdigit</a>(3), <a href='/3/newlocale'>newlocale</a>(3), <a href='/3/setlocale'>setlocale</a>(3), <a href='/3/toascii'>toascii</a>(3), <a href='/3/tolower'>tolower</a>(3), <a href='/3/toupper'>toupper</a>(3), <a href='/3/uselocale'>uselocale</a>(3), <a href='/7/ascii'>ascii</a>(7), <a href='/7/locale'>locale</a>(7)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,4497 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- https://getbootstrap.com/ -->
+		<link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+		<!-- https://fontawesome.com/ -->
+		<link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+		<!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+		<link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" rel="stylesheet">
+		<!-- https://www.ubuntu.com/ -->
+		<link href="favicon.png" rel="icon" type="image/png">
+		<link href="/static/rouge.css" rel="stylesheet">
+
+		<!-- Mobile Specific Metas -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<meta name="theme-color" content="#000000"/>
+
+		<!-- PWA Migration -->
+        <link rel= "manifest" href= "./manifest.webmanifest" />
+		<!-- https://getbootstrap.com/ -->
+		<script crossorigin="anonymous" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+		<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+		<script crossorigin="anonymous" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+		<script>
+			$(function() {
+			
+			    // Hide less-comfortable descriptions
+			    $('[data-less]').addClass('d-none');
+			
+			    // Listen for checkbox
+			    $('#filter').on('change', function() {
+			        if ($('#filter').is(':checked')) {
+			            $('[data-less]').removeClass('d-none');
+			            $('[data-more]').addClass('d-none');
+			        }
+			        else {
+			            $('[data-more]').removeClass('d-none');
+			            $('[data-less]').addClass('d-none');
+			        }
+			        filter();
+			    });
+			
+			    // Listen for searches
+			    $('#q').on('change keyup', function() {
+			        filter();
+			    });
+			    $('#q').closest('form').on('submit', function(e) {
+			        e.preventDefault();
+			    });
+			
+			    // Filter results
+			    filter();
+			
+			    // Unless user's followed a link to a heading, filter index
+			    if (window.location.hash) {
+			        $('#filter').prop('checked', false).trigger('change');
+			    }
+			
+			    // Give focus to search (after body is visible)
+			    else {
+			        $(function() {
+			            $('#q').focus();
+			        });
+			    }
+			});
+			
+			function filter() {
+			    let q = $('#q').val().trim().split(/\s+/);
+			    if (q.length === 1 && q[0] === '') {
+			        q = [];
+			    }
+			    $('h1').each(function(index, element) {
+			        const $h1 = $(element);
+			        const header = $h1.val();
+			        const $ul = $h1.next('ul');
+			        $ul.children('li').each(function(index, element) {
+			            const $li = $(element);
+			            if ($('#filter').prop('checked') && $li.attr('data-filter') === undefined) {
+			                $li.addClass('filtered');
+			            }
+			            else {
+			                $li.removeClass('filtered');
+			            }
+			            const haystack = $h1.text() + $li.text().trim();
+			            let matches = q.filter(function(s) {
+			                return haystack.match(new RegExp(s, 'i')) !== null;
+			            });
+			            if (matches.length === q.length) {
+			                $li.removeClass('mismatched');
+			            }
+			            else {
+			                $li.addClass('mismatched');
+			            }
+			        });
+			        if ($ul.children('li:not(.filtered, .mismatched)').length > 0) {
+			            $h1.removeClass('d-none');
+			            $ul.removeClass('d-none');
+			        }
+			        else {
+			            $h1.addClass('d-none');
+			            $ul.addClass('d-none');
+			        }
+			    });
+			};
+			// load service worker
+			"serviceWorker"in navigator && window.addEventListener("load", ()=>{
+    		navigator.serviceWorker.register("./sw.js").then(e=>console.log("Success: ", e.scope)).catch(e=>console.log("Failure: ", e))
+			});
+		</script>
+		<script>
+			$(function() {
+			
+			    // Enable popovers
+			    $('[data-toggle="popover"]').popover({
+			        boundary: 'viewport',
+			        html: true,
+			        placement: 'bottom',
+			        trigger: 'focus'
+			    });
+			
+			    // Ensure all elements are styled the same
+			    $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+			    $('h2').addClass('font-weight-bold h3');
+			
+			    // Ensure last heading can be anchored atop page
+			    $(window).resize(function() {
+			        const top = $('h1').last().offset().top;
+			        const margin = $(window).height() - ($('body').outerHeight() - top);
+			        $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+			    });
+			    $(window).trigger('resize');
+			
+			    // Reveal body
+			    $('body').removeClass('invisible');
+			});
+			
+		</script>
+		<style>
+			/* Style popovers */
+			.popover {
+			font-family: inherit;
+			max-width: 100%;
+			}
+			/* Wrap long words (and URLs, whether linked or not), especially on mobile,
+			but not in buttons and not in tables, which should instead scroll horizontally */
+			* {
+			word-break: break-word;
+			}
+			button, table * {
+			word-break: normal;
+			}
+			/* Match Gmail's yellow */
+			a[data-toggle=popover] {
+			border-bottom: 2px solid rgb(252, 237, 193);
+			box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+			cursor: help;
+			}
+			a[data-toggle=popover]:hover {
+			background-color: rgb(252, 237, 193);
+			}
+			/* Match pre tags */
+			code {
+			color: inherit;
+			}
+			/* Padding for backticks */
+			code.highlighter-rouge {
+			color: inherit;
+			padding: .1rem;
+			}
+			/* A la GitHub */
+			code, pre {
+			background-color: #f6f8fa;
+			}
+			/* Don't shrink these */
+			code, pre {
+			font-size: inherit;
+			}
+			/* Don't italicize */
+			dl dt {
+			font-style: normal;
+			}
+		</style>
+		<style>
+			/* Don't display */
+			.filtered, .mismatched {
+			display: none;
+			}
+			/* No bullets */
+			ul {
+			list-style-type: none;
+			padding-left: 0;
+			}
+		</style>
+		<title>Noob's Guide to C Programming</title>
+	</head>
+	<body class="invisible pb-5 text-monospace">
+		<nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+			<a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+		</nav>
+		<div class="container-fluid mt-2 px-4">
+			<p class="mb-3 mt-4">
+				Manual pages for the C standard library and the Noobs Library for <a data-content="Like you!" data-toggle="popover" tabindex="0">those less comfortable</a>.
+			</p>
+			<form>
+				<div class="form-group">
+					<input autocomplete="off" class="form-control" id="q" placeholder="Search" type="search">
+				</div>
+				<div class="custom-control custom-switch mb-4">
+					<input checked class="custom-control-input" id="filter" type="checkbox">
+					<label class="custom-control-label" for="filter">feeling less comfortable</label>
+				</div>
+			</form>
+			<h1 id="assert.h">
+				<a href="#assert.h">assert.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/assert.html">assert</a>
+					-
+					<span data-more>abort the program if assertion is false</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/assert_perror.html">assert_perror</a>
+					-
+					<span data-more>test errnum and abort</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="ctype.h">
+				<a href="#ctype.h">ctype.h</a>
+			</h1>
+			<ul>
+				<li data-filter>
+					<a href="headers/isalnum.html">isalnum</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less>checks whether a character is alphanumeric</span>
+				</li>
+				<li>
+					<a href="headers/isalnum_l.html">isalnum_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/isalpha.html">isalpha</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less>checks whether a character is alphabetical</span>
+				</li>
+				<li>
+					<a href="headers/isalpha_l.html">isalpha_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isascii.html">isascii</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isascii_l.html">isascii_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isblank.html">isblank</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isblank_l.html">isblank_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/iscntrl.html">iscntrl</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/iscntrl_l.html">iscntrl_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/isdigit.html">isdigit</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less>checks whether a character is a digit</span>
+				</li>
+				<li>
+					<a href="headers/isdigit_l.html">isdigit_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isgraph.html">isgraph</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isgraph_l.html">isgraph_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/islower.html">islower</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less>checks whether a character is lowercase</span>
+				</li>
+				<li>
+					<a href="headers/islower_l.html">islower_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isprint.html">isprint</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isprint_l.html">isprint_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ispunct.html">ispunct</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ispunct_l.html">ispunct_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/isspace.html">isspace</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less>checks whether a character is whitespace</span>
+				</li>
+				<li>
+					<a href="headers/isspace_l.html">isspace_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/isupper.html">isupper</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less>checks whether a character is uppercase</span>
+				</li>
+				<li>
+					<a href="headers/isupper_l.html">isupper_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isxdigit.html">isxdigit</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isxdigit_l.html">isxdigit_l</a>
+					-
+					<span data-more>character classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/toascii.html">toascii</a>
+					-
+					<span data-more>convert character to ASCII</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/tolower.html">tolower</a>
+					-
+					<span data-more>convert uppercase or lowercase</span>
+					<span data-less>convert uppercase or lowercase</span>
+				</li>
+				<li>
+					<a href="headers/tolower_l.html">tolower_l</a>
+					-
+					<span data-more>convert uppercase or lowercase</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/toupper.html">toupper</a>
+					-
+					<span data-more>convert uppercase or lowercase</span>
+					<span data-less>convert uppercase or lowercase</span>
+				</li>
+				<li>
+					<a href="headers/toupper_l.html">toupper_l</a>
+					-
+					<span data-more>convert uppercase or lowercase</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="dirent.h">
+				<a href="#dirent.h">dirent.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/alphasort.html">alphasort</a>
+					-
+					<span data-more>scan a directory for matching entries</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getdirentries.html">getdirentries</a>
+					-
+					<span data-more>get directory entries in a filesystem-independent format</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/readdir.html">readdir</a>
+					-
+					<span data-more>read a directory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/readdir_r.html">readdir_r</a>
+					-
+					<span data-more>read a directory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scandir.html">scandir</a>
+					-
+					<span data-more>scan a directory for matching entries</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scandirat.html">scandirat</a>
+					-
+					<span data-more>scan a directory for matching entries</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/seekdir.html">seekdir</a>
+					-
+					<span data-more>set the position of the next readdir() call in the directory stream.</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/seekdir.html">telldir</a>
+					-
+					<span data-more>return current location in directory stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/versionsort.html">versionsort</a>
+					-
+					<span data-more>scan a directory for matching entries</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="errno.h">
+				<a href="#errno.h">errno.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/errno.html">errno</a>
+					-
+					<span data-more>number of last error</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/program_invocation_name.html">program_invocation_name</a>
+					-
+					<span data-more>obtain name used to invoke calling program</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/program_invocation_short_name.html">program_invocation_short_name</a>
+					-
+					<span data-more>obtain name used to invoke calling program</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="fnmatch.h">
+				<a href="#fnmatch.h">fnmatch.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/fnmatch.html">fnmatch</a>
+					-
+					<span data-more>match filename or pathname</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="ftw.h">
+				<a href="#ftw.h">ftw.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/ftw.html">ftw</a>
+					-
+					<span data-more>file tree walk</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nftw.html">nftw</a>
+					-
+					<span data-more>file tree walk</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="glob.h">
+				<a href="#glob.h">glob.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/glob.html">glob</a>
+					-
+					<span data-more>find pathnames matching a pattern, free memory from glob()</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/globfree.html">globfree</a>
+					-
+					<span data-more>find pathnames matching a pattern, free memory from glob()</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="inttypes.h">
+				<a href="#inttypes.h">inttypes.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/strtoimax.html">strtoimax</a>
+					-
+					<span data-more>convert string to integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtoumax.html">strtoumax</a>
+					-
+					<span data-more>convert string to integer</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="libgen.h">
+				<a href="#libgen.h">libgen.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/basename.html">basename</a>
+					-
+					<span data-more>parse pathname components</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/dirname.html">dirname</a>
+					-
+					<span data-more>parse pathname components</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="limits.h">
+				<a href="#limits.h">limits.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/MB_LEN_MAX.html">MB_LEN_MAX</a>
+					-
+					<span data-more>maximum multibyte length of a character across all locales</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/realpath.html">realpath</a>
+					-
+					<span data-more>return the canonicalized absolute pathname</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="math.h">
+				<a href="#math.h">math.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/acos.html">acos</a>
+					-
+					<span data-more>arc cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/acosf.html">acosf</a>
+					-
+					<span data-more>arc cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/acosh.html">acosh</a>
+					-
+					<span data-more>inverse hyperbolic cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/acoshf.html">acoshf</a>
+					-
+					<span data-more>inverse hyperbolic cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/acoshl.html">acoshl</a>
+					-
+					<span data-more>inverse hyperbolic cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/acosl.html">acosl</a>
+					-
+					<span data-more>arc cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/asin.html">asin</a>
+					-
+					<span data-more>arc sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/asinf.html">asinf</a>
+					-
+					<span data-more>arc sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/asinh.html">asinh</a>
+					-
+					<span data-more>inverse hyperbolic sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/asinhf.html">asinhf</a>
+					-
+					<span data-more>inverse hyperbolic sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/asinhl.html">asinhl</a>
+					-
+					<span data-more>inverse hyperbolic sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/asinl.html">asinl</a>
+					-
+					<span data-more>arc sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atan.html">atan</a>
+					-
+					<span data-more>arc tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atan2.html">atan2</a>
+					-
+					<span data-more>arc tangent function of two variables</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atan2f.html">atan2f</a>
+					-
+					<span data-more>arc tangent function of two variables</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atan2l.html">atan2l</a>
+					-
+					<span data-more>arc tangent function of two variables</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atanf.html">atanf</a>
+					-
+					<span data-more>arc tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atanh.html">atanh</a>
+					-
+					<span data-more>inverse hyperbolic tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atanhf.html">atanhf</a>
+					-
+					<span data-more>inverse hyperbolic tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atanhl.html">atanhl</a>
+					-
+					<span data-more>inverse hyperbolic tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atanl.html">atanl</a>
+					-
+					<span data-more>arc tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cbrt.html">cbrt</a>
+					-
+					<span data-more>cube root function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cbrtf.html">cbrtf</a>
+					-
+					<span data-more>cube root function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cbrtl.html">cbrtl</a>
+					-
+					<span data-more>cube root function</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/ceil.html">ceil</a>
+					-
+					<span data-more>ceiling function: smallest integral value not less than argument</span>
+					<span data-less>ceiling function: smallest integral value not less than argument</span>
+				</li>
+				<li>
+					<a href="headers/ceilf.html">ceilf</a>
+					-
+					<span data-more>ceiling function: smallest integral value not less than argument</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ceill.html">ceill</a>
+					-
+					<span data-more>ceiling function: smallest integral value not less than argument</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/copysign.html">copysign</a>
+					-
+					<span data-more>copy sign of a number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/copysignf.html">copysignf</a>
+					-
+					<span data-more>copy sign of a number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/copysignl.html">copysignl</a>
+					-
+					<span data-more>copy sign of a number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cos.html">cos</a>
+					-
+					<span data-more>cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cosf.html">cosf</a>
+					-
+					<span data-more>cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cosh.html">cosh</a>
+					-
+					<span data-more>hyperbolic cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/coshf.html">coshf</a>
+					-
+					<span data-more>hyperbolic cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/coshl.html">coshl</a>
+					-
+					<span data-more>hyperbolic cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cosl.html">cosl</a>
+					-
+					<span data-more>cosine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/drem.html">drem</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/dremf.html">dremf</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/dreml.html">dreml</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erf.html">erf</a>
+					-
+					<span data-more>error function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erfc.html">erfc</a>
+					-
+					<span data-more>complementary error function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erfcf.html">erfcf</a>
+					-
+					<span data-more>complementary error function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erfcl.html">erfcl</a>
+					-
+					<span data-more>complementary error function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erff.html">erff</a>
+					-
+					<span data-more>error function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erfl.html">erfl</a>
+					-
+					<span data-more>error function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exp.html">exp</a>
+					-
+					<span data-more>base-e exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exp10.html">exp10</a>
+					-
+					<span data-more>base-10 exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exp10f.html">exp10f</a>
+					-
+					<span data-more>base-10 exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exp10l.html">exp10l</a>
+					-
+					<span data-more>base-10 exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exp2.html">exp2</a>
+					-
+					<span data-more>base-2 exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exp2f.html">exp2f</a>
+					-
+					<span data-more>base-2 exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exp2l.html">exp2l</a>
+					-
+					<span data-more>base-2 exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/expf.html">expf</a>
+					-
+					<span data-more>base-e exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/expl.html">expl</a>
+					-
+					<span data-more>base-e exponential function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/expm1.html">expm1</a>
+					-
+					<span data-more>exponential minus 1</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/expm1f.html">expm1f</a>
+					-
+					<span data-more>exponential minus 1</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/expm1l.html">expm1l</a>
+					-
+					<span data-more>exponential minus 1</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fabs.html">fabs</a>
+					-
+					<span data-more>absolute value of floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fabsf.html">fabsf</a>
+					-
+					<span data-more>absolute value of floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fabsl.html">fabsl</a>
+					-
+					<span data-more>absolute value of floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fdim.html">fdim</a>
+					-
+					<span data-more>positive difference</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fdimf.html">fdimf</a>
+					-
+					<span data-more>positive difference</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fdiml.html">fdiml</a>
+					-
+					<span data-more>positive difference</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/finite.html">finite</a>
+					-
+					<span data-more>BSD floating-point classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/finitef.html">finitef</a>
+					-
+					<span data-more>BSD floating-point classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/finitel.html">finitel</a>
+					-
+					<span data-more>BSD floating-point classification functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/floor.html">floor</a>
+					-
+					<span data-more>largest integral value not greater than argument</span>
+					<span data-less>largest integral value not greater than argument</span>
+				</li>
+				<li>
+					<a href="headers/floorf.html">floorf</a>
+					-
+					<span data-more>largest integral value not greater than argument</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/floorl.html">floorl</a>
+					-
+					<span data-more>largest integral value not greater than argument</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fma.html">fma</a>
+					-
+					<span data-more>floating-point multiply and add</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmaf.html">fmaf</a>
+					-
+					<span data-more>floating-point multiply and add</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmal.html">fmal</a>
+					-
+					<span data-more>floating-point multiply and add</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmax.html">fmax</a>
+					-
+					<span data-more>determine maximum of two floating-point numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmaxf.html">fmaxf</a>
+					-
+					<span data-more>determine maximum of two floating-point numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmaxl.html">fmaxl</a>
+					-
+					<span data-more>determine maximum of two floating-point numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmin.html">fmin</a>
+					-
+					<span data-more>determine minimum of two floating-point numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fminf.html">fminf</a>
+					-
+					<span data-more>determine minimum of two floating-point numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fminl.html">fminl</a>
+					-
+					<span data-more>determine minimum of two floating-point numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmod.html">fmod</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmodf.html">fmodf</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmodl.html">fmodl</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fpclassify.html">fpclassify</a>
+					-
+					<span data-more>floating-point classification macros</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/frexp.html">frexp</a>
+					-
+					<span data-more>convert floating-point number to fractional and integral components</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/frexpf.html">frexpf</a>
+					-
+					<span data-more>convert floating-point number to fractional and integral components</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/frexpl.html">frexpl</a>
+					-
+					<span data-more>convert floating-point number to fractional and integral components</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/gamma.html">gamma</a>
+					-
+					<span data-more>(logarithm of the) gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/gammaf.html">gammaf</a>
+					-
+					<span data-more>(logarithm of the) gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/gammal.html">gammal</a>
+					-
+					<span data-more>(logarithm of the) gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/HUGE_VAL.html">HUGE_VAL</a>
+					-
+					<span data-more>floating-point constants</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/HUGE_VALF.html">HUGE_VALF</a>
+					-
+					<span data-more>floating-point constants</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/HUGE_VALL.html">HUGE_VALL</a>
+					-
+					<span data-more>floating-point constants</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hypot.html">hypot</a>
+					-
+					<span data-more>Euclidean distance function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hypotf.html">hypotf</a>
+					-
+					<span data-more>Euclidean distance function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hypotl.html">hypotl</a>
+					-
+					<span data-more>Euclidean distance function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ilogb.html">ilogb</a>
+					-
+					<span data-more>get integer exponent of a floating-point value</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ilogbf.html">ilogbf</a>
+					-
+					<span data-more>get integer exponent of a floating-point value</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ilogbl.html">ilogbl</a>
+					-
+					<span data-more>get integer exponent of a floating-point value</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/INFINITY.html">INFINITY</a>
+					-
+					<span data-more>floating-point constants</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isfinite.html">isfinite</a>
+					-
+					<span data-more>floating-point classification macros</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isgreater.html">isgreater</a>
+					-
+					<span data-more>floating-point relational tests without exception for NaN</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isgreaterequal.html">isgreaterequal</a>
+					-
+					<span data-more>floating-point relational tests without exception for NaN</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isinf.html">isinf</a>
+					-
+					<span data-more>floating-point classification macros</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isinff.html">isinff</a>
+					-
+					<span data-more>BSD floating-point classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isinfl.html">isinfl</a>
+					-
+					<span data-more>BSD floating-point classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isless.html">isless</a>
+					-
+					<span data-more>floating-point relational tests without exception for NaN</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/islessequal.html">islessequal</a>
+					-
+					<span data-more>floating-point relational tests without exception for NaN</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/islessgreater.html">islessgreater</a>
+					-
+					<span data-more>floating-point relational tests without exception for NaN</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isnan.html">isnan</a>
+					-
+					<span data-more>floating-point classification macros</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isnanf.html">isnanf</a>
+					-
+					<span data-more>BSD floating-point classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isnanl.html">isnanl</a>
+					-
+					<span data-more>BSD floating-point classification functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isnormal.html">isnormal</a>
+					-
+					<span data-more>floating-point classification macros</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isunordered.html">isunordered</a>
+					-
+					<span data-more>floating-point relational tests without exception for NaN</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/j0.html">j0</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/j0f.html">j0f</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/j0l.html">j0l</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/j1.html">j1</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/j1f.html">j1f</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/j1l.html">j1l</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/jn.html">jn</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/jnf.html">jnf</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/jnl.html">jnl</a>
+					-
+					<span data-more>Bessel functions of the first kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ldexp.html">ldexp</a>
+					-
+					<span data-more>multiply floating-point number by integral power of 2</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ldexpf.html">ldexpf</a>
+					-
+					<span data-more>multiply floating-point number by integral power of 2</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ldexpl.html">ldexpl</a>
+					-
+					<span data-more>multiply floating-point number by integral power of 2</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lgamma.html">lgamma</a>
+					-
+					<span data-more>log gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lgamma_r.html">lgamma_r</a>
+					-
+					<span data-more>log gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lgammaf.html">lgammaf</a>
+					-
+					<span data-more>log gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lgammaf_r.html">lgammaf_r</a>
+					-
+					<span data-more>log gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lgammal.html">lgammal</a>
+					-
+					<span data-more>log gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lgammal_r.html">lgammal_r</a>
+					-
+					<span data-more>log gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/llrint.html">llrint</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/llrintf.html">llrintf</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/llrintl.html">llrintl</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/llround.html">llround</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/llroundf.html">llroundf</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/llroundl.html">llroundl</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log.html">log</a>
+					-
+					<span data-more>natural logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log10.html">log10</a>
+					-
+					<span data-more>base-10 logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log10f.html">log10f</a>
+					-
+					<span data-more>base-10 logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log10l.html">log10l</a>
+					-
+					<span data-more>base-10 logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log1p.html">log1p</a>
+					-
+					<span data-more>logarithm of 1 plus argument</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log1pf.html">log1pf</a>
+					-
+					<span data-more>logarithm of 1 plus argument</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log1pl.html">log1pl</a>
+					-
+					<span data-more>logarithm of 1 plus argument</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/log2.html">log2</a>
+					-
+					<span data-more>base-2 logarithmic function</span>
+					<span data-less>base-2 logarithmic function</span>
+				</li>
+				<li>
+					<a href="headers/log2f.html">log2f</a>
+					-
+					<span data-more>base-2 logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/log2l.html">log2l</a>
+					-
+					<span data-more>base-2 logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/logb.html">logb</a>
+					-
+					<span data-more>get exponent of a floating-point value</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/logbf.html">logbf</a>
+					-
+					<span data-more>get exponent of a floating-point value</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/logbl.html">logbl</a>
+					-
+					<span data-more>get exponent of a floating-point value</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/logf.html">logf</a>
+					-
+					<span data-more>natural logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/logl.html">logl</a>
+					-
+					<span data-more>natural logarithmic function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lrint.html">lrint</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lrintf.html">lrintf</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lrintl.html">lrintl</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lround.html">lround</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lroundf.html">lroundf</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lroundl.html">lroundl</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/math_error.html">math_error</a>
+					-
+					<span data-more>detecting errors from mathematical functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/matherr.html">matherr</a>
+					-
+					<span data-more>SVID math library exception handling</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/modf.html">modf</a>
+					-
+					<span data-more>extract signed integral and fractional values from floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/modff.html">modff</a>
+					-
+					<span data-more>extract signed integral and fractional values from floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/modfl.html">modfl</a>
+					-
+					<span data-more>extract signed integral and fractional values from floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/NAN.html">NAN</a>
+					-
+					<span data-more>floating-point constants</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nan.html">nan</a>
+					-
+					<span data-more>return &#39;Not a Number&#39;</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nanf.html">nanf</a>
+					-
+					<span data-more>return &#39;Not a Number&#39;</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nanl.html">nanl</a>
+					-
+					<span data-more>return &#39;Not a Number&#39;</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nearbyint.html">nearbyint</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nearbyintf.html">nearbyintf</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nearbyintl.html">nearbyintl</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextafter.html">nextafter</a>
+					-
+					<span data-more>floating-point number manipulation</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextafterf.html">nextafterf</a>
+					-
+					<span data-more>floating-point number manipulation</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextafterl.html">nextafterl</a>
+					-
+					<span data-more>floating-point number manipulation</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextdown.html">nextdown</a>
+					-
+					<span data-more>return next floating-point number toward positive/negative infinity</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextdownf.html">nextdownf</a>
+					-
+					<span data-more>return next floating-point number toward positive/negative infinity</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextdownl.html">nextdownl</a>
+					-
+					<span data-more>return next floating-point number toward positive/negative infinity</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nexttoward.html">nexttoward</a>
+					-
+					<span data-more>floating-point number manipulation</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nexttowardf.html">nexttowardf</a>
+					-
+					<span data-more>floating-point number manipulation</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nexttowardl.html">nexttowardl</a>
+					-
+					<span data-more>floating-point number manipulation</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextup.html">nextup</a>
+					-
+					<span data-more>return next floating-point number toward positive/negative infinity</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextupf.html">nextupf</a>
+					-
+					<span data-more>return next floating-point number toward positive/negative infinity</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nextupl.html">nextupl</a>
+					-
+					<span data-more>return next floating-point number toward positive/negative infinity</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/pow.html">pow</a>
+					-
+					<span data-more>power functions</span>
+					<span data-less>raises a number to a power</span>
+				</li>
+				<li>
+					<a href="headers/pow10.html">pow10</a>
+					-
+					<span data-more>base-10 power functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/pow10f.html">pow10f</a>
+					-
+					<span data-more>base-10 power functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/pow10l.html">pow10l</a>
+					-
+					<span data-more>base-10 power functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/powf.html">powf</a>
+					-
+					<span data-more>power functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/powl.html">powl</a>
+					-
+					<span data-more>power functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remainder.html">remainder</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remainderf.html">remainderf</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remainderl.html">remainderl</a>
+					-
+					<span data-more>floating-point remainder function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remquo.html">remquo</a>
+					-
+					<span data-more>remainder and part of quotient</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remquof.html">remquof</a>
+					-
+					<span data-more>remainder and part of quotient</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remquol.html">remquol</a>
+					-
+					<span data-more>remainder and part of quotient</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rint.html">rint</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rintf.html">rintf</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rintl.html">rintl</a>
+					-
+					<span data-more>round to nearest integer</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/round.html">round</a>
+					-
+					<span data-more>round to nearest integer, away from zero</span>
+					<span data-less>round to nearest integer, away from zero</span>
+				</li>
+				<li>
+					<a href="headers/roundf.html">roundf</a>
+					-
+					<span data-more>round to nearest integer, away from zero</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/roundl.html">roundl</a>
+					-
+					<span data-more>round to nearest integer, away from zero</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalb.html">scalb</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix (OBSOLETE)</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalbf.html">scalbf</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix (OBSOLETE)</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalbl.html">scalbl</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix (OBSOLETE)</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalbln.html">scalbln</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalblnf.html">scalblnf</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalblnl.html">scalblnl</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalbn.html">scalbn</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalbnf.html">scalbnf</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/scalbnl.html">scalbnl</a>
+					-
+					<span data-more>multiply floating-point number by integral power of radix</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/signbit.html">signbit</a>
+					-
+					<span data-more>test sign of a real floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/signgam.html">signgam</a>
+					-
+					<span data-more>log gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/significand.html">significand</a>
+					-
+					<span data-more>get mantissa of floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/significandf.html">significandf</a>
+					-
+					<span data-more>get mantissa of floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/significandl.html">significandl</a>
+					-
+					<span data-more>get mantissa of floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sin.html">sin</a>
+					-
+					<span data-more>sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sincos.html">sincos</a>
+					-
+					<span data-more>calculate sin and cos simultaneously</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sincosf.html">sincosf</a>
+					-
+					<span data-more>calculate sin and cos simultaneously</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sincosl.html">sincosl</a>
+					-
+					<span data-more>calculate sin and cos simultaneously</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sinf.html">sinf</a>
+					-
+					<span data-more>sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sinh.html">sinh</a>
+					-
+					<span data-more>hyperbolic sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sinhf.html">sinhf</a>
+					-
+					<span data-more>hyperbolic sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sinhl.html">sinhl</a>
+					-
+					<span data-more>hyperbolic sine function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sinl.html">sinl</a>
+					-
+					<span data-more>sine function</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/sqrt.html">sqrt</a>
+					-
+					<span data-more>square root function</span>
+					<span data-less>square root function</span>
+				</li>
+				<li>
+					<a href="headers/sqrtf.html">sqrtf</a>
+					-
+					<span data-more>square root function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sqrtl.html">sqrtl</a>
+					-
+					<span data-more>square root function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tan.html">tan</a>
+					-
+					<span data-more>tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tanf.html">tanf</a>
+					-
+					<span data-more>tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tanh.html">tanh</a>
+					-
+					<span data-more>hyperbolic tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tanhf.html">tanhf</a>
+					-
+					<span data-more>hyperbolic tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tanhl.html">tanhl</a>
+					-
+					<span data-more>hyperbolic tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tanl.html">tanl</a>
+					-
+					<span data-more>tangent function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tgamma.html">tgamma</a>
+					-
+					<span data-more>true gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tgammaf.html">tgammaf</a>
+					-
+					<span data-more>true gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tgammal.html">tgammal</a>
+					-
+					<span data-more>true gamma function</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/trunc.html">trunc</a>
+					-
+					<span data-more>round to integer, toward zero</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/truncf.html">truncf</a>
+					-
+					<span data-more>round to integer, toward zero</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/truncl.html">truncl</a>
+					-
+					<span data-more>round to integer, toward zero</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/y0.html">y0</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/y0f.html">y0f</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/y0l.html">y0l</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/y1.html">y1</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/y1f.html">y1f</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/y1l.html">y1l</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/yn.html">yn</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ynf.html">ynf</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ynl.html">ynl</a>
+					-
+					<span data-more>Bessel functions of the second kind</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="monetary.h">
+				<a href="#monetary.h">monetary.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/strfmon.html">strfmon</a>
+					-
+					<span data-more>convert monetary value to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strfmon_l.html">strfmon_l</a>
+					-
+					<span data-more>convert monetary value to a string</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="search.h">
+				<a href="#search.h">search.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/hcreate.html">hcreate</a>
+					-
+					<span data-more>hash table management</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hcreate_r.html">hcreate_r</a>
+					-
+					<span data-more>hash table management</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hdestroy.html">hdestroy</a>
+					-
+					<span data-more>hash table management</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hdestroy_r.html">hdestroy_r</a>
+					-
+					<span data-more>hash table management</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hsearch.html">hsearch</a>
+					-
+					<span data-more>hash table management</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hsearch_r.html">hsearch_r</a>
+					-
+					<span data-more>hash table management</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/insque.html">insque</a>
+					-
+					<span data-more>insert/remove an item from a queue</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lfind.html">lfind</a>
+					-
+					<span data-more>linear search of an array</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lsearch.html">lsearch</a>
+					-
+					<span data-more>linear search of an array</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remque.html">remque</a>
+					-
+					<span data-more>insert/remove an item from a queue</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tdelete.html">tdelete</a>
+					-
+					<span data-more>manage a binary tree</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tdestroy.html">tdestroy</a>
+					-
+					<span data-more>manage a binary tree</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tfind.html">tfind</a>
+					-
+					<span data-more>manage a binary tree</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tsearch.html">tsearch</a>
+					-
+					<span data-more>manage a binary tree</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/twalk.html">twalk</a>
+					-
+					<span data-more>manage a binary tree</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="stdarg.h">
+				<a href="#stdarg.h">stdarg.h</a>
+			</h1>
+			<ul>
+						<li>
+							<a href="3/stdarg.html">stdarg</a>
+							-
+							variable argument lists
+						</li>
+						<li>
+							<a href="3/va_arg.html">va_arg</a>
+							-
+							variable argument lists
+						</li>
+						<li>
+							<a href="3/va_copy.html">va_copy</a>
+							-
+							variable argument lists
+						</li>
+
+						<li>
+							<a href="3/va_end.html">va_end</a>
+							-
+							variable argument lists
+						</li>
+						<li>
+							<a href="3/va_start.html">va_start</a>
+							-
+							variable argument lists
+						</li>
+			</ul>	
+			<h1 id="stdio.h">
+				<a href="#stdio.h">stdio.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/__fbufsize.html">__fbufsize</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__flbf.html">__flbf</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__fpending.html">__fpending</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__fpurge.html">__fpurge</a>
+					-
+					<span data-more>purge a stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__freadable.html">__freadable</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__freading.html">__freading</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__fsetlocking.html">__fsetlocking</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__fwritable.html">__fwritable</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/__fwriting.html">__fwriting</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/_flushlbf.html">_flushlbf</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/addmntent.html">addmntent</a>
+					-
+					<span data-more>get filesystem descriptor file entry</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/asprintf.html">asprintf</a>
+					-
+					<span data-more>print to allocated string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/clearerr.html">clearerr</a>
+					-
+					<span data-more>check and reset stream status</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/clearerr_unlocked.html">clearerr_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ctermid.html">ctermid</a>
+					-
+					<span data-more>get controlling terminal name</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/dprintf.html">dprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/endmntent.html">endmntent</a>
+					-
+					<span data-more>get filesystem descriptor file entry</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fclose.html">fclose</a>
+					-
+					<span data-more>close a stream</span>
+					<span data-less>close a stream</span>
+				</li>
+				<li>
+					<a href="headers/fcloseall.html">fcloseall</a>
+					-
+					<span data-more>close all open streams</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fdopen.html">fdopen</a>
+					-
+					<span data-more>stream open functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/feof.html">feof</a>
+					-
+					<span data-more>check and reset stream status</span>
+					<span data-less>check and reset stream status</span>
+				</li>
+				<li>
+					<a href="headers/feof_unlocked.html">feof_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/ferror.html">ferror</a>
+					-
+					<span data-more>check and reset stream status</span>
+					<span data-less>check and reset stream status</span>
+				</li>
+				<li>
+					<a href="headers/ferror_unlocked.html">ferror_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fflush.html">fflush</a>
+					-
+					<span data-more>flush a stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fflush_unlocked.html">fflush_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fgetc.html">fgetc</a>
+					-
+					<span data-more>input of characters and strings</span>
+					<span data-less>input of characters and strings</span>
+				</li>
+				<li>
+					<a href="headers/fgetc_unlocked.html">fgetc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fgetgrent.html">fgetgrent</a>
+					-
+					<span data-more>get group file entry</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fgetpos.html">fgetpos</a>
+					-
+					<span data-more>reposition a stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fgetpwent.html">fgetpwent</a>
+					-
+					<span data-more>get password file entry</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fgets.html">fgets</a>
+					-
+					<span data-more>input of characters and strings</span>
+					<span data-less>input of characters and strings</span>
+				</li>
+				<li>
+					<a href="headers/fgets_unlocked.html">fgets_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fgetwc.html">fgetwc</a>
+					-
+					<span data-more>read a wide character from a FILE stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fgetwc_unlocked.html">fgetwc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fgetws_unlocked.html">fgetws_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fileno.html">fileno</a>
+					-
+					<span data-more>check and reset stream status</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fileno_unlocked.html">fileno_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/flockfile.html">flockfile</a>
+					-
+					<span data-more>lock FILE for stdio</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fmemopen.html">fmemopen</a>
+					-
+					<span data-more>open memory as stream</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fopen.html">fopen</a>
+					-
+					<span data-more>stream open functions</span>
+					<span data-less>stream open functions</span>
+				</li>
+				<li>
+					<a href="headers/fopencookie.html">fopencookie</a>
+					-
+					<span data-more>opening a custom stream</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fprintf.html">fprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less>formatted output conversion</span>
+				</li>
+				<li>
+					<a href="headers/fpurge.html">fpurge</a>
+					-
+					<span data-more>purge a stream</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fputc.html">fputc</a>
+					-
+					<span data-more>output of characters and strings</span>
+					<span data-less>output of characters and strings</span>
+				</li>
+				<li>
+					<a href="headers/fputc_unlocked.html">fputc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fputs.html">fputs</a>
+					-
+					<span data-more>output of characters and strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fputs_unlocked.html">fputs_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fputwc.html">fputwc</a>
+					-
+					<span data-more>write a wide character to a FILE stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fputwc_unlocked.html">fputwc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fputws_unlocked.html">fputws_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fread.html">fread</a>
+					-
+					<span data-more>binary stream input/output</span>
+					<span data-less>binary stream input/output</span>
+				</li>
+				<li>
+					<a href="headers/fread_unlocked.html">fread_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/freopen.html">freopen</a>
+					-
+					<span data-more>stream open functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fscanf.html">fscanf</a>
+					-
+					<span data-more>input format conversion</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fseek.html">fseek</a>
+					-
+					<span data-more>reposition a stream</span>
+					<span data-less>reposition a stream</span>
+				</li>
+				<li>
+					<a href="headers/fseeko.html">fseeko</a>
+					-
+					<span data-more>seek to or report file position</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fsetpos.html">fsetpos</a>
+					-
+					<span data-more>reposition a stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ftell.html">ftell</a>
+					-
+					<span data-more>reposition a stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ftello.html">ftello</a>
+					-
+					<span data-more>seek to or report file position</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ftrylockfile.html">ftrylockfile</a>
+					-
+					<span data-more>lock FILE for stdio</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/funlockfile.html">funlockfile</a>
+					-
+					<span data-more>lock FILE for stdio</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fwprintf.html">fwprintf</a>
+					-
+					<span data-more>formatted wide-character output conversion</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/fwrite.html">fwrite</a>
+					-
+					<span data-more>binary stream input/output</span>
+					<span data-less>binary stream input/output</span>
+				</li>
+				<li>
+					<a href="headers/fwrite_unlocked.html">fwrite_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getc.html">getc</a>
+					-
+					<span data-more>input of characters and strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getc_unlocked.html">getc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getchar.html">getchar</a>
+					-
+					<span data-more>input of characters and strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getchar_unlocked.html">getchar_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getdelim.html">getdelim</a>
+					-
+					<span data-more>delimited string input</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getline.html">getline</a>
+					-
+					<span data-more>delimited string input</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getmntent.html">getmntent</a>
+					-
+					<span data-more>get filesystem descriptor file entry</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getmntent_r.html">getmntent_r</a>
+					-
+					<span data-more>get filesystem descriptor file entry</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/gets.html">gets</a>
+					-
+					<span data-more>get a string from standard input (DEPRECATED)</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getw.html">getw</a>
+					-
+					<span data-more>input and output of words (ints)</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getwc.html">getwc</a>
+					-
+					<span data-more>read a wide character from a FILE stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getwc_unlocked.html">getwc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getwchar_unlocked.html">getwchar_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/hasmntopt.html">hasmntopt</a>
+					-
+					<span data-more>get filesystem descriptor file entry</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/open_memstream.html">open_memstream</a>
+					-
+					<span data-more>open a dynamic memory buffer stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/open_wmemstream.html">open_wmemstream</a>
+					-
+					<span data-more>open a dynamic memory buffer stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/pclose.html">pclose</a>
+					-
+					<span data-more>pipe stream to or from a process</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/perror.html">perror</a>
+					-
+					<span data-more>print a system error message</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/popen.html">popen</a>
+					-
+					<span data-more>pipe stream to or from a process</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/printf.html">printf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less>formatted output conversion</span>
+				</li>
+				<li>
+					<a href="headers/putc.html">putc</a>
+					-
+					<span data-more>output of characters and strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putc_unlocked.html">putc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putchar.html">putchar</a>
+					-
+					<span data-more>output of characters and strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putchar_unlocked.html">putchar_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putpwent.html">putpwent</a>
+					-
+					<span data-more>write a password file entry</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/puts.html">puts</a>
+					-
+					<span data-more>output of characters and strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putw.html">putw</a>
+					-
+					<span data-more>input and output of words (ints)</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putwc.html">putwc</a>
+					-
+					<span data-more>write a wide character to a FILE stream</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putwc_unlocked.html">putwc_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putwchar_unlocked.html">putwchar_unlocked</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/remove.html">remove</a>
+					-
+					<span data-more>remove a file or directory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rename.html">rename</a>
+					-
+					<span data-more>change the name or location of a file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/renameat.html">renameat</a>
+					-
+					<span data-more>change the name or location of a file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/renameat2.html">renameat2</a>
+					-
+					<span data-more>change the name or location of a file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rewind.html">rewind</a>
+					-
+					<span data-more>reposition a stream</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/scanf.html">scanf</a>
+					-
+					<span data-more>input format conversion</span>
+					<span data-less>input format conversion</span>
+				</li>
+				<li>
+					<a href="headers/setbuf.html">setbuf</a>
+					-
+					<span data-more>stream buffering operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setbuffer.html">setbuffer</a>
+					-
+					<span data-more>stream buffering operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setlinebuf.html">setlinebuf</a>
+					-
+					<span data-more>stream buffering operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setmntent.html">setmntent</a>
+					-
+					<span data-more>get filesystem descriptor file entry</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setvbuf.html">setvbuf</a>
+					-
+					<span data-more>stream buffering operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/snprintf.html">snprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/sprintf.html">sprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less>formatted output conversion</span>
+				</li>
+				<li>
+					<a href="headers/sscanf.html">sscanf</a>
+					-
+					<span data-more>input format conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/stderr.html">stderr</a>
+					-
+					<span data-more>standard I/O streams</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/stdin.html">stdin</a>
+					-
+					<span data-more>standard I/O streams</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/stdio.html">stdio</a>
+					-
+					<span data-more>standard input/output library functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/stdio_ext.html">stdio_ext</a>
+					-
+					<span data-more>interfaces to stdio FILE structure</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/stdout.html">stdout</a>
+					-
+					<span data-more>standard I/O streams</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/swprintf.html">swprintf</a>
+					-
+					<span data-more>formatted wide-character output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sys_errlist.html">sys_errlist</a>
+					-
+					<span data-more>print a system error message</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/sys_nerr.html">sys_nerr</a>
+					-
+					<span data-more>print a system error message</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tempnam.html">tempnam</a>
+					-
+					<span data-more>create a name for a temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tmpfile.html">tmpfile</a>
+					-
+					<span data-more>create a temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tmpnam.html">tmpnam</a>
+					-
+					<span data-more>create a name for a temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/tmpnam_r.html">tmpnam_r</a>
+					-
+					<span data-more>create a name for a temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ungetc.html">ungetc</a>
+					-
+					<span data-more>input of characters and strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/unlocked_stdio.html">unlocked_stdio</a>
+					-
+					<span data-more>nonlocking stdio functions</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vasprintf.html">vasprintf</a>
+					-
+					<span data-more>print to allocated string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vdprintf.html">vdprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vfprintf.html">vfprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vfscanf.html">vfscanf</a>
+					-
+					<span data-more>input format conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vfwprintf.html">vfwprintf</a>
+					-
+					<span data-more>formatted wide-character output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vprintf.html">vprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vscanf.html">vscanf</a>
+					-
+					<span data-more>input format conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vsnprintf.html">vsnprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vsprintf.html">vsprintf</a>
+					-
+					<span data-more>formatted output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vsscanf.html">vsscanf</a>
+					-
+					<span data-more>input format conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vswprintf.html">vswprintf</a>
+					-
+					<span data-more>formatted wide-character output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vwprintf.html">vwprintf</a>
+					-
+					<span data-more>formatted wide-character output conversion</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/wprintf.html">wprintf</a>
+					-
+					<span data-more>formatted wide-character output conversion</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="stdlib.h">
+				<a href="#stdlib.h">stdlib.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/a64l.html">a64l</a>
+					-
+					<span data-more>convert between long and base-64</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/abort.html">abort</a>
+					-
+					<span data-more>cause abnormal process termination</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/abs.html">abs</a>
+					-
+					<span data-more>compute the absolute value of an integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/aligned_alloc.html">aligned_alloc</a>
+					-
+					<span data-more>allocate aligned memory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/atexit.html">atexit</a>
+					-
+					<span data-more>register a function to be called at normal process termination</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/atof.html">atof</a>
+					-
+					<span data-more>convert a string to a double</span>
+					<span data-less>convert a string to a double</span>
+				</li>
+				<li data-filter>
+					<a href="headers/atoi.html">atoi</a>
+					-
+					<span data-more>convert a string to an integer</span>
+					<span data-less>convert a string to an integer</span>
+				</li>
+				<li data-filter>
+					<a href="headers/atol.html">atol</a>
+					-
+					<span data-more>convert a string to an integer</span>
+					<span data-less>convert a string to an integer</span>
+				</li>
+				<li data-filter>
+					<a href="headers/atoll.html">atoll</a>
+					-
+					<span data-more>convert a string to an integer</span>
+					<span data-less>convert a string to an integer</span>
+				</li>
+				<li>
+					<a href="headers/atoq.html">atoq</a>
+					-
+					<span data-more>convert a string to an integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/bsearch.html">bsearch</a>
+					-
+					<span data-more>binary search of a sorted array</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/calloc.html">calloc</a>
+					-
+					<span data-more>allocate and free dynamic memory</span>
+					<span data-less>allocate and free dynamic memory</span>
+				</li>
+				<li>
+					<a href="headers/canonicalize_file_name.html">canonicalize_file_name</a>
+					-
+					<span data-more>return the canonicalized absolute pathname</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/cfree.html">cfree</a>
+					-
+					<span data-more>free allocated memory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/clearenv.html">clearenv</a>
+					-
+					<span data-more>clear the environment</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/div.html">div</a>
+					-
+					<span data-more>compute quotient and remainder of an integer division</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/drand48.html">drand48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/drand48_r.html">drand48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ecvt.html">ecvt</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ecvt_r.html">ecvt_r</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erand48.html">erand48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/erand48_r.html">erand48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/exit.html">exit</a>
+					-
+					<span data-more>cause normal process termination</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fcvt.html">fcvt</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fcvt_r.html">fcvt_r</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/free.html">free</a>
+					-
+					<span data-more>allocate and free dynamic memory</span>
+					<span data-less>allocate and free dynamic memory</span>
+				</li>
+				<li>
+					<a href="headers/gcvt.html">gcvt</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getenv.html">getenv</a>
+					-
+					<span data-more>get an environment variable</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getloadavg.html">getloadavg</a>
+					-
+					<span data-more>get system load averages</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getpt.html">getpt</a>
+					-
+					<span data-more>open the pseudoterminal master (PTM)</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getsubopt.html">getsubopt</a>
+					-
+					<span data-more>parse suboption arguments from a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/grantpt.html">grantpt</a>
+					-
+					<span data-more>grant access to the slave pseudoterminal</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/imaxabs.html">imaxabs</a>
+					-
+					<span data-more>compute the absolute value of an integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/imaxdiv.html">imaxdiv</a>
+					-
+					<span data-more>compute quotient and remainder of an integer division</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/initstate.html">initstate</a>
+					-
+					<span data-more>random number generator</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/initstate_r.html">initstate_r</a>
+					-
+					<span data-more>reentrant random number generator</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/jrand48.html">jrand48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/jrand48_r.html">jrand48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/l64a.html">l64a</a>
+					-
+					<span data-more>convert between long and base-64</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/labs.html">labs</a>
+					-
+					<span data-more>compute the absolute value of an integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lcong48.html">lcong48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lcong48_r.html">lcong48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ldiv.html">ldiv</a>
+					-
+					<span data-more>compute quotient and remainder of an integer division</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/llabs.html">llabs</a>
+					-
+					<span data-more>compute the absolute value of an integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lldiv.html">lldiv</a>
+					-
+					<span data-more>compute quotient and remainder of an integer division</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lrand48.html">lrand48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lrand48_r.html">lrand48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/malloc.html">malloc</a>
+					-
+					<span data-more>allocate and free dynamic memory</span>
+					<span data-less>allocate and free dynamic memory</span>
+				</li>
+				<li>
+					<a href="headers/MB_CUR_MAX.html">MB_CUR_MAX</a>
+					-
+					<span data-more>maximum length of a multibyte character in the current locale</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mblen.html">mblen</a>
+					-
+					<span data-more>determine number of bytes in next multibyte character</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mbstowcs.html">mbstowcs</a>
+					-
+					<span data-more>convert a multibyte string to a wide-character string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mbtowc.html">mbtowc</a>
+					-
+					<span data-more>convert a multibyte sequence to a wide character</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memalign.html">memalign</a>
+					-
+					<span data-more>allocate aligned memory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mkdtemp.html">mkdtemp</a>
+					-
+					<span data-more>create a unique temporary directory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mkostemp.html">mkostemp</a>
+					-
+					<span data-more>create a unique temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mkostemps.html">mkostemps</a>
+					-
+					<span data-more>create a unique temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mkstemp.html">mkstemp</a>
+					-
+					<span data-more>create a unique temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mkstemps.html">mkstemps</a>
+					-
+					<span data-more>create a unique temporary file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mktemp.html">mktemp</a>
+					-
+					<span data-more>make a unique temporary filename</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mrand48.html">mrand48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mrand48_r.html">mrand48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nrand48.html">nrand48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/nrand48_r.html">nrand48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/on_exit.html">on_exit</a>
+					-
+					<span data-more>register a function to be called at normal process termination</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/posix_memalign.html">posix_memalign</a>
+					-
+					<span data-more>allocate aligned memory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/posix_openpt.html">posix_openpt</a>
+					-
+					<span data-more>open a pseudoterminal device</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ptsname.html">ptsname</a>
+					-
+					<span data-more>get the name of the slave pseudoterminal</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ptsname_r.html">ptsname_r</a>
+					-
+					<span data-more>get the name of the slave pseudoterminal</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/putenv.html">putenv</a>
+					-
+					<span data-more>change or add an environment variable</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/pvalloc.html">pvalloc</a>
+					-
+					<span data-more>allocate aligned memory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/qecvt.html">qecvt</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/qecvt_r.html">qecvt_r</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/qfcvt.html">qfcvt</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/qfcvt_r.html">qfcvt_r</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/qgcvt.html">qgcvt</a>
+					-
+					<span data-more>convert a floating-point number to a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/qsort.html">qsort</a>
+					-
+					<span data-more>sort an array</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/qsort_r.html">qsort_r</a>
+					-
+					<span data-more>sort an array</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rand.html">rand</a>
+					-
+					<span data-more>pseudo-random number generator</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rand_r.html">rand_r</a>
+					-
+					<span data-more>pseudo-random number generator</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/random.html">random</a>
+					-
+					<span data-more>random number generator</span>
+					<span data-less>random number generator</span>
+				</li>
+				<li>
+					<a href="headers/random_r.html">random_r</a>
+					-
+					<span data-more>reentrant random number generator</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/realloc.html">realloc</a>
+					-
+					<span data-more>allocate and free dynamic memory</span>
+					<span data-less>allocate and free dynamic memory</span>
+				</li>
+				<li>
+					<a href="headers/rpmatch.html">rpmatch</a>
+					-
+					<span data-more>determine if the answer to a question is affirmative or negative</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/secure_getenv.html">secure_getenv</a>
+					-
+					<span data-more>get an environment variable</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/seed48.html">seed48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/seed48_r.html">seed48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setenv.html">setenv</a>
+					-
+					<span data-more>change or add an environment variable</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setstate.html">setstate</a>
+					-
+					<span data-more>random number generator</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setstate_r.html">setstate_r</a>
+					-
+					<span data-more>reentrant random number generator</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/srand.html">srand</a>
+					-
+					<span data-more>pseudo-random number generator</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/srand48.html">srand48</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/srand48_r.html">srand48_r</a>
+					-
+					<span data-more>generate uniformly distributed pseudo-random numbers reentrantly</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/srandom.html">srandom</a>
+					-
+					<span data-more>random number generator</span>
+					<span data-less>random number generator</span>
+				</li>
+				<li>
+					<a href="headers/srandom_r.html">srandom_r</a>
+					-
+					<span data-more>reentrant random number generator</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strfromd.html">strfromd</a>
+					-
+					<span data-more>convert a floating-point value into a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strfromf.html">strfromf</a>
+					-
+					<span data-more>convert a floating-point value into a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strfroml.html">strfroml</a>
+					-
+					<span data-more>convert a floating-point value into a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtod.html">strtod</a>
+					-
+					<span data-more>convert ASCII string to floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtof.html">strtof</a>
+					-
+					<span data-more>convert ASCII string to floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtol.html">strtol</a>
+					-
+					<span data-more>convert a string to a long integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtold.html">strtold</a>
+					-
+					<span data-more>convert ASCII string to floating-point number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtoll.html">strtoll</a>
+					-
+					<span data-more>convert a string to a long integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtoq.html">strtoq</a>
+					-
+					<span data-more>convert a string to a long integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtoul.html">strtoul</a>
+					-
+					<span data-more>convert a string to an unsigned long integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtoull.html">strtoull</a>
+					-
+					<span data-more>convert a string to an unsigned long integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtouq.html">strtouq</a>
+					-
+					<span data-more>convert a string to an unsigned long integer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/system.html">system</a>
+					-
+					<span data-more>execute a shell command</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/unlockpt.html">unlockpt</a>
+					-
+					<span data-more>unlock a pseudoterminal master/slave pair</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/unsetenv.html">unsetenv</a>
+					-
+					<span data-more>change or add an environment variable</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/valloc.html">valloc</a>
+					-
+					<span data-more>allocate aligned memory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/wcstombs.html">wcstombs</a>
+					-
+					<span data-more>convert a wide-character string to a multibyte string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/wctomb.html">wctomb</a>
+					-
+					<span data-more>convert a wide character to a multibyte sequence</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="string.h">
+				<a href="#string.h">string.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/bstring.html">bstring</a>
+					-
+					<span data-more>byte string operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memccpy.html">memccpy</a>
+					-
+					<span data-more>copy memory area</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memchr.html">memchr</a>
+					-
+					<span data-more>scan memory for a character</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memcmp.html">memcmp</a>
+					-
+					<span data-more>compare memory areas</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memcpy.html">memcpy</a>
+					-
+					<span data-more>copy memory area</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memfrob.html">memfrob</a>
+					-
+					<span data-more>frobnicate (encrypt) a memory area</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memmem.html">memmem</a>
+					-
+					<span data-more>locate a substring</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memmove.html">memmove</a>
+					-
+					<span data-more>copy memory area</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mempcpy.html">mempcpy</a>
+					-
+					<span data-more>copy memory area</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memrchr.html">memrchr</a>
+					-
+					<span data-more>scan memory for a character</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/memset.html">memset</a>
+					-
+					<span data-more>fill memory with a constant byte</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rawmemchr.html">rawmemchr</a>
+					-
+					<span data-more>scan memory for a character</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/stpcpy.html">stpcpy</a>
+					-
+					<span data-more>copy a string returning a pointer to its end</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/stpncpy.html">stpncpy</a>
+					-
+					<span data-more>copy a fixed-size string, returning a pointer to its end</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/strcasestr.html">strcasestr</a>
+					-
+					<span data-more>locate a substring</span>
+					<span data-less>locate a substring</span>
+				</li>
+				<li>
+					<a href="headers/strcat.html">strcat</a>
+					-
+					<span data-more>concatenate two strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strchr.html">strchr</a>
+					-
+					<span data-more>locate character in string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strchrnul.html">strchrnul</a>
+					-
+					<span data-more>locate character in string</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/strcmp.html">strcmp</a>
+					-
+					<span data-more>compare two strings</span>
+					<span data-less>compare two strings</span>
+				</li>
+				<li>
+					<a href="headers/strcoll.html">strcoll</a>
+					-
+					<span data-more>compare two strings using the current locale</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/strcpy.html">strcpy</a>
+					-
+					<span data-more>copy a string</span>
+					<span data-less>copy a string</span>
+				</li>
+				<li>
+					<a href="headers/strcspn.html">strcspn</a>
+					-
+					<span data-more>get length of a prefix substring</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strdup.html">strdup</a>
+					-
+					<span data-more>duplicate a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strdupa.html">strdupa</a>
+					-
+					<span data-more>duplicate a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strerror.html">strerror</a>
+					-
+					<span data-more>return string describing error number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strerror_l.html">strerror_l</a>
+					-
+					<span data-more>return string describing error number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strerror_r.html">strerror_r</a>
+					-
+					<span data-more>return string describing error number</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strfry.html">strfry</a>
+					-
+					<span data-more>randomize a string</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/strlen.html">strlen</a>
+					-
+					<span data-more>calculate the length of a string</span>
+					<span data-less>calculate the length of a string</span>
+				</li>
+				<li>
+					<a href="headers/strncat.html">strncat</a>
+					-
+					<span data-more>concatenate two strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strncmp.html">strncmp</a>
+					-
+					<span data-more>compare two strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strncpy.html">strncpy</a>
+					-
+					<span data-more>copy a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strndup.html">strndup</a>
+					-
+					<span data-more>duplicate a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strndupa.html">strndupa</a>
+					-
+					<span data-more>duplicate a string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strnlen.html">strnlen</a>
+					-
+					<span data-more>determine the length of a fixed-size string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strpbrk.html">strpbrk</a>
+					-
+					<span data-more>search a string for any of a set of bytes</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strrchr.html">strrchr</a>
+					-
+					<span data-more>locate character in string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strsep.html">strsep</a>
+					-
+					<span data-more>extract token from string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strsignal.html">strsignal</a>
+					-
+					<span data-more>return string describing signal</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strspn.html">strspn</a>
+					-
+					<span data-more>get length of a prefix substring</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/strstr.html">strstr</a>
+					-
+					<span data-more>locate a substring</span>
+					<span data-less>locate a substring</span>
+				</li>
+				<li>
+					<a href="headers/strtok.html">strtok</a>
+					-
+					<span data-more>extract tokens from strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strtok_r.html">strtok_r</a>
+					-
+					<span data-more>extract tokens from strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strverscmp.html">strverscmp</a>
+					-
+					<span data-more>compare two version strings</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strxfrm.html">strxfrm</a>
+					-
+					<span data-more>string transformation</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/wmempcpy.html">wmempcpy</a>
+					-
+					<span data-more>copy memory area</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="strings.h">
+				<a href="#strings.h">strings.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/bcmp.html">bcmp</a>
+					-
+					<span data-more>compare byte sequences</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/bcopy.html">bcopy</a>
+					-
+					<span data-more>copy byte sequence</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/bzero.html">bzero</a>
+					-
+					<span data-more>zero a byte string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/explicit_bzero.html">explicit_bzero</a>
+					-
+					<span data-more>zero a byte string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ffs.html">ffs</a>
+					-
+					<span data-more>find first bit set in a word</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ffsl.html">ffsl</a>
+					-
+					<span data-more>find first bit set in a word</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ffsll.html">ffsll</a>
+					-
+					<span data-more>find first bit set in a word</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/index.html">index</a>
+					-
+					<span data-more>locate character in string</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/rindex.html">rindex</a>
+					-
+					<span data-more>locate character in string</span>
+					<span data-less></span>
+				</li>
+				<li data-filter>
+					<a href="headers/strcasecmp.html">strcasecmp</a>
+					-
+					<span data-more>compare two strings ignoring case</span>
+					<span data-less>compare two strings ignoring case</span>
+				</li>
+				<li>
+					<a href="headers/string.html">string</a>
+					-
+					<span data-more>string operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/strncasecmp.html">strncasecmp</a>
+					-
+					<span data-more>compare two strings ignoring case</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="sys/stat.h">
+				<a href="#sys/stat.h">sys/stat.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/chmod.html">chmod</a>
+					-
+					<span data-more>change permissions of a file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fchmod.html">fchmod</a>
+					-
+					<span data-more>change permissions of a file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fchmodat.html">fchmodat</a>
+					-
+					<span data-more>change permissions of a file</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/isfdtype.html">isfdtype</a>
+					-
+					<span data-more>test file type of a file descriptor</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mkdir.html">mkdir</a>
+					-
+					<span data-more>create a directory</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/mkdirat.html">mkdirat</a>
+					-
+					<span data-more>create a directory</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="sys/statvfs.h">
+				<a href="#sys/statvfs.h">sys/statvfs.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/fstatvfs.html">fstatvfs</a>
+					-
+					<span data-more>get filesystem statistics</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/fstatvfs.html">fstatvfs</a>
+					-
+					<span data-more>get filesystem statistics</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/statvfs.html">statvfs</a>
+					-
+					<span data-more>get filesystem statistics</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/statvfs.html">statvfs</a>
+					-
+					<span data-more>get filesystem statistics</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			
+			<h1 id="sys/time.h">
+				<a href="#sys/time.h">sys/time.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/adjtime.html">adjtime</a>
+					-
+					<span data-more>correct the time to synchronize the system clock</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/futimes.html">futimes</a>
+					-
+					<span data-more>change file timestamps</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getitimer.html">getitimer</a>
+					-
+					<span data-more>get or set value of an interval timer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getpriority.html">getpriority</a>
+					-
+					<span data-more>get/set program scheduling priority</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getrlimit.html">getrlimit</a>
+					-
+					<span data-more>get/set resource limits</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/getrusage.html">getrusage</a>
+					-
+					<span data-more>get resource usage</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/gettimeofday.html">gettimeofday</a>
+					-
+					<span data-more>get / set time</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/lutimes.html">lutimes</a>
+					-
+					<span data-more>change file timestamps</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/prlimit.html">prlimit</a>
+					-
+					<span data-more>get/set resource limits</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/prlimit64.html">prlimit64</a>
+					-
+					<span data-more>get/set resource limits</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setitimer.html">setitimer</a>
+					-
+					<span data-more>get or set value of an interval timer</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setpriority.html">setpriority</a>
+					-
+					<span data-more>get/set program scheduling priority</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/setrlimit.html">setrlimit</a>
+					-
+					<span data-more>get/set resource limits</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/settimeofday.html">settimeofday</a>
+					-
+					<span data-more>get / set time</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/timeradd.html">timeradd</a>
+					-
+					<span data-more>timeval operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/timerclear.html">timerclear</a>
+					-
+					<span data-more>timeval operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/timercmp.html">timercmp</a>
+					-
+					<span data-more>timeval operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/timerisset.html">timerisset</a>
+					-
+					<span data-more>timeval operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/timersub.html">timersub</a>
+					-
+					<span data-more>timeval operations</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/ugetrlimit.html">ugetrlimit</a>
+					-
+					<span data-more>get/set resource limits</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vlimit.html">vlimit</a>
+					-
+					<span data-more>get/set resource limits</span>
+					<span data-less></span>
+				</li>
+				<li>
+					<a href="headers/vtimes.html">vtimes</a>
+					-
+					<span data-more>get resource usage</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="sys/times.h">
+				<a href="#sys/times.h">sys/times.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/times.html">times</a>
+					-
+					<span data-more>get process times</span>
+					<span data-less></span>
+				</li>
+			</ul>
+			<h1 id="time.h">
+				<a href="#time.h">time.h</a>
+			</h1>
+			<ul>
+				<li>
+					<a href="headers/asctime.html">asctime</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/asctime_r.html">asctime_r</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/clock.html">clock</a>
+					-
+					determine processor time
+				</li>
+				<li>
+					<a href="headers/clock_getcpuclockid.html">clock_getcpuclockid</a>
+					-
+					obtain ID of a process CPU-time clock
+				</li>
+				<li>
+					<a href="headers/clock_getres.html">clock_getres</a>
+					-
+					clock and time functions
+				</li>
+				<li>
+					<a href="headers/clock_getres.html">clock_getres</a>
+					-
+					clock and time functions
+				</li>
+				<li>
+					<a href="headers/clock_gettime.html">clock_gettime</a>
+					-
+					clock and time functions
+				</li>
+				<li>
+					<a href="headers/clock_gettime.html">clock_gettime</a>
+					-
+					clock and time functions
+				</li>
+				<li>
+					<a href="headers/clock_nanosleep.html">clock_nanosleep</a>
+					-
+					high-resolution sleep with specifiable clock
+				</li>
+				<li>
+					<a href="headers/clock_settime.html">clock_settime</a>
+					-
+					clock and time functions
+				</li>
+				<li>
+					<a href="headers/clock_settime.html">clock_settime</a>
+					-
+					clock and time functions
+				</li>
+				<li>
+					<a href="headers/ctime.html">ctime</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/ctime_r.html">ctime_r</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/daylight.html">daylight</a>
+					-
+					initialize time conversion information
+				</li>
+				<li>
+					<a href="headers/difftime.html">difftime</a>
+					-
+					calculate time difference
+				</li>
+				<li>
+					<a href="headers/dysize.html">dysize</a>
+					-
+					get number of days for a given year
+				</li>
+				<li>
+					<a href="headers/getdate.html">getdate</a>
+					-
+					convert a date-plus-time string to broken-down time
+				</li>
+				<li>
+					<a href="headers/getdate_err.html">getdate_err</a>
+					-
+					convert a date-plus-time string to broken-down time
+				</li>
+				<li>
+					<a href="headers/getdate_r.html">getdate_r</a>
+					-
+					convert a date-plus-time string to broken-down time
+				</li>
+				<li>
+					<a href="headers/gmtime.html">gmtime</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/gmtime_r.html">gmtime_r</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/localtime.html">localtime</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/localtime_r.html">localtime_r</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/mktime.html">mktime</a>
+					-
+					transform date and time to broken-down time or ASCII
+				</li>
+				<li>
+					<a href="headers/nanosleep.html">nanosleep</a>
+					-
+					high-resolution sleep
+				</li>
+				<li>
+					<a href="headers/stime.html">stime</a>
+					-
+					set time
+				</li>
+				<li>
+					<a href="headers/strftime.html">strftime</a>
+					-
+					format date and time
+				</li>
+				<li>
+					<a href="headers/strptime.html">strptime</a>
+					-
+					convert a string representation of time to a time tm structure
+				</li>
+				<li data-filter>
+					<a href="headers/time.html">time</a>
+					-
+					get time in seconds
+				</li>
+				<li>
+					<a href="headers/timegm.html">timegm</a>
+					-
+					inverses of gmtime and localtime
+				</li>
+				<li>
+					<a href="headers/timelocal.html">timelocal</a>
+					-
+					inverses of gmtime and localtime
+				</li>
+				<li>
+					<a href="headers/timer_delete.html">timer_delete</a>
+					-
+					delete a POSIX per-process timer
+				</li>
+				<li>
+					<a href="headers/timer_getoverrun.html">timer_getoverrun</a>
+					-
+					get overrun count for a POSIX per-process timer
+				</li>
+				<li>
+					<a href="headers/timer_gettime.html">timer_gettime</a>
+					-
+					arm/disarm and fetch state of POSIX per-process timer
+				</li>
+				<li>
+					<a href="headers/timer_settime.html">timer_settime</a>
+					-
+					arm/disarm and fetch state of POSIX per-process timer
+				</li>
+				<li>
+					<a href="headers/timezone.html">timezone</a>
+					-
+					initialize time conversion information
+				</li>
+				<li>
+					<a href="headers/tzname.html">tzname</a>
+					-
+					initialize time conversion information
+				</li>
+				<li>
+					<a href="headers/tzset.html">tzset</a>
+					-
+					initialize time conversion information
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>

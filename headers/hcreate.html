@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p><a data-content='This is the man page for &lt;code&gt;hcreate&lt;/code&gt; and 5 related functions.' data-toggle='popover' tabindex='0'>hcreate</a>, hdestroy, hsearch, hcreate_r, hdestroy_r, hsearch_r - hash table management</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;search.h&gt;</a>
+
+int hcreate(<a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> nel);
+
+ENTRY *hsearch(ENTRY item, ACTION action);
+
+void hdestroy(void);
+
+#define _GNU_SOURCE /* See feature_test_macros(7) */
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;search.h&gt;</a>
+
+int hcreate_r(<a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> nel, struct hsearch_data *htab);
+
+int hsearch_r(ENTRY item, ACTION action, ENTRY **retval,
+ struct hsearch_data *htab);
+
+void hdestroy_r(struct hsearch_data *htab);</code></pre>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The three functions <a href='hcreate'>hcreate</a>(), <a href='hsearch'>hsearch</a>(), and <a href='hdestroy'>hdestroy</a>() allow the caller to create and manage a hash search table containing entries consisting of a key (a string) and associated data. Using these functions, only one hash table can be used at a time.</p>
+<p>The three functions <a href='hcreate_r'>hcreate_r</a>(), <a href='hsearch_r'>hsearch_r</a>(), <a href='hdestroy_r'>hdestroy_r</a>() are reentrant versions that allow a program to use more than one hash search table at the same time. The last argument, <code>htab</code>, points to a structure that describes the table on which the function is to operate. The programmer should treat this structure as opaque (i.e., do not attempt to directly access or modify the fields in this structure).</p>
+<p>First a hash table must be created using <a href='hcreate'>hcreate</a>(). The argument <code>nel</code> specifies the maximum number of entries in the table. (This maximum cannot be changed later, so choose it wisely.) The implementation may adjust this value upward to improve the performance of the resulting hash table.</p>
+<p>The <a href='hcreate_r'>hcreate_r</a>() function performs the same task as <a href='hcreate'>hcreate</a>(), but for the table described by the structure <code>*htab</code>. The structure pointed to by <code>htab</code> must be zeroed before the first call to <a href='hcreate_r'>hcreate_r</a>().</p>
+<p>The function <a href='hdestroy'>hdestroy</a>() frees the memory occupied by the hash table that was created by <a href='hcreate'>hcreate</a>(). After calling <a href='hdestroy'>hdestroy</a>(), a new hash table can be created using <a href='hcreate'>hcreate</a>(). The <a href='hdestroy_r'>hdestroy_r</a>() function performs the analogous task for a hash table described by <code>*htab</code>, which was previously created using <a href='hcreate_r'>hcreate_r</a>().</p>
+<p>The <a href='hsearch'>hsearch</a>() function searches the hash table for an item with the same key as <code>item</code> (where "the same" is determined using <a href='/3/strcmp'>strcmp</a>(3)), and if successful returns a pointer to it.</p>
+<p>The argument <code>item</code> is of type <code>ENTRY</code>, which is defined in <code>&lt;search.h&gt;</code> as follows:</p>
+<pre><code>typedef struct entry {
+    <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>key;
+    void *data;
+} ENTRY;</code></pre>
+<p>The field <code>key</code> points to a null-terminated string which is the search key. The field <code>data</code> points to data that is associated with that key.</p>
+<p>The argument <code>action</code> determines what <a href='hsearch'>hsearch</a>() does after an unsuccessful search. This argument must either have the value <strong>ENTER</strong>, meaning insert a copy of <code>item</code> (and return a pointer to the new hash table entry as the function result), or the value <strong>FIND</strong>, meaning that NULL should be returned. (If <code>action</code> is <strong>FIND</strong>, then <code>data</code> is ignored.)</p>
+<p>The <a href='hsearch_r'>hsearch_r</a>() function is like <a href='hsearch'>hsearch</a>() but operates on the hash table described by <code>*htab</code>. The <a href='hsearch_r'>hsearch_r</a>() function differs from <a href='hsearch'>hsearch</a>() in that a pointer to the found item is returned in <code>*retval</code>, rather than as the function result.</p>
+</div></section><h1 id='return-value'><a href='#return-value'>RETURN VALUE</a></h1><section data-for='return-value'><div data-more>
+<p><a href='hcreate'>hcreate</a>() and <a href='hcreate_r'>hcreate_r</a>() return nonzero on success. They return 0 on error, with <code>errno</code> set to indicate the cause of the error.</p>
+<p>On success, <a href='hsearch'>hsearch</a>() returns a pointer to an entry in the hash table. <a href='hsearch'>hsearch</a>() returns NULL on error, that is, if <code>action</code> is <strong>ENTER</strong> and the hash table is full, or <code>action</code> is <strong>FIND</strong> and <code>item</code> cannot be found in the hash table. <a href='hsearch_r'>hsearch_r</a>() returns nonzero on success, and 0 on error. In the event of an error, these two functions set <code>errno</code> to indicate the cause of the error.</p>
+</div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-more>
+<p>The following program inserts 24 items into a hash table, then prints some of them.</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;search.h&gt;
+
+static <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>data[] = { &quot;alpha&quot;, &quot;bravo&quot;, &quot;charlie&quot;, &quot;delta&quot;,
+     &quot;echo&quot;, &quot;foxtrot&quot;, &quot;golf&quot;, &quot;hotel&quot;, &quot;india&quot;, &quot;juliet&quot;,
+     &quot;kilo&quot;, &quot;lima&quot;, &quot;mike&quot;, &quot;november&quot;, &quot;oscar&quot;, &quot;papa&quot;,
+     &quot;quebec&quot;, &quot;romeo&quot;, &quot;sierra&quot;, &quot;tango&quot;, &quot;uniform&quot;,
+     &quot;victor&quot;, &quot;whisky&quot;, &quot;x-ray&quot;, &quot;yankee&quot;, &quot;zulu&quot;
+};
+
+int
+main(void)
+{
+    ENTRY e, *ep;
+    int i;
+
+    hcreate(30);
+
+    for (i = 0; i &lt; 24; i++) {
+        e.key = data[i];
+        /* data is just an integer, instead of a
+           pointer to something */
+        e.data = (void *) i;
+        ep = hsearch(e, ENTER);
+        /* there should be no failures */
+        if (ep == NULL) {
+            fprintf(stderr, &quot;entry failed\n&quot;);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for (i = 22; i &lt; 26; i++) {
+        /* print two entries from the table, and
+           show that two are not in the table */
+        e.key = data[i];
+        ep = hsearch(e, FIND);
+        printf(&quot;%9.9s -&gt; %9.9s:%d\n&quot;, e.key,
+               ep ? ep-&gt;key : &quot;NULL&quot;, ep ? (int)(ep-&gt;data) : 0);
+    }
+    hdestroy();
+    exit(EXIT_SUCCESS);
+}</code></pre>
+</div></section><h1 id='errors'><a href='#errors'>ERRORS</a></h1><div data-for='errors' data-hide><section data-for='errors'><div data-more>
+<p><a href='hcreate_r'>hcreate_r</a>() and <a href='hdestroy_r'>hdestroy_r</a>() can fail for the following reasons:</p>
+<dl>
+<dt><strong>EINVAL</strong></dt>
+<dd><p><code>htab</code> is NULL.</p>
+</dd>
+</dl>
+<p><a href='hsearch'>hsearch</a>() and <a href='hsearch_r'>hsearch_r</a>() can fail for the following reasons:</p>
+<dl>
+<dt><strong>ENOMEM</strong></dt>
+<dd><p><code>action</code> was <strong>ENTER</strong>, <code>key</code> was not found in the table, and there was no room in the table to add a new entry.</p>
+</dd>
+<dt><strong>ESRCH</strong></dt>
+<dd><p><code>action</code> was <strong>FIND</strong>, and <code>key</code> was not found in the table.</p>
+</dd>
+</dl>
+<p>POSIX.1 specifies only the <strong>ENOMEM</strong> error.</p>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='hcreate'>hcreate</a>(), <a href='hsearch'>hsearch</a>(),<br />
+<a href='hdestroy'>hdestroy</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Unsafe race:hsearch</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='hcreate_r'>hcreate_r</a>(), <a href='hsearch_r'>hsearch_r</a>(),<br />
+<a href='hdestroy_r'>hdestroy_r</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe race:htab</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>The functions <a href='hcreate'>hcreate</a>(), <a href='hsearch'>hsearch</a>(), and <a href='hdestroy'>hdestroy</a>() are from SVr4, and are described in POSIX.1-2001 and POSIX.1-2008.</p>
+<p>The functions <a href='hcreate_r'>hcreate_r</a>(), <a href='hsearch_r'>hsearch_r</a>(), and <a href='hdestroy_r'>hdestroy_r</a>() are GNU extensions.</p>
+</div></div></section><h1 id='notes'><a href='#notes'>NOTES</a></h1><div data-for='notes' data-hide><section data-for='notes'><div data-more>
+<p>Hash table implementations are usually more efficient when the table contains enough free space to minimize collisions. Typically, this means that <code>nel</code> should be at least 25% larger than the maximum number of elements that the caller expects to store in the table.</p>
+<p>The <a href='hdestroy'>hdestroy</a>() and <a href='hdestroy_r'>hdestroy_r</a>() functions do not free the buffers pointed to by the <code>key</code> and <code>data</code> elements of the hash table entries. (It can't do this because it doesn't know whether these buffers were allocated dynamically.) If these buffers need to be freed (perhaps because the program is repeatedly creating and destroying hash tables, rather than creating a single table whose lifetime matches that of the program), then the program must maintain bookkeeping data structures that allow it to free them.</p>
+</div></div></section><h1 id='bugs'><a href='#bugs'>BUGS</a></h1><div data-for='bugs' data-hide><section data-for='bugs'><div data-more>
+<p>SVr4 and POSIX.1-2001 specify that <code>action</code> is significant only for unsuccessful searches, so that an <strong>ENTER</strong> should not do anything for a successful search. In libc and glibc (before version 2.3), the implementation violates the specification, updating the <code>data</code> for the given <code>key</code> in this case.</p>
+<p>Individual hash table entries can be added, but not deleted.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/3/bsearch'>bsearch</a>(3), <a href='/3/lsearch'>lsearch</a>(3), <a href='/3/malloc'>malloc</a>(3), <a href='/3/tsearch'>tsearch</a>(3)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

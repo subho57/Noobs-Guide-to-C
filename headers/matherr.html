@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>matherr - SVID math library exception handling</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;math.h&gt;</a>
+
+int matherr(struct exception *exc);
+
+extern _LIB_VERSION_TYPE _LIB_VERSION;</code></pre>
+<p>Link with <code>-lm</code>.</p>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p><code>Note</code>: the mechanism described in this page is no longer supported by glibc. Before glibc 2.27, it had been marked as obsolete. Since glibc 2.27, the mechanism has been removed altogether. New applications should use the techniques described in <a href='/7/math_error'>math_error</a>(7) and <a href='/3/fenv'>fenv</a>(3). This page documents the <a href='matherr'>matherr</a>() mechanism as an aid for maintaining and porting older applications.</p>
+<p>The System V Interface Definition (SVID) specifies that various math functions should invoke a function called <a href='matherr'>matherr</a>() if a math exception is detected. This function is called before the math function returns; after <a href='matherr'>matherr</a>() returns, the system then returns to the math function, which in turn returns to the caller.</p>
+<p>To employ <a href='matherr'>matherr</a>(), the programmer must define the <strong>_SVID_SOURCE</strong> feature test macro (before including <code>any</code> header files), and assign the value <strong>_SVID_</strong> to the external variable <strong>_LIB_VERSION</strong>.</p>
+<p>The system provides a default version of <a href='matherr'>matherr</a>(). This version does nothing, and returns zero (see below for the significance of this). The default <a href='matherr'>matherr</a>() can be overridden by a programmer-defined version, which will be invoked when an exception occurs. The function is invoked with one argument, a pointer to an <code>exception</code> structure, defined as follows:</p>
+<pre><code>struct exception {
+    int    type;      /* Exception type */
+    char  *name;      /* Name of function causing exception */
+    double arg1;      /* 1st argument to function */
+    double arg2;      /* 2nd argument to function */
+    double retval;    /* Function return value */
+}</code></pre>
+<p>The <code>type</code> field has one of the following values:</p>
+<dl>
+<dt><strong>DOMAIN</strong></dt>
+<dd><p>A domain error occurred (the function argument was outside the range for which the function is defined). The return value depends on the function; <code>errno</code> is set to <strong>EDOM</strong>.</p>
+</dd>
+<dt><strong>SING</strong></dt>
+<dd><p>A pole error occurred (the function result is an infinity). The return value in most cases is <strong>HUGE</strong> (the largest single precision floating-point number), appropriately signed. In most cases, <code>errno</code> is set to <strong>EDOM</strong>.</p>
+</dd>
+<dt><strong>OVERFLOW</strong></dt>
+<dd><p>An overflow occurred. In most cases, the value <strong>HUGE</strong> is returned, and <code>errno</code> is set to <strong>ERANGE</strong>.</p>
+</dd>
+<dt><strong>UNDERFLOW</strong></dt>
+<dd><p>An underflow occurred. 0.0 is returned, and <code>errno</code> is set to <strong>ERANGE</strong>.</p>
+</dd>
+<dt><strong>TLOSS</strong></dt>
+<dd><p>Total loss of significance. 0.0 is returned, and <code>errno</code> is set to <strong>ERANGE</strong>.</p>
+</dd>
+<dt><strong>PLOSS</strong></dt>
+<dd><p>Partial loss of significance. This value is unused on glibc (and many other systems).</p>
+</dd>
+</dl>
+<p>The <code>arg1</code> and <code>arg2</code> fields are the arguments supplied to the function (<code>arg2</code> is undefined for functions that take only one argument).</p>
+<p>The <code>retval</code> field specifies the return value that the math function will return to its caller. The programmer-defined <a href='matherr'>matherr</a>() can modify this field to change the return value of the math function.</p>
+<p>If the <a href='matherr'>matherr</a>() function returns zero, then the system sets <code>errno</code> as described above, and may print an error message on standard error (see below).</p>
+<p>If the <a href='matherr'>matherr</a>() function returns a nonzero value, then the system does not set <code>errno</code>, and doesn't print an error message.</p>
+<h2>Math functions that employ matherr()</h2>
+<p>The table below lists the functions and circumstances in which <a href='matherr'>matherr</a>() is called. The "Type" column indicates the value assigned to <code>exc-&gt;type</code> when calling <a href='matherr'>matherr</a>(). The "Result" column is the default return value assigned to <code>exc-&gt;retval</code>.</p>
+<p>The "Msg?" and "errno" columns describe the default behavior if <a href='matherr'>matherr</a>() returns zero. If the "Msg?" columns contains "y", then the system prints an error message on standard error.</p>
+<p>The table uses the following notations and abbreviations:</p>
+<blockquote>
+<pre><code>x        first argument to function
+y        second argument to function
+fin      finite value for argument
+neg      negative value for argument
+int      integral value for argument
+o/f      result overflowed
+u/f      result underflowed
+|x|      absolute value of x
+X_TLOSS  is a constant defined in &lt;math.h&gt;</code></pre>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Function</td>
+<td style="text-align: left;">Type</td>
+<td style="text-align: left;">Result</td>
+<td style="text-align: center;">Msg?</td>
+<td style="text-align: left;">errno</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">acos(|x|&gt;1)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">asin(|x|&gt;1)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">atan2(0,0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">acosh(x&lt;1)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">NAN</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">atanh(|x|&gt;1)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">NAN</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">atanh(|x|==1)</td>
+<td style="text-align: left;">SING</td>
+<td style="text-align: left;">(x&gt;0.0)?</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">HUGE_VAL :</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">-HUGE_VAL</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cosh(fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sinh(fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">(x&gt;0.0) ?</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">HUGE : -HUGE</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sqrt(x&lt;0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">hypot(fin,fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">exp(fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">exp(fin) u/f</td>
+<td style="text-align: left;">UNDERFLOW</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">exp2(fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">exp2(fin) u/f</td>
+<td style="text-align: left;">UNDERFLOW</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">exp10(fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">exp10(fin) u/f</td>
+<td style="text-align: left;">UNDERFLOW</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">j0(|x|&gt;X_TLOSS)</td>
+<td style="text-align: left;">TLOSS</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">j1(|x|&gt;X_TLOSS)</td>
+<td style="text-align: left;">TLOSS</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">jn(|x|&gt;X_TLOSS)</td>
+<td style="text-align: left;">TLOSS</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">y0(x&gt;X_TLOSS)</td>
+<td style="text-align: left;">TLOSS</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">y1(x&gt;X_TLOSS)</td>
+<td style="text-align: left;">TLOSS</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">yn(x&gt;X_TLOSS)</td>
+<td style="text-align: left;">TLOSS</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">y0(0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">y0(x&lt;0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">y1(0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">y1(x&lt;0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">yn(n,0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">yn(x&lt;0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lgamma(fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lgamma(-int) or</td>
+<td style="text-align: left;">SING</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lgamma(0)</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tgamma(fin) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE_VAL</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tgamma(-int)</td>
+<td style="text-align: left;">SING</td>
+<td style="text-align: left;">NAN</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tgamma(0)</td>
+<td style="text-align: left;">SING</td>
+<td style="text-align: left;">copysign(</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">HUGE_VAL,x)</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">log(0)</td>
+<td style="text-align: left;">SING</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">log(x&lt;0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">log2(0)</td>
+<td style="text-align: left;">SING</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">log2(x&lt;0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">log10(0)</td>
+<td style="text-align: left;">SING</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">log10(x&lt;0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">-HUGE</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pow(0.0,0.0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pow(x,y) o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">HUGE</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pow(x,y) u/f</td>
+<td style="text-align: left;">UNDERFLOW</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pow(NaN,0.0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">x</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0**neg</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">neg**non-int</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">0.0</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">scalb() o/f</td>
+<td style="text-align: left;">OVERFLOW</td>
+<td style="text-align: left;">(x&gt;0.0) ?</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">HUGE_VAL :</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">-HUGE_VAL</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">scalb() u/f</td>
+<td style="text-align: left;">UNDERFLOW</td>
+<td style="text-align: left;">copysign(</td>
+<td style="text-align: center;">n</td>
+<td style="text-align: left;">ERANGE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">0.0,x)</td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">fmod(x,0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">x</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">remainder(x,0)</td>
+<td style="text-align: left;">DOMAIN</td>
+<td style="text-align: left;">NAN</td>
+<td style="text-align: center;">y</td>
+<td style="text-align: left;">EDOM</td>
+</tr>
+</tbody>
+</table>
+</div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='matherr'>matherr</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='example'><a href='#example'>EXAMPLE</a></h1><section data-for='example'><div data-more>
+<p>The example program demonstrates the use of <a href='matherr'>matherr</a>() when calling <a href='/3/log'>log</a>(3). The program takes up to three command-line arguments. The first argument is the floating-point number to be given to <a href='/3/log'>log</a>(3). If the optional second argument is provided, then <strong>_LIB_VERSION</strong> is set to <strong>_SVID_</strong> so that <a href='matherr'>matherr</a>() is called, and the integer supplied in the command-line argument is used as the return value from <a href='matherr'>matherr</a>(). If the optional third command-line argument is supplied, then it specifies an alternative return value that <a href='matherr'>matherr</a>() should assign as the return value of the math function.</p>
+<p>The following example run, where <a href='/3/log'>log</a>(3) is given an argument of 0.0, does not use <a href='matherr'>matherr</a>():</p>
+<pre><code>$ ./a.out 0.0
+errno: Numerical result out of range
+x=-inf</code></pre>
+<p>In the following run, <a href='matherr'>matherr</a>() is called, and returns 0:</p>
+<pre><code>$ ./a.out 0.0 0
+matherr SING exception in log() function
+        args:   0.000000, 0.000000
+        retval: -340282346638528859811704183484516925440.000000
+log: SING error
+errno: Numerical argument out of domain
+x=-340282346638528859811704183484516925440.000000</code></pre>
+<p>The message "log: SING error" was printed by the C library.</p>
+<p>In the following run, <a href='matherr'>matherr</a>() is called, and returns a nonzero value:</p>
+<pre><code>$ ./a.out 0.0 1
+matherr SING exception in log() function
+        args:   0.000000, 0.000000
+        retval: -340282346638528859811704183484516925440.000000
+x=-340282346638528859811704183484516925440.000000</code></pre>
+<p>In this case, the C library did not print a message, and <code>errno</code> was not set.</p>
+<p>In the following run, <a href='matherr'>matherr</a>() is called, changes the return value of the math function, and returns a nonzero value:</p>
+<pre><code>$ ./a.out 0.0 1 12345.0
+matherr SING exception in log() function
+        args:   0.000000, 0.000000
+        retval: -340282346638528859811704183484516925440.000000
+x=12345.000000</code></pre>
+<h2>Program source</h2>
+<pre><code>#define _SVID_SOURCE
+#include &lt;errno.h&gt;
+#include &lt;math.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+static int matherr_ret = 0;     /* Value that matherr()
+                                   should return */
+static int change_retval = 0;   /* Should matherr() change
+                                   function&#39;s return value? */
+static double new_retval;       /* New function return value */
+
+int
+matherr(struct exception *exc)
+{
+    fprintf(stderr, &quot;matherr %s exception in %s() function\n&quot;,
+           (exc-&gt;type == DOMAIN) ?    &quot;DOMAIN&quot; :
+           (exc-&gt;type == OVERFLOW) ?  &quot;OVERFLOW&quot; :
+           (exc-&gt;type == UNDERFLOW) ? &quot;UNDERFLOW&quot; :
+           (exc-&gt;type == SING) ?      &quot;SING&quot; :
+           (exc-&gt;type == TLOSS) ?     &quot;TLOSS&quot; :
+           (exc-&gt;type == PLOSS) ?     &quot;PLOSS&quot; : &quot;???&quot;,
+            exc-&gt;name);
+    fprintf(stderr, &quot;        args:   %f, %f\n&quot;,
+            exc-&gt;arg1, exc-&gt;arg2);
+    fprintf(stderr, &quot;        retval: %f\n&quot;, exc-&gt;retval);
+
+    if (change_retval)
+        exc-&gt;retval = new_retval;
+
+    return matherr_ret;
+}
+
+int
+main(int argc, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>argv[])
+{
+    double x;
+
+    if (argc &lt; 2) {
+        fprintf(stderr, &quot;Usage: %s &lt;argval&gt;&quot;
+                &quot; [&lt;matherr-ret&gt; [&lt;new-func-retval&gt;]]\n&quot;, argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    if (argc &gt; 2) {
+        _LIB_VERSION = _SVID_;
+        matherr_ret = atoi(argv[2]);
+    }
+
+    if (argc &gt; 3) {
+        change_retval = 1;
+        new_retval = atof(argv[3]);
+    }
+
+    x = log(atof(argv[1]));
+    if (errno != 0)
+        perror(&quot;errno&quot;);
+
+    printf(&quot;x=%f\n&quot;, x);
+    exit(EXIT_SUCCESS);
+}</code></pre>
+</div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/3/fenv'>fenv</a>(3), <a href='/7/math_error'>math_error</a>(7), <a href='/7/standards'>standards</a>(7)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

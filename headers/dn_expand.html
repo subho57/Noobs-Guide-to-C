@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>res_ninit, res_nquery, res_nsearch, res_nquerydomain, res_nmkquery, res_nsend, res_init, res_query, res_search, res_querydomain, res_mkquery, res_send, dn_comp, dn_expand - resolver routines</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<pre><code><a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;netinet/in.h&gt;</a>
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;arpa/nameser.h&gt;</a>
+<a data-content='Be sure this line is atop your own code.' data-toggle='popover' tabindex='0'>#include &lt;resolv.h&gt;</a>
+
+struct __res_state;
+typedef struct __res_state *res_state;
+
+int res_ninit(res_state statep);
+
+int res_nquery(res_state statep,
+ <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dname, int class, int type,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer, int anslen);
+
+int res_nsearch(res_state statep,
+ <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dname, int class, int type,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer, int anslen);
+
+int res_nquerydomain(res_state statep,
+ <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>name, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>domain,
+ int class, int type, unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer,
+ int anslen);
+
+int res_nmkquery(res_state statep,
+ int op, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dname, int class,
+ int type, const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>data, int datalen,
+ const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>newrr,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf, int buflen);
+
+int res_nsend(res_state statep,
+ const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>msg, int msglen,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer, int anslen);
+
+int dn_comp(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>exp_dn, unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>comp_dn,
+ int length, unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>*dnptrs,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>*lastdnptr);
+
+int dn_expand(const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>msg,
+ const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>eomorig,
+ const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>comp_dn, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>exp_dn,
+ int length);</code></pre>
+<pre><code>extern struct __res_state _res;
+
+int res_init(void);
+
+int res_query(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dname, int class, int type,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer, int anslen);
+
+int res_search(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dname, int class, int type,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer, int anslen);
+
+int res_querydomain(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>name, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>domain,
+ int class, int type, unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer,
+ int anslen);
+
+int res_mkquery(int op, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a>dname, int class,
+ int type, const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>data, int datalen,
+ const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>newrr,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>buf, int buflen);
+
+int res_send(const unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>msg, int msglen,
+ unsigned <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>answer, int anslen);</code></pre>
+<p>Link with <code>-lresolv</code>.</p>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p><strong>Note:</strong> This page is incomplete (various resolver functions provided by glibc are not described) and likely out of date.</p>
+<p>The functions described below make queries to and interpret the responses from Internet domain name servers.</p>
+<p>The API consists of a set of more modern, reentrant functions and an older set of nonreentrant functions that have been superseded. The traditional resolver interfaces such as <a href='res_init'>res_init</a>() and <a href='res_query'>res_query</a>() use some static (global) state stored in the <code>_res</code> structure, rendering these functions non-thread-safe. BIND 8.2 introduced a set of new interfaces <a href='res_ninit'>res_ninit</a>(), <a href='res_nquery'>res_nquery</a>(), and so on, which take a <code>res_state</code> as their first argument, so you can use a per-thread resolver state.</p>
+<p>The <a href='res_ninit'>res_ninit</a>() and <a href='res_init'>res_init</a>() functions read the configuration files (see <a href='/5/resolv.conf'>resolv.conf</a>(5)) to get the default domain name and name server address(es). If no server is given, the local host is tried. If no domain is given, that associated with the local host is used. It can be overridden with the environment variable <strong>LOCALDOMAIN</strong>. <a href='res_ninit'>res_ninit</a>() or <a href='res_init'>res_init</a>() is normally executed by the first call to one of the other functions.</p>
+<p>The <a href='res_nquery'>res_nquery</a>() and <a href='res_query'>res_query</a>() functions query the name server for the fully qualified domain name <code>name</code> of specified <code>type</code> and <code>class</code>. The reply is left in the buffer <code>answer</code> of length <code>anslen</code> supplied by the caller.</p>
+<p>The <a href='res_nsearch'>res_nsearch</a>() and <a href='res_search'>res_search</a>() functions make a query and waits for the response like <a href='res_nquery'>res_nquery</a>() and <a href='res_query'>res_query</a>(), but in addition they implement the default and search rules controlled by <strong>RES_DEFNAMES</strong> and <strong>RES_DNSRCH</strong> (see description of <code>_res</code> options below).</p>
+<p>The <a href='res_nquerydomain'>res_nquerydomain</a>() and <a href='res_querydomain'>res_querydomain</a>() functions make a query using <a href='res_nquery'>res_nquery</a>()/<a href='res_query'>res_query</a>() on the concatenation of <code>name</code> and <code>domain</code>.</p>
+<p>The following functions are lower-level routines used by <a href='res_query'>res_query</a>()/<a href='res_query'>res_query</a>().</p>
+<p>The <a href='res_nmkquery'>res_nmkquery</a>() and <a href='res_mkquery'>res_mkquery</a>() functions construct a query message in <code>buf</code> of length <code>buflen</code> for the domain name <code>dname</code>. The query type <code>op</code> is one of the following (typically <strong>QUERY</strong>):</p>
+<dl>
+<dt><strong>QUERY</strong></dt>
+<dd><p>Standard query.</p>
+</dd>
+<dt><strong>IQUERY</strong></dt>
+<dd><p>Inverse query. This option was removed in glibc 2.26, since it has not been supported by DNS servers for a very long time.</p>
+</dd>
+<dt><strong>NS_NOTIFY_OP</strong></dt>
+<dd><p>Notify secondary of SOA (Start of Authority) change.</p>
+</dd>
+</dl>
+<p><code>newrr</code> is currently unused.</p>
+<p>The <a href='res_nsend'>res_nsend</a>() and <a href='res_send'>res_send</a>() function send a preformatted query given in <code>msg</code> of length <code>msglen</code> and returns the answer in <code>answer</code> which is of length <code>anslen</code>. They will call <a href='res_ninit'>res_ninit</a>()/<a href='res_init'>res_init</a>() if it has not already been called.</p>
+<p>The <a href='dn_comp'>dn_comp</a>() function compresses the domain name <code>exp_dn</code> and stores it in the buffer <code>comp_dn</code> of length <code>length</code>. The compression uses an array of pointers <code>dnptrs</code> to previously compressed names in the current message. The first pointer points to the beginning of the message and the list ends with NULL. The limit of the array is specified by <code>lastdnptr</code>. If <code>dnptr</code> is NULL, domain names are not compressed. If <code>lastdnptr</code> is NULL, the list of labels is not updated.</p>
+<p>The <a href='dn_expand'>dn_expand</a>() function expands the compressed domain name <code>comp_dn</code> to a full domain name, which is placed in the buffer <code>exp_dn</code> of size <code>length</code>. The compressed name is contained in a query or reply message, and <code>msg</code> points to the beginning of the message.</p>
+<p>The resolver routines use configuration and state information contained in a <code>__res_state</code> structure (either passed as the <code>statep</code> argument, or in the global variable <code>_res</code>, in the case of the older nonreentrant functions). The only field of this structure that is normally manipulated by the user is the <code>options</code> field. This field can contain the bitwise "OR" of the following options:</p>
+<dl>
+<dt><strong>RES_INIT</strong></dt>
+<dd><p>True if <a href='res_ninit'>res_ninit</a>() or <a href='res_init'>res_init</a>() has been called.</p>
+</dd>
+<dt><strong>RES_DEBUG</strong></dt>
+<dd><p>Print debugging messages. This option is available only if glibc was built with debugging enabled, which is not the default.</p>
+</dd>
+<dt><strong>RES_AAONLY</strong> (unimplemented; deprecated in glibc 2.25)</dt>
+<dd><p>Accept authoritative answers only. <a href='res_send'>res_send</a>() continues until it finds an authoritative answer or returns an error. This option was present but unimplemented in glibc until version 2.24; since glibc 2.25, it is deprecated, and its usage produces a warning.</p>
+</dd>
+<dt><strong>RES_USEVC</strong></dt>
+<dd><p>Use TCP connections for queries rather than UDP datagrams.</p>
+</dd>
+<dt><strong>RES_PRIMARY</strong> (unimplemented; deprecated in glibc 2.25)</dt>
+<dd><p>Query primary domain name server only. This option was present but unimplemented in glibc until version 2.24; since glibc 2.25, it is deprecated, and its usage produces a warning.</p>
+</dd>
+<dt><strong>RES_IGNTC</strong></dt>
+<dd><p>Ignore truncation errors. Don't retry with TCP.</p>
+</dd>
+<dt><strong>RES_RECURSE</strong></dt>
+<dd><p>Set the recursion desired bit in queries. Recursion is carried out by the domain name server, not by <a href='res_send'>res_send</a>(). [Enabled by default].</p>
+</dd>
+<dt><strong>RES_DEFNAMES</strong></dt>
+<dd><p>If set, <a href='res_search'>res_search</a>() will append the default domain name to single component names—that is, those that do not contain a dot. [Enabled by default].</p>
+</dd>
+<dt><strong>RES_STAYOPEN</strong></dt>
+<dd><p>Used with <strong>RES_USEVC</strong> to keep the TCP connection open between queries.</p>
+</dd>
+<dt><strong>RES_DNSRCH</strong></dt>
+<dd><p>If set, <a href='res_search'>res_search</a>() will search for hostnames in the current domain and in parent domains. This option is used by <a href='/3/gethostbyname'>gethostbyname</a>(3). [Enabled by default].</p>
+</dd>
+<dt><strong>RES_INSECURE1</strong></dt>
+<dd><p>Accept a response from a wrong server. This can be used to detect potential security hazards, but you need to compile glibc with debugging enabled and use <strong>RES_DEBUG</strong> option (for debug purpose only).</p>
+</dd>
+<dt><strong>RES_INSECURE2</strong></dt>
+<dd><p>Accept a response which contains a wrong query. This can be used to detect potential security hazards, but you need to compile glibc with debugging enabled and use <strong>RES_DEBUG</strong> option (for debug purpose only).</p>
+</dd>
+<dt><strong>RES_NOALIASES</strong></dt>
+<dd><p>Disable usage of <strong>HOSTALIASES</strong> environment variable.</p>
+</dd>
+<dt><strong>RES_USE_INET6</strong></dt>
+<dd><p>Try an AAAA query before an A query inside the <a href='/3/gethostbyname'>gethostbyname</a>(3) function, and map IPv4 responses in IPv6 "tunneled form" if no AAAA records are found but an A record set exists. Since glibc 2.25, this option is deprecated, and its usage produces a warning; applications should use <a href='/3/getaddrinfo'>getaddrinfo</a>(3), rather than <a href='/3/gethostbyname'>gethostbyname</a>(3).</p>
+</dd>
+<dt><strong>RES_ROTATE</strong></dt>
+<dd><p>Causes round-robin selection of name servers from among those listed. This has the effect of spreading the query load among all listed servers, rather than having all clients try the first listed server first every time.</p>
+</dd>
+<dt><strong>RES_NOCHECKNAME</strong> (unimplemented; deprecated in glibc 2.25)</dt>
+<dd><p>Disable the modern BIND checking of incoming hostnames and mail names for invalid characters such as underscore (_), non-ASCII, or control characters. This option was present in glibc until version 2.24; since glibc 2.25, it is deprecated, and its usage produces a warning.</p>
+</dd>
+<dt><strong>RES_KEEPTSIG</strong> (unimplemented; deprecated in glibc 2.25)</dt>
+<dd><p>Do not strip TSIG records. This option was present but unimplemented in glibc until version 2.24; since glibc 2.25, it is deprecated, and its usage produces a warning.</p>
+</dd>
+<dt><strong>RES_BLAST (unimplemented; deprecated in glibc 2.25)</strong></dt>
+<dd><p>Send each query simultaneously and recursively to all servers. This option was present but unimplemented in glibc until version 2.24; since glibc 2.25, it is deprecated, and its usage produces a warning.</p>
+</dd>
+<dt><strong>RES_USEBSTRING</strong> (glibc 2.3.4 to 2.24)</dt>
+<dd><p>Make reverse IPv6 lookups using the bit-label format described in RFC 2673; if this option is not set (which is the default), then nibble format is used. This option was removed in glibc 2.25, since it relied on a backward-incompatible DNS extension that was never deployed on the Internet.</p>
+</dd>
+<dt><strong>RES_NOIP6DOTINT</strong> (glibc 2.24 and earlier)</dt>
+<dd><p>Use <code><a href="http://ip6.arpa">ip6.arpa</a></code> zone in IPv6 reverse lookup instead of <code><a href="http://ip6.int">ip6.int</a></code>, which is deprecated since glibc 2.3.4. This option is present in glibc up to and including version 2.24, where it is enabled by default. In glibc 2.25, this option was removed.</p>
+</dd>
+<dt><strong>RES_USE_EDNS0</strong> (since glibc 2.6)</dt>
+<dd><p>Enables support for the DNS extensions (EDNS0) described in RFC 2671.</p>
+</dd>
+<dt><strong>RES_SNGLKUP</strong> (since glibc 2.10)</dt>
+<dd><p>By default, glibc performs IPv4 and IPv6 lookups in parallel since version 2.9. Some appliance DNS servers cannot handle these queries properly and make the requests time out. This option disables the behavior and makes glibc perform the IPv6 and IPv4 requests sequentially (at the cost of some slowdown of the resolving process).</p>
+</dd>
+<dt><strong>RES_SNGLKUPREOP</strong></dt>
+<dd><p>When <strong>RES_SNGLKUP</strong> option is enabled, opens a new socket for the each request.</p>
+</dd>
+<dt><strong>RES_USE_DNSSEC</strong></dt>
+<dd><p>Use DNSSEC with OK bit in OPT record. This option implies <strong>RES_USE_EDNS0</strong>.</p>
+</dd>
+<dt><strong>RES_NOTLDQUERY</strong></dt>
+<dd><p>Do not look up unqualified name as a top-level domain (TLD).</p>
+</dd>
+<dt><strong>RES_DEFAULT</strong></dt>
+<dd><p>Default option which implies: <strong>RES_RECURSE</strong>, <strong>RES_DEFNAMES</strong>, <strong>RES_DNSRCH</strong> and <strong>RES_NOIP6DOTINT</strong>. The <a href='res_ninit'>res_ninit</a>() and <a href='res_init'>res_init</a>() functions return 0 on success, or -1 if an error occurs.</p>
+</dd>
+</dl>
+<p>The <a href='res_nquery'>res_nquery</a>(), <a href='res_query'>res_query</a>(), <a href='res_nsearch'>res_nsearch</a>(), <a href='res_search'>res_search</a>(), <a href='res_nquerydomain'>res_nquerydomain</a>(), <a href='res_querydomain'>res_querydomain</a>(), <a href='res_nmkquery'>res_nmkquery</a>(), <a href='res_mkquery'>res_mkquery</a>(), <a href='res_nsend'>res_nsend</a>(), and <a href='res_send'>res_send</a>() functions return the length of the response, or -1 if an error occurs.</p>
+<p>The <a href='dn_comp'>dn_comp</a>() and <a href='dn_expand'>dn_expand</a>() functions return the length of the compressed name, or -1 if an error occurs.</p>
+</div></section><h1 id='files'><a href='#files'>FILES</a></h1><div data-for='files' data-hide><section data-for='files'><div data-more>
+<dl>
+<dt><code>/etc/resolv.conf</code></dt>
+<dd><p>resolver configuration file</p>
+</dd>
+<dt><code>/etc/host.conf</code></dt>
+<dd><p>resolver configuration file</p>
+</dd>
+</dl>
+</div></div></section><h1 id='attributes'><a href='#attributes'>ATTRIBUTES</a></h1><div data-for='attributes' data-hide><section data-for='attributes'><div data-more>
+<p>For an explanation of the terms used in this section, see <a href='/7/attributes'>attributes</a>(7).</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Interface</td>
+<td style="text-align: left;">Attribute</td>
+<td style="text-align: left;">Value</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href='res_ninit'>res_ninit</a>(), <a href='res_nquery'>res_nquery</a>(),<br />
+<a href='res_nsearch'>res_nsearch</a>(), <a href='res_nquerydomain'>res_nquerydomain</a>(), <a href='res_nsend'>res_nsend</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe locale</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href='res_nmkquery'>res_nmkquery</a>(), <a href='dn_comp'>dn_comp</a>(),<br />
+<a href='dn_expand'>dn_expand</a>()</td>
+<td style="text-align: left;">Thread safety</td>
+<td style="text-align: left;">MT-Safe</td>
+</tr>
+</tbody>
+</table>
+</div></div></section><h1 id='conforming-to'><a href='#conforming-to'>CONFORMING TO</a></h1><div data-for='conforming-to' data-hide><section data-for='conforming-to'><div data-more>
+<p>4.3BSD.</p>
+</div></div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/3/gethostbyname'>gethostbyname</a>(3), <a href='/5/resolv.conf'>resolv.conf</a>(5), <a href='/5/resolver'>resolver</a>(5), <a href='/7/hostname'>hostname</a>(7), <a href='/8/named'>named</a>(8)</p>
+<p>The GNU C library source file <code>resolv/README</code>.</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

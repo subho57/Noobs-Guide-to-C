@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- https://getbootstrap.com/ -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+
+        <!-- https://fontawesome.com/ -->
+        <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" rel="stylesheet">
+
+        <!-- https://unpkg.com/@primer/css@12.4.0/dist/markdown.css?meta -->
+        <link crossorigin="anonymous" href="https://unpkg.com/@primer/css@12.4.0/dist/markdown.css" integrity="a384-2NDUfSO9azRaQ5WnFVBXnZ6vriu46s0L5WY2FfK2qENp/xCJIQFp1u6riGuUnKx1" rel="stylesheet">
+
+        <!-- https://www.ubuntu.com/ -->
+        <link href="https://assets.ubuntu.com/v1/49a1a858-favicon-32x32.png" rel="icon" type="image/png">
+
+        <link href="/static/rouge.css" rel="stylesheet">
+
+        <!-- https://getbootstrap.com/ -->
+        <script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script crossorigin="anonymous" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+
+            
+
+    $(function() {
+
+        // Ensure all elements are styled the same
+        $('pre').addClass('p-3');
+        $('table').addClass('table table-striped');
+
+        // Add toggles
+        $('section').each(function(index, element) {
+
+            // Prepare switch
+            const $section = $(element);
+            const id = 'switch-' + $section.attr('data-for');
+            const $switch = $(
+                '<div class="custom-control custom-switch mb-4">' +
+                '<input id="' + id + '" class="custom-control-input" type="checkbox">' +
+                '<label class="custom-control-label" for="' + id + '">feeling less comfortable</label>' +
+                '</div>'
+            );
+
+            // Find comfort levels
+            const $less = $section.find('[data-less]');
+            const $more = $section.find('[data-more]');
+
+            // If a less-comfortable section exists, check it by default
+            if ($less.length) {
+                $switch.find('input').prop('checked', true);
+            }
+
+            // If only one comfort level exists, disable switch
+            if (!$less.length || !$more.length) {
+                $switch.find('input').prop('disabled', true);
+            }
+
+            // Listen for changes
+            $switch.find('input').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $less.removeClass('d-none');
+                    $more.addClass('d-none');
+                }
+                else {
+                    $less.addClass('d-none');
+                    $more.removeClass('d-none');
+                }
+            }).trigger('change');
+
+            // Add switch to DOM section has less-comfy level
+            if ($section.find('[data-less]').length) {
+                $section.prepend($switch);
+            }
+        });
+
+        // Hide sections
+        $('[data-hide]').each(function(index, element) {
+            const $button = $('<button class="btn btn-outline-primary btn-sm" type="button">Show</button>');
+            const id = $(element).attr('data-for');
+            $(element).before($button);
+            $button.on('click', function() {
+                $(element).show();
+                $(this).remove();
+            });
+            if (id) {
+                $button.attr('data-for', id);
+                $('#' + id).children('a').on('click', function() {
+                    $button.trigger('click');
+                });
+            }
+            $(element).hide();
+        });
+
+        // Show section if in hash
+        $(window).on('hashchange', function() {
+            const id = window.location.hash.slice(1);
+            if (id) {
+                $('button[data-for="' + id + '"]').trigger('click');
+            }
+        });
+        $(window).trigger('hashchange');
+    });
+
+
+
+        </script>
+
+        <script>
+
+            $(function() {
+
+                // Enable popovers
+                $('[data-toggle="popover"]').popover({
+                    boundary: 'viewport',
+                    html: true,
+                    placement: 'bottom',
+                    trigger: 'focus'
+                });
+
+                // Ensure all elements are styled the same
+                $('h1').addClass('border-bottom font-weight-bold h2 mb-3 pb-2 pt-4');
+                $('h2').addClass('font-weight-bold h3');
+
+                // Ensure last heading can be anchored atop page
+                $(window).resize(function() {
+                    const top = $('h1').last().offset().top;
+                    const margin = $(window).height() - ($('body').outerHeight() - top);
+                    $('body').css('margin-bottom', Math.max(0, Math.ceil(margin)) + 'px');
+                });
+                $(window).trigger('resize');
+
+                // Reveal body
+                $('body').removeClass('invisible');
+            });
+
+        </script>
+
+        <style>
+
+            /* Style popovers */
+            .popover {
+                font-family: inherit;
+                max-width: 100%;
+            }
+
+            /* Wrap long words (and URLs, whether linked or not), especially on mobile,
+            but not in buttons and not in tables, which should instead scroll horizontally */
+            * {
+                word-break: break-word;
+            }
+            button, table * {
+                word-break: normal;
+            }
+
+            /* Match Gmail's yellow */
+            a[data-toggle=popover] {
+                border-bottom: 2px solid rgb(252, 237, 193);
+                box-shadow: inset 0 -2px 0 rgb(252, 237, 193);
+                cursor: help;
+            }
+            a[data-toggle=popover]:hover {
+                background-color: rgb(252, 237, 193);
+            }
+
+            /* Match pre tags */
+            code {
+                color: inherit;
+            }
+
+            /* Padding for backticks */
+            code.highlighter-rouge {
+                color: inherit;
+                padding: .1rem;
+            }
+
+            /* A la GitHub */
+            code, pre {
+                background-color: #f6f8fa;
+            }
+
+            /* Don't shrink these */
+            code, pre {
+                font-size: inherit;
+            }
+
+            /* Don't italicize */
+            dl dt {
+                font-style: normal;
+            }
+
+        </style>
+
+        <style>
+
+            
+
+    /* Match dl and p */
+    button {
+        margin-bottom: 1rem;
+    }
+
+    /* Ensure syntax-highlighted code scrolls on iOS, https://stackoverflow.com/a/49592093 */
+    pre code {
+        white-space: pre;
+        word-wrap: normal;
+    }
+    pre code span {
+        white-space: nowrap;
+    }
+
+    
+
+        </style>
+
+        <title>Noob's Guide to C Programming</title>
+
+    </head>
+
+    <body class="invisible pb-5 text-monospace">
+
+        <nav class="bg-dark navbar navbar-dark navbar-expand-xl px-4">
+            <a class="navbar-brand" href="/"><i class="fas fa-list"></i> Noob's Guide to C Programming</a>
+        </nav>
+
+        <div class="container-fluid mt-2 px-4">
+            
+
+    <h1 id='name'><a href='#name'>NAME</a></h1><section data-for='name'><div data-more>
+<p>stpcpy, strcasecmp, strcat, strchr, strcmp, strcoll, strcpy, strcspn, strdup, strfry, strlen, strncat, strncmp, strncpy, strncasecmp, strpbrk, strrchr, strsep, strspn, strstr, strtok, strxfrm, index, rindex - string operations</p>
+</div></section><h1 id='synopsis'><a href='#synopsis'>SYNOPSIS</a></h1><section data-for='synopsis'><div data-more>
+<p><strong>#include &lt;strings.h&gt;</strong></p>
+<dl>
+<dt><strong>int strcasecmp(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s1</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s2</code><strong>);</strong></dt>
+<dd><p>Compare the strings <code>s1</code> and <code>s2</code> ignoring case.</p>
+</dd>
+<dt><strong>int strncasecmp(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s1</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s2</code><strong>, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> </strong><code>n</code><strong>);</strong></dt>
+<dd><p>Compare the first <code>n</code> characters of the strings <code>s1</code> and <code>s2</code> ignoring case.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>index(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, int </strong><code>c</code><strong>);</strong></dt>
+<dd><p>Return a pointer to the first occurrence of the character <code>c</code> in the string <code>s</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>rindex(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, int </strong><code>c</code><strong>);</strong></dt>
+<dd><p>Return a pointer to the last occurrence of the character <code>c</code> in the string <code>s</code>.</p>
+</dd>
+<dt><strong>#include &lt;string.h&gt;</strong></dt>
+<dd>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>stpcpy(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>dest</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>src</code><strong>);</strong></dt>
+<dd><p>Copy a string from <code>src</code> to <code>dest</code>, returning a pointer to the end of the resulting string at <code>dest</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strcat(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>dest</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>src</code><strong>);</strong></dt>
+<dd><p>Append the string <code>src</code> to the string <code>dest</code>, returning a pointer <code>dest</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strchr(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, int </strong><code>c</code><strong>);</strong></dt>
+<dd><p>Return a pointer to the first occurrence of the character <code>c</code> in the string <code>s</code>.</p>
+</dd>
+<dt><strong>int strcmp(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s1</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s2</code><strong>);</strong></dt>
+<dd><p>Compare the strings <code>s1</code> with <code>s2</code>.</p>
+</dd>
+<dt><strong>int strcoll(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s1</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s2</code><strong>);</strong></dt>
+<dd><p>Compare the strings <code>s1</code> with <code>s2</code> using the current locale.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strcpy(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>dest</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>src</code><strong>);</strong></dt>
+<dd><p>Copy the string <code>src</code> to <code>dest</code>, returning a pointer to the start of <code>dest</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> strcspn(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>reject</code><strong>);</strong></dt>
+<dd><p>Calculate the length of the initial segment of the string <code>s</code> which does not contain any of bytes in the string <code>reject</code>,</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strdup(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>);</strong></dt>
+<dd><p>Return a duplicate of the string <code>s</code> in memory allocated using <a href='/3/malloc'>malloc</a>(3).</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strfry(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>string</code><strong>);</strong></dt>
+<dd><p>Randomly swap the characters in <code>string</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> strlen(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>);</strong></dt>
+<dd><p>Return the length of the string <code>s</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strncat(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>dest</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>src</code><strong>, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> </strong><code>n</code><strong>);</strong></dt>
+<dd><p>Append at most <code>n</code> characters from the string <code>src</code> to the string <code>dest</code>, returning a pointer to <code>dest</code>.</p>
+</dd>
+<dt><strong>int strncmp(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s1</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s2</code><strong>, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> </strong><code>n</code><strong>);</strong></dt>
+<dd><p>Compare at most <code>n</code> bytes of the strings <code>s1</code> and <code>s2</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strncpy(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>dest</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>src</code><strong>, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> </strong><code>n</code><strong>);</strong></dt>
+<dd><p>Copy at most <code>n</code> bytes from string <code>src</code> to <code>dest</code>, returning a pointer to the start of <code>dest</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strpbrk(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>accept</code><strong>);</strong></dt>
+<dd><p>Return a pointer to the first occurrence in the string <code>s</code> of one of the bytes in the string <code>accept</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strrchr(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, int </strong><code>c</code><strong>);</strong></dt>
+<dd><p>Return a pointer to the last occurrence of the character <code>c</code> in the string <code>s</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strsep(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>*</strong><code>stringp</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>delim</code><strong>);</strong></dt>
+<dd><p>Extract the initial token in <code>stringp</code> that is delimited by one of the bytes in <code>delim</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> strspn(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>s</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>accept</code><strong>);</strong></dt>
+<dd><p>Calculate the length of the starting segment in the string <code>s</code> that consists entirely of bytes in <code>accept</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strstr(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>haystack</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>needle</code><strong>);</strong></dt>
+<dd><p>Find the first occurrence of the substring <code>needle</code> in the string <code>haystack</code>, returning a pointer to the found substring.</p>
+</dd>
+<dt><strong><a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a>strtok(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>s</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>delim</code><strong>);</strong></dt>
+<dd><p>Extract tokens from the string <code>s</code> that are delimited by one of the bytes in <code>delim</code>.</p>
+</dd>
+<dt><strong><a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> strxfrm(<a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>char *</a></strong><code>dest</code><strong>, <a data-content='Think of this as a &lt;code&gt;string&lt;/code&gt;.' data-toggle='popover' tabindex='0'>const char *</a></strong><code>src</code><strong>, <a data-content='Think of this as an &lt;code&gt;int&lt;/code&gt;.' data-toggle='popover' tabindex='0'>size_t</a> </strong><code>n</code><strong>);</strong></dt>
+<dd><p>Transforms <code>src</code> to the current locale and copies the first <code>n</code> characters to <code>dest</code>.</p>
+</dd>
+</dl>
+</div></section><h1 id='description'><a href='#description'>DESCRIPTION</a></h1><section data-for='description'><div data-more>
+<p>The string functions perform operations on null-terminated strings. See the individual man pages for descriptions of each function.</p>
+</div></section><h1 id='see-also'><a href='#see-also'>SEE ALSO</a></h1><section data-for='see-also'><div data-more>
+<p><a href='/3/index'>index</a>(3), <a href='/3/rindex'>rindex</a>(3), <a href='/3/stpcpy'>stpcpy</a>(3), <a href='/3/strcasecmp'>strcasecmp</a>(3), <a href='/3/strcat'>strcat</a>(3), <a href='/3/strchr'>strchr</a>(3), <a href='/3/strcmp'>strcmp</a>(3), <a href='/3/strcoll'>strcoll</a>(3), <a href='/3/strcpy'>strcpy</a>(3), <a href='/3/strcspn'>strcspn</a>(3), <a href='/3/strdup'>strdup</a>(3), <a href='/3/strfry'>strfry</a>(3), <a href='/3/strlen'>strlen</a>(3), <a href='/3/strncasecmp'>strncasecmp</a>(3), <a href='/3/strncat'>strncat</a>(3), <a href='/3/strncmp'>strncmp</a>(3), <a href='/3/strncpy'>strncpy</a>(3), <a href='/3/strpbrk'>strpbrk</a>(3), <a href='/3/strrchr'>strrchr</a>(3), <a href='/3/strsep'>strsep</a>(3), <a href='/3/strspn'>strspn</a>(3), <a href='/3/strstr'>strstr</a>(3), <a href='/3/strtok'>strtok</a>(3), <a href='/3/strxfrm'>strxfrm</a>(3)</p>
+</div></section><h1 id='colophon'><a href='#colophon'>COLOPHON</a></h1><div data-for='colophon' data-hide><section data-for='colophon'><div data-more>
+<p>This page is part of release 4.15 of the Linux <code>man-pages</code> project. A description of the project, information about reporting bugs, and the latest version of this page, can be found at <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.</p></div></div></section>
+
+
+        </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,16 @@
+{
+    "name": "Noob's Guide to C",
+    "short_name": "Noob's Guide to C",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#232931",
+    "background_color": "#eeeeee",
+    "description": "Noob's Guide to C",
+    "icons": [
+      {
+        "src": "favicon.png",
+        "sizes": "640x640",
+        "type": "image/png"
+      }
+    ]
+  }
